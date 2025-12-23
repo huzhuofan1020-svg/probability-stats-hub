@@ -1,0 +1,5 @@
+{
+  "name": "Binomial Explorer",
+  "description": "An interactive visualization of the Binomial Distribution B(n, p) focusing on the mathematical mechanism behind the peak (mode).",
+  "requestFramePermissions": []
+}
