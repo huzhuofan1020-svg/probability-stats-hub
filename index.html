@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>概率论与数理统计 | 交互式学习平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #0ea5e9;
+            --accent: #10b981;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: rgba(0, 0, 0, 0.08);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 头部 */
+        header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+            color: white;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .logo-text h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .logo-text p {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* 统计面板 */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* 章节网格 */
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 章节卡片 */
+        .chapter-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .chapter-card.completed {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .chapter-card.completed::before {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .chapter-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .chapter-number {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            opacity: 0.2;
+            line-height: 1;
+        }
+
+        .chapter-info h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .chapter-info .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .chapter-content {
+            padding: 0 1.5rem 1.5rem;
+            flex: 1;
+        }
+
+        .topics-list {
+            list-style: none;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .topics-list li {
+            padding: 0.375rem 0;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .topics-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-light);
+        }
+
+        .demos-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .demo-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .demo-tag:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .coming-soon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #d97706;
+            margin-top: 1rem;
+        }
+
+        .card-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            background: rgba(248, 250, 252, 0.5);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateX(4px);
+        }
+
+        .btn-disabled {
+            background: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* 页脚 */
+        footer {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+
+            .logo {
+                flex-direction: column;
+            }
+
+            .header-info {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .chapters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">P</div>
+                <div class="logo-text">
+                    <h1>概率论与数理统计</h1>
+                    <p>交互式学习平台 · Interactive Learning Hub</p>
+                </div>
+            </div>
+            <div class="header-info">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    4个演示已上线
+                </div>
+                <span>课程版本: 非数学类</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 统计面板 -->
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-value">7</div>
+                <div class="stat-label">总章节数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">4</div>
+                <div class="stat-label">交互演示</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">7</div>
+                <div class="stat-label">已完成章节</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">课程进度</div>
+            </div>
+        </div>
+
+        <!-- 章节网格 -->
+        <h2 class="section-title">课程章节</h2>
+        <div class="chapters-grid">
+            <!-- 第一章 -->
+            <div class="chapter-card completed">
+                <div class="chapter-header">
+                    <div class="chapter-number">01</div>
+                    <div class="chapter-info">
+                        <h3>古典概型和概率空间</h3>
+                        <p class="subtitle">Classical Probability</p>
+                    </div>
+                </div>
+                <div class="chapter-content">
+                    <ul class="topics-list">
+                        <li>试验与事件、样本空间</li>
+                        <li>古典概率模型</li>
+                        <li>条件概率与乘法公式</li>
+                        <li>全概率公式与贝叶斯公式</li>
+                    </ul>
+                    <div class="demos-container">
+                        <a href="chapter1/venn/index.html" class="demo-tag">韦恩图</a>
+                        <a href="chapter1/birthday/index.html" class="demo-tag">生日悖论</a>
+                        <a href="chapter1/bayes/index.html" class="demo-tag">贝叶斯公式</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="chapter1.html" class="btn btn-primary">
+                        进入学习 →
+                    </a>
+                </div>
+            </div>
+
+            <!-- 第二章 -->
+            <div class="chapter-card completed">
+                <div class="chapter-header">
+                    <div class="chapter-number">02</div>
+                    <div class="chapter-info">
+                        <h3>随机变量和概率分布</h3>
+                        <p class="subtitle">Random Variables</p>
+                    </div>
+                </div>
+                <div class="chapter-content">
+                    <ul class="topics-list">
+                        <li>离散型随机变量</li>
+                        <li>连续型随机变量</li>
+                        <li>分布函数与概率密度</li>
+                        <li>常见分布（泊松、正态等）</li>
+                    </ul>
+                    <div class="demos-container">
+                        <a href="chapter2/poisson/index.html" class="demo-tag">泊松分布</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="chapter2.html" class="btn btn-primary">
+                        进入学习 →
+                    </a>
+                </div>
+            </div>
+
+            <!-- 第三章 -->
+            <div class="chapter-card completed">
+                <div class="chapter-header">
+                    <div class="chapter-number">03</div>
+                    <div class="chapter-info">
+                        <h3>随机向量及其分布</h3>
+                        <p class="subtitle">Random Vectors</p>
+                    </div>
+                </div>
+                <div class="chapter-content">
+                    <ul class="topics-list">
+                        <li>随机向量及其联合分布</li>
+                        <li>边缘分布与条件分布</li>
+                        <li>随机变量的独立性</li>
+                        <li>随机向量函数的分布</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="chapter3.html" class="btn btn-primary">
+                        进入学习 →
+                    </a>
+                </div>
+            </div>
+
+            <!-- 第四章 -->
+            <div class="chapter-card completed">
+                <div class="chapter-header">
+                    <div class="chapter-number">04</div>
+                    <div class="chapter-info">
+                        <h3>数学期望和方差</h3>
+                        <p class="subtitle">Expectation & Variance</p>
+                    </div>
+                </div>
+                <div class="chapter-content">
+                    <ul class="topics-list">
+                        <li>数学期望的定义与性质</li>
+                        <li>随机变量的方差</li>
+                        <li>协方差和相关系数</li>
+                        <li>条件数学期望</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="chapter4.html" class="btn btn-primary">
+                        进入学习 →
+                    </a>
+                </div>
+            </div>
+
+            <!-- 第五章 -->
+            <div class="chapter-card completed">
+                <div class="chapter-header">
+                    <div class="chapter-number">05</div>
+                    <div class="chapter-info">
+                        <h3>特征函数和极限定理</h3>
+                        <p class="subtitle">Characteristic Functions</p>
+                    </div>
+                </div>
+                <div class="chapter-content">
+                    <ul class="topics-list">
+                        <li>概率母函数</li>
+                        <li>特征函数</li>
+                        <li>大数律</li>
+                        <li>中心极限定理</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="chapter5.html" class="btn btn-primary">
+                        进入学习 →
+                    </a>
+                </div>
+            </div>
+
+            <!-- 第六章 -->
+            <div class="chapter-card completed">
+                <div class="chapter-header">
+                    <div class="chapter-number">06</div>
+                    <div class="chapter-info">
+                        <h3>样本及抽样分布</h3>
+                        <p class="subtitle">Sampling Distributions</p>
+                    </div>
+                </div>
+                <div class="chapter-content">
+                    <ul class="topics-list">
+                        <li>随机样本与统计量</li>
+                        <li>样本均值与样本方差</li>
+                        <li>χ²、t、F 分布</li>
+                        <li>正态总体的抽样分布</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="chapter6.html" class="btn btn-primary">
+                        进入学习 →
+                    </a>
+                </div>
+            </div>
+
+            <!-- 第七章 -->
+            <div class="chapter-card completed">
+                <div class="chapter-header">
+                    <div class="chapter-number">07</div>
+                    <div class="chapter-info">
+                        <h3>参数估计</h3>
+                        <p class="subtitle">Parameter Estimation</p>
+                    </div>
+                </div>
+                <div class="chapter-content">
+                    <ul class="topics-list">
+                        <li>矩估计与最大似然估计</li>
+                        <li>无偏性、有效性、相合性</li>
+                        <li>置信区间</li>
+                        <li>正态总体参数的区间估计</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="chapter7.html" class="btn btn-primary">
+                        进入学习 →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 概率论与数理统计交互式学习平台 · 基于现代Web技术构建</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">所有演示均支持桌面端、平板、手机访问</p>
+    </footer>
+</body>
+</html>

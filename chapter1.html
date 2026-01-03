@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一章 古典概型和概率空间 | 概率论交互学习</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <!-- KaTeX for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #faf9f7;
+            --bg-secondary: #f5f3ef;
+            --text-primary: #2d2a26;
+            --text-secondary: #6b6560;
+            --text-muted: #9a948d;
+            
+            /* 分区配色 */
+            --definition-bg: #e8f4fc;
+            --definition-border: #3498db;
+            --definition-icon: #2980b9;
+            
+            --theorem-bg: #f3e8fc;
+            --theorem-border: #9b59b6;
+            --theorem-icon: #8e44ad;
+            
+            --formula-bg: #e8fcef;
+            --formula-border: #27ae60;
+            --formula-accent: #1e8449;
+            
+            --example-bg: #fef9e7;
+            --example-border: #f39c12;
+            --example-icon: #d68910;
+            
+            --exercise-bg: #f4f4f4;
+            --exercise-border: #95a5a6;
+            
+            --note-bg: #ebf5fb;
+            --note-border: #5dade2;
+            
+            --proof-bg: #fafafa;
+            --proof-border: #bdc3c7;
+            
+            --demo-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #eee;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .breadcrumb {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .breadcrumb a {
+            color: var(--definition-border);
+            text-decoration: none;
+        }
+
+        /* 章节头部 */
+        .chapter-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chapter-header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chapter-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .chapter-number {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            opacity: 0.15;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .chapter-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .chapter-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        /* 进度条 */
+        .progress-section {
+            background: white;
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem 2rem;
+        }
+
+        .progress-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .progress-bar-wrapper {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .progress-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--demo-gradient);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* 章节目录 */
+        .chapter-toc {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toc-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .toc-item:last-child {
+            border-bottom: none;
+        }
+
+        .toc-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .toc-link:hover {
+            color: var(--definition-border);
+        }
+
+        .toc-number {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-width: 50px;
+        }
+
+        .toc-text {
+            flex: 1;
+        }
+
+        .toc-demo {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--demo-gradient);
+            color: white;
+            border-radius: 20px;
+        }
+
+        /* 节标题 */
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--text-primary);
+        }
+
+        .section-number {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--definition-border);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* ========== 知识点卡片通用样式 ========== */
+        .knowledge-card {
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            background: white;
+        }
+
+        /* 定义卡片 */
+        .definition-card .card-header {
+            background: var(--definition-bg);
+            color: var(--definition-icon);
+            border-left: 4px solid var(--definition-border);
+        }
+
+        .definition-card .card-body {
+            border-left: 4px solid var(--definition-border);
+        }
+
+        /* 定理/性质卡片 */
+        .theorem-card .card-header {
+            background: var(--theorem-bg);
+            color: var(--theorem-icon);
+            border-left: 4px solid var(--theorem-border);
+        }
+
+        .theorem-card .card-body {
+            border-left: 4px solid var(--theorem-border);
+        }
+
+        /* 公式卡片 */
+        .formula-card {
+            background: var(--formula-bg);
+            border: 2px solid var(--formula-border);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .formula-card .formula-label {
+            font-size: 0.85rem;
+            color: var(--formula-accent);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .formula-card .formula-content {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+        }
+
+        .formula-card .formula-number {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        /* 例题卡片 */
+        .example-card .card-header {
+            background: var(--example-bg);
+            color: var(--example-icon);
+            border-left: 4px solid var(--example-border);
+        }
+
+        .example-card .card-body {
+            border-left: 4px solid var(--example-border);
+        }
+
+        .example-problem {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .solution-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--example-bg);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--example-icon);
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .solution-toggle:hover {
+            background: var(--example-border);
+            color: white;
+        }
+
+        .solution-content {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #fffcf5;
+            border-radius: var(--radius-sm);
+            display: none;
+        }
+
+        .solution-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 证明区块 */
+        .proof-block {
+            background: var(--proof-bg);
+            border: 1px solid var(--proof-border);
+            border-radius: var(--radius-sm);
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .proof-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .proof-toggle:hover {
+            background: rgba(0,0,0,0.02);
+        }
+
+        .proof-toggle .arrow {
+            transition: transform 0.3s;
+        }
+
+        .proof-toggle.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        .proof-content {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .proof-content.show {
+            padding: 1.5rem;
+            max-height: 1000px;
+            border-top: 1px solid var(--proof-border);
+        }
+
+        .proof-end {
+            text-align: right;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        /* 练习区块 */
+        .exercise-card {
+            background: var(--exercise-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .exercise-list {
+            list-style: none;
+        }
+
+        .exercise-item {
+            padding: 1rem;
+            background: white;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .exercise-number {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.85rem;
+            color: white;
+            background: var(--exercise-border);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* 注意/提示卡片 */
+        .note-card {
+            background: var(--note-bg);
+            border-left: 4px solid var(--note-border);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 1.5rem 0;
+        }
+
+        .note-card .note-label {
+            font-weight: 600;
+            color: var(--note-border);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 交互演示入口 */
+        .demo-entry {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .demo-entry:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .demo-info {
+            flex: 1;
+        }
+
+        .demo-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .demo-desc {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .demo-arrow {
+            font-size: 1.5rem;
+            opacity: 0.8;
+            margin-left: 1rem;
+        }
+
+        /* 数学公式样式 */
+        .math-block {
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+
+        .katex-display {
+            margin: 0 !important;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .chapter-header {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .chapter-title {
+                font-size: 1.75rem;
+            }
+
+            .chapter-number {
+                font-size: 2.5rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .progress-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .demo-entry {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+        }
+
+        /* 页脚 */
+        .chapter-footer {
+            background: white;
+            border-top: 1px solid #eee;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-nav {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .footer-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .footer-btn:hover {
+            background: var(--definition-bg);
+            color: var(--definition-border);
+        }
+
+        .footer-btn.next {
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <nav class="top-nav">
+        <a href="index.html" class="back-btn">
+            ← 返回主页
+        </a>
+        <span class="breadcrumb">
+            <a href="index.html">概率论</a> / 第一章
+        </span>
+    </nav>
+
+    <!-- 章节头部 -->
+    <header class="chapter-header">
+        <div class="chapter-header-content">
+            <div class="chapter-badge">
+                第一章 · 占课程 20% 学时
+            </div>
+            <span class="chapter-number">01</span>
+            <h1 class="chapter-title">古典概型和概率空间</h1>
+            <p class="chapter-subtitle">Classical Probability Model and Probability Space</p>
+        </div>
+    </header>
+
+    <!-- 进度条 -->
+    <div class="progress-section">
+        <div class="progress-container">
+            <div class="progress-bar-wrapper">
+                <div class="progress-label">学习进度</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <span>知识点: <span class="stat-value">8/8</span></span>
+                </div>
+                <div class="stat-item">
+                    <span>演示: <span class="stat-value">3个</span></span>
+                </div>
+                <div class="stat-item">
+                    <span>练习: <span class="stat-value">0/15</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- 章节目录 -->
+        <div class="chapter-toc">
+            <h2 class="toc-title">本章目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <a href="#s1-1" class="toc-link">
+                        <span class="toc-number">§1.1</span>
+                        <span class="toc-text">试验与事件</span>
+                        <span class="toc-demo">韦恩图</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s1-2" class="toc-link">
+                        <span class="toc-number">§1.2</span>
+                        <span class="toc-text">古典概型</span>
+                        <span class="toc-demo">生日悖论</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s1-3" class="toc-link">
+                        <span class="toc-number">§1.3</span>
+                        <span class="toc-text">几何概率</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s1-4" class="toc-link">
+                        <span class="toc-number">§1.4</span>
+                        <span class="toc-text">概率空间</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s1-5" class="toc-link">
+                        <span class="toc-number">§1.5</span>
+                        <span class="toc-text">概率的性质</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s1-6" class="toc-link">
+                        <span class="toc-number">§1.6</span>
+                        <span class="toc-text">条件概率和乘法公式</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s1-7" class="toc-link">
+                        <span class="toc-number">§1.7</span>
+                        <span class="toc-text">事件的独立性</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s1-8" class="toc-link">
+                        <span class="toc-number">§1.8</span>
+                        <span class="toc-text">全概率公式与贝叶斯公式</span>
+                        <span class="toc-demo">贝叶斯</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- §1.1 试验与事件 -->
+        <section class="section" id="s1-1">
+            <div class="section-header">
+                <span class="section-number">§1.1</span>
+                <h2 class="section-title">试验与事件</h2>
+            </div>
+
+            <!-- 定义卡片 -->
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 1.1 — 随机试验</span>
+                </div>
+                <div class="card-body">
+                    <p>满足以下条件的试验称为<strong>随机试验</strong>：</p>
+                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li style="margin-bottom: 0.5rem;">试验可以在相同条件下重复进行；</li>
+                        <li style="margin-bottom: 0.5rem;">试验的所有可能结果是已知的，且不止一个；</li>
+                        <li>每次试验前不能确定会出现哪个结果。</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 定义卡片 -->
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 1.2 — 样本空间与随机事件</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>样本空间 ($\Omega$)</strong>：随机试验所有可能结果的集合。</p>
+                    <p style="margin-top: 1rem;"><strong>样本点 (ω)</strong>：样本空间中的每一个元素，即试验的每一个可能结果。</p>
+                    <p style="margin-top: 1rem;"><strong>随机事件</strong>：样本空间的子集，通常用大写字母 A, B, C 等表示。</p>
+                </div>
+            </div>
+
+            <!-- 性质/定理卡片 -->
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>事件的运算公式</span>
+                </div>
+                <div class="card-body">
+                    <p>事件的运算公式就是集合的运算公式：</p>
+                    <div class="math-block">
+                        $$A \cup B = B \cup A, \quad A \cap B = B \cap A$$
+                    </div>
+                    <div class="math-block">
+                        $$A \cup (B \cup C) = A \cup B \cup C, \quad A \cap (B \cap C) = A \cap B \cap C$$
+                    </div>
+                    <div class="math-block">
+                        $$A(B \cup C) = AB \cup AC, \quad A \cup BC = (A \cup B)(A \cup C)$$
+                    </div>
+
+                    <div class="proof-block">
+                        <button class="proof-toggle" onclick="toggleProof(this)">
+                            <span>查看德摩根公式证明</span>
+                            <span class="arrow">▼</span>
+                        </button>
+                        <div class="proof-content">
+                            <p><strong>德摩根公式：</strong></p>
+                            <div class="math-block">
+                                $$\overline{\bigcup_{j=1}^{n} A_j} = \bigcap_{j=1}^{n} \bar{A}_j, \quad \overline{\bigcap_{j=1}^{n} A_j} = \bigcup_{j=1}^{n} \bar{A}_j$$
+                            </div>
+                            <p style="margin-top: 1rem;"><strong>证明思路：</strong>对于任意样本点 ω，</p>
+                            <p>$\omega \in$ 左边 $\Leftrightarrow$ $\omega$ 不属于任何 $A_j$ $\Leftrightarrow$ 对所有 j，$\omega \in \bar{A}_j$ $\Leftrightarrow$ $\omega \in$ 右边</p>
+                            <div class="proof-end">□</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 注意卡片 -->
+            <div class="note-card">
+                <div class="note-label">注意</div>
+                <p>事件 A 与 B 互斥 ($AB = \emptyset$) 与事件 A 与 B 对立 ($A = \bar{B}$) 是不同的概念。对立一定互斥，但互斥不一定对立。</p>
+            </div>
+
+            <!-- 交互演示入口 -->
+            <a href="chapter1/venn/index.html" class="demo-entry">
+                <div class="demo-info">
+                    <div class="demo-title">韦恩图交互演示</div>
+                    <div class="demo-desc">通过可视化韦恩图，直观理解事件的并、交、补等运算关系</div>
+                </div>
+                <span class="demo-arrow">→</span>
+            </a>
+
+            <!-- 练习区块 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span>练习 1.1</span>
+                </div>
+                <ul class="exercise-list">
+                    <li class="exercise-item">
+                        <span class="exercise-number">1</span>
+                        <span>证明事件的运算公式：$A \cup B = A + \bar{A}B$，$A = AB + A\bar{B}$</span>
+                    </li>
+                    <li class="exercise-item">
+                        <span class="exercise-number">2</span>
+                        <span>用集合的运算表达以下事件：(a) A 发生，B 和 C 不发生；(b) A 不发生，B 和 C 发生</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- §1.2 古典概型 -->
+        <section class="section" id="s1-2">
+            <div class="section-header">
+                <span class="section-number">§1.2</span>
+                <h2 class="section-title">古典概型</h2>
+            </div>
+
+            <!-- 定义卡片 -->
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 2.1 — 古典概率</span>
+                </div>
+                <div class="card-body">
+                    <p>设试验 S 的样本空间 $\Omega$ 是有限集合，$A \subset \Omega$。如果 $\Omega$ 的每个样本点发生的可能性相同，则称</p>
+                    
+                    <!-- 核心公式 -->
+                    <div class="formula-card" style="margin: 1.5rem 0;">
+                        <div class="formula-label">古典概率公式</div>
+                        <div class="formula-content">
+                            $$P(A) = \frac{\#A}{\#\Omega} = \frac{\text{事件 A 包含的样本点数}}{\text{样本空间的样本点总数}}$$
+                        </div>
+                        <div class="formula-number">(2.1)</div>
+                    </div>
+                    
+                    <p>为试验 S 下 A 发生的<strong>概率</strong>，简称<strong>事件 A 的概率</strong>。能够用定义 2.1 描述的模型称为<strong>古典概率模型</strong>，简称<strong>古典概型</strong>。</p>
+                </div>
+            </div>
+
+            <!-- 性质卡片 -->
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>古典概率的性质</span>
+                </div>
+                <div class="card-body">
+                    <p>从定义 2.1 可以看出，概率 P 有以下性质：</p>
+                    <div class="math-block">
+                        $$(1)\ P(A) \geq 0$$
+                    </div>
+                    <div class="math-block">
+                        $$(2)\ P(\Omega) = 1$$
+                    </div>
+                    <div class="math-block">
+                        $$(3)\ \text{如果 } A, B \text{ 不相容，则 } P(A+B) = P(A) + P(B)$$
+                    </div>
+                    <div class="math-block">
+                        $$(4)\ \text{如果 } A_1, A_2, \cdots, A_n \text{ 互不相容，则}$$
+                        $$P(A_1 + A_2 + \cdots + A_n) = P(A_1) + P(A_2) + \cdots + P(A_n)$$
+                    </div>
+                    <div class="math-block">
+                        $$(5)\ P(\emptyset) = 0,\ P(A) + P(\bar{A}) = 1,\ P(A) = P(AB) + P(A\bar{B})$$
+                    </div>
+                </div>
+            </div>
+
+            <!-- 例题卡片 -->
+            <div class="knowledge-card example-card">
+                <div class="card-header">
+                    <span>例 2.1 — 掷硬币</span>
+                </div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>掷一枚均匀的硬币，用 A 表示正面朝上。求 P(A)。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">
+                        显示解答
+                    </button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <p>样本空间 $\Omega$ = {正面，反面}，故 #$\Omega$ = 2。</p>
+                        <p>事件 A = {正面}，故 #A = 1。</p>
+                        <p>由古典概率公式：</p>
+                        <div class="math-block">
+                            $$P(A) = \frac{\#A}{\#\Omega} = \frac{1}{2}$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 例题卡片 -->
+            <div class="knowledge-card example-card">
+                <div class="card-header">
+                    <span>例 2.4 — 取球问题</span>
+                </div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>在 4 个白球、6 个红球中任取 4 个，求取到 2 个白球和 2 个红球的概率。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">
+                        显示解答
+                    </button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <p>用 A 表示取到 2 个白球和 2 个红球。</p>
+                        <p>样本空间：从 10 个球中任取 4 个的所有取法，$\#\Omega = C_{10}^4$</p>
+                        <p>事件 A：从 4 个白球中取 2 个，从 6 个红球中取 2 个，$\#A = C_4^2 \cdot C_6^2$</p>
+                        <div class="math-block">
+                            $$P(A) = \frac{C_4^2 \cdot C_6^2}{C_{10}^4} = \frac{6 \times 15}{210} = \frac{3}{7}$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 交互演示入口 -->
+            <a href="chapter1/birthday/index.html" class="demo-entry">
+                <div class="demo-info">
+                    <div class="demo-title">生日悖论交互演示</div>
+                    <div class="demo-desc">探索经典的生日问题：在多少人的群体中，至少有两人生日相同的概率超过 50%？</div>
+                </div>
+                <span class="demo-arrow">→</span>
+            </a>
+        </section>
+
+        <!-- §1.3 几何概率 -->
+        <section class="section" id="s1-3">
+            <div class="section-header">
+                <span class="section-number">§1.3</span>
+                <h2 class="section-title">几何概率</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 几何概率</span>
+                </div>
+                <div class="card-body">
+                    <p>设样本空间 $\Omega$ 是一个可度量的几何区域，其度量（长度、面积或体积）为 $S_\Omega$。如果样本点落入 $\Omega$ 中任何区域的概率与该区域的度量成正比，则事件 A(即 $\Omega$ 的某个子区域）的概率为：</p>
+                    
+                    <div class="formula-card" style="margin: 1.5rem 0;">
+                        <div class="formula-label">几何概率公式</div>
+                        <div class="formula-content">
+                            $$P(A) = \frac{S_A}{S_\Omega} = \frac{\text{区域 A 的度量}}{\text{样本空间 $\Omega$ 的度量}}$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card example-card">
+                <div class="card-header">
+                    <span>例 — 会面问题</span>
+                </div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>甲乙两人约定在 0 到 1 小时内的某时刻在某地会面，先到者等待另一人 20 分钟后离去。求两人能会面的概率。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">
+                        显示解答
+                    </button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <p>设甲、乙到达时刻分别为 x, y（以小时为单位），则样本空间为：</p>
+                        <div class="math-block">
+                            $$\Omega = \{(x,y): 0 \leq x \leq 1, 0 \leq y \leq 1\}$$
+                        </div>
+                        <p>两人能会面的条件是 $|x - y| \leq \frac{1}{3}$（20分钟 = 1/3小时），即事件 A。</p>
+                        <div class="math-block">
+                            $$P(A) = \frac{S_A}{S_\Omega} = \frac{1 - 2 \times \frac{1}{2} \times (\frac{2}{3})^2}{1} = 1 - \frac{4}{9} = \frac{5}{9}$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">注意</div>
+                <p>几何概率是古典概率的推广，将有限等可能推广到无限等可能（连续情形）。几何概率的计算关键在于正确建立几何模型。</p>
+            </div>
+        </section>
+
+        <!-- §1.4 概率空间 -->
+        <section class="section" id="s1-4">
+            <div class="section-header">
+                <span class="section-number">§1.4</span>
+                <h2 class="section-title">概率空间</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — $\sigma$-代数</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $\Omega$ 是样本空间，$\mathcal{F}$ 是 $\Omega$ 的某些子集构成的集合。如果 $\mathcal{F}$ 满足：</p>
+                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li style="margin-bottom: 0.5rem;">$\Omega \in \mathcal{F}$</li>
+                        <li style="margin-bottom: 0.5rem;">若 $A \in \mathcal{F}$，则 $\bar{A} \in \mathcal{F}$（对补运算封闭）</li>
+                        <li>若 $A_n \in \mathcal{F}$（$n = 1, 2, \cdots$），则 $\bigcup_{n=1}^{\infty} A_n \in \mathcal{F}$（对可列并封闭）</li>
+                    </ol>
+                    <p>则称 $\mathcal{F}$ 为 $\Omega$ 上的一个 <strong>$\sigma$-代数</strong>（或 $\sigma$-域）。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 概率测度</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $\mathcal{F}$ 是 $\Omega$ 上的 $\sigma$-代数，P 是定义在 $\mathcal{F}$ 上的实值函数。如果 P 满足：</p>
+                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li style="margin-bottom: 0.5rem;"><strong>非负性</strong>：对任意 $A \in \mathcal{F}$，$P(A) \geq 0$</li>
+                        <li style="margin-bottom: 0.5rem;"><strong>规范性</strong>：$P(\Omega) = 1$</li>
+                        <li><strong>可列可加性</strong>：若 $A_1, A_2, \cdots$ 两两互斥，则 $P(\bigcup_{n=1}^{\infty} A_n) = \sum_{n=1}^{\infty} P(A_n)$</li>
+                    </ol>
+                    <p>则称 P 为 $\mathcal{F}$ 上的<strong>概率测度</strong>，简称<strong>概率</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 概率空间</span>
+                </div>
+                <div class="card-body">
+                    <p>三元组 $(\Omega, \mathcal{F}, P)$ 称为<strong>概率空间</strong>，其中：</p>
+                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li style="margin-bottom: 0.5rem;">$\Omega$ 是样本空间</li>
+                        <li style="margin-bottom: 0.5rem;">$\mathcal{F}$ 是 $\Omega$ 上的 $\sigma$-代数（事件域）</li>
+                        <li>P 是 $\mathcal{F}$ 上的概率测度</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">注意</div>
+                <p>概率空间是概率论的公理化基础。在实际应用中，我们通常不需要显式地构造概率空间，但理解其结构有助于深入理解概率论的本质。</p>
+            </div>
+        </section>
+
+        <!-- §1.5 概率的性质 -->
+        <section class="section" id="s1-5">
+            <div class="section-header">
+                <span class="section-number">§1.5</span>
+                <h2 class="section-title">概率的性质</h2>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>概率的加法公式</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>两个事件的加法公式：</strong></p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">
+                            $$P(A \cup B) = P(A) + P(B) - P(AB)$$
+                        </div>
+                    </div>
+                    
+                    <p><strong>三个事件的加法公式：</strong></p>
+                    <div class="math-block">
+                        $$P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(AB) - P(BC) - P(AC) + P(ABC)$$
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>n 个事件的加法公式（容斥原理）：</strong></p>
+                    <div class="math-block">
+                        $$P(\bigcup_{i=1}^{n} A_i) = \sum_{i} P(A_i) - \sum_{i < j} P(A_i A_j) + \sum_{i < j < k} P(A_i A_j A_k) - \cdots + (-1)^{n-1} P(A_1 A_2 \cdots A_n)$$
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>概率的连续性</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>单调递增序列的极限：</strong></p>
+                    <p>若 $A_1 \subset A_2 \subset \cdots$，则</p>
+                    <div class="math-block">
+                        $$P(\bigcup_{n=1}^{\infty} A_n) = \lim_{n \to \infty} P(A_n)$$
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>单调递减序列的极限：</strong></p>
+                    <p>若 $A_1 \supset A_2 \supset \cdots$，则</p>
+                    <div class="math-block">
+                        $$P(\bigcap_{n=1}^{\infty} A_n) = \lim_{n \to \infty} P(A_n)$$
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>其他重要性质</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>减法公式：</strong>若 $B \subset A$，则 $P(A - B) = P(A) - P(B)$</p>
+                    <p style="margin-top: 1rem;"><strong>单调性：</strong>若 $B \subset A$，则 $P(B) \leq P(A)$</p>
+                    <p style="margin-top: 1rem;"><strong>次可加性：</strong>$P(\bigcup_{i=1}^{n} A_i) \leq \sum_{i=1}^{n} P(A_i)$</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- §1.6 条件概率和乘法公式 -->
+        <section class="section" id="s1-6">
+            <div class="section-header">
+                <span class="section-number">§1.6</span>
+                <h2 class="section-title">条件概率和乘法公式</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 条件概率</span>
+                </div>
+                <div class="card-body">
+                    <p>设 A, B 是两个事件，且 $P(B) > 0$。在事件 B 发生的条件下，事件 A 发生的<strong>条件概率</strong>定义为：</p>
+                    
+                    <div class="formula-card" style="margin: 1.5rem 0;">
+                        <div class="formula-label">条件概率公式</div>
+                        <div class="formula-content">
+                            $$P(A|B) = \frac{P(AB)}{P(B)}$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">直观理解</div>
+                <p>条件概率 P(A|B) 的几何意义：在已知 B 发生的前提下，将样本空间"缩小"为 B，然后计算 A 在新样本空间中所占的比例。</p>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>乘法公式</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>两个事件的乘法公式：</strong></p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">
+                            $$P(AB) = P(B) \cdot P(A|B) = P(A) \cdot P(B|A)$$
+                        </div>
+                    </div>
+                    
+                    <p><strong>n 个事件的乘法公式：</strong></p>
+                    <div class="math-block">
+                        $$P(A_1 A_2 \cdots A_n) = P(A_1) \cdot P(A_2|A_1) \cdot P(A_3|A_1 A_2) \cdots P(A_n|A_1 A_2 \cdots A_{n-1})$$
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card example-card">
+                <div class="card-header">
+                    <span>例 — 不放回抽样</span>
+                </div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>袋中有 5 个白球和 3 个黑球。不放回地依次取出 2 个球，求第一个是白球且第二个也是白球的概率。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">
+                        显示解答
+                    </button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <p>设 $A_1$ = "第一个是白球"，$A_2$ = "第二个是白球"。</p>
+                        <p>由乘法公式：</p>
+                        <div class="math-block">
+                            $$P(A_1 A_2) = P(A_1) \cdot P(A_2|A_1) = \frac{5}{8} \times \frac{4}{7} = \frac{20}{56} = \frac{5}{14}$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- §1.7 事件的独立性 -->
+        <section class="section" id="s1-7">
+            <div class="section-header">
+                <span class="section-number">§1.7</span>
+                <h2 class="section-title">事件的独立性</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 两个事件的独立性</span>
+                </div>
+                <div class="card-body">
+                    <p>设 A, B 是两个事件。如果满足：</p>
+                    
+                    <div class="formula-card" style="margin: 1.5rem 0;">
+                        <div class="formula-label">独立性条件</div>
+                        <div class="formula-content">
+                            $$P(AB) = P(A) \cdot P(B)$$
+                        </div>
+                    </div>
+                    
+                    <p>则称事件 A 与 B <strong>相互独立</strong>。</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">独立与互斥的区别</div>
+                <p><strong>互斥</strong>：$P(AB) = 0$（A 和 B 不能同时发生）</p>
+                <p><strong>独立</strong>：$P(AB) = P(A)P(B)$（A 的发生不影响 B 发生的概率）</p>
+                <p>两个概念完全不同。若 $P(A) > 0$，$P(B) > 0$，则 A, B 互斥时必不独立。</p>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 多个事件的独立性</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $A_1, A_2, \cdots, A_n$ 是 n 个事件。如果对于其中任意 2 个、3 个、...、n 个事件的积，都有：</p>
+                    <div class="math-block">
+                        $$P(A_i A_j) = P(A_i) P(A_j), \quad i \ne j$$
+                    </div>
+                    <div class="math-block">
+                        $$P(A_i A_j A_k) = P(A_i) P(A_j) P(A_k), \quad i \ne j \ne k$$
+                    </div>
+                    <div class="math-block">
+                        $$\vdots$$
+                    </div>
+                    <div class="math-block">
+                        $$P(A_1 A_2 \cdots A_n) = P(A_1) P(A_2) \cdots P(A_n)$$
+                    </div>
+                    <p style="margin-top: 1rem;">则称 $A_1, A_2, \cdots, A_n$ <strong>相互独立</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>独立性的性质</span>
+                </div>
+                <div class="card-body">
+                    <p>若 A, B 独立，则以下各对事件也独立：</p>
+                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li style="margin-bottom: 0.5rem;">A 与 $\bar{B}$</li>
+                        <li style="margin-bottom: 0.5rem;">$\bar{A}$ 与 B</li>
+                        <li>$\bar{A}$ 与 $\bar{B}$</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="knowledge-card example-card">
+                <div class="card-header">
+                    <span>例 — 系统可靠性</span>
+                </div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>某系统由两个独立工作的元件串联而成，元件 1、2 的可靠性（正常工作的概率）分别为 0.9 和 0.8。求系统的可靠性。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">
+                        显示解答
+                    </button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <p>设 $A_i$ = "元件 i 正常工作"，则 $P(A_1) = 0.9$，$P(A_2) = 0.8$。</p>
+                        <p>串联系统正常工作需要两个元件都正常，由独立性：</p>
+                        <div class="math-block">
+                            $$P(A_1 A_2) = P(A_1) \cdot P(A_2) = 0.9 \times 0.8 = 0.72$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="s1-8">
+            <div class="section-header">
+                <span class="section-number">§1.8</span>
+                <h2 class="section-title">全概率公式与贝叶斯公式</h2>
+            </div>
+
+            <!-- 定义卡片 -->
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 样本空间的分割</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $B_1, B_2, \cdots, B_n$ 是一组事件，如果满足：</p>
+                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li style="margin-bottom: 0.5rem;">$B_i B_j = \emptyset$，当 $i \ne j$（两两互斥）</li>
+                        <li>$B_1 + B_2 + \cdots + B_n = \Omega$（完备）</li>
+                    </ol>
+                    <p>则称 $\{B_1, B_2, \cdots, B_n\}$ 是样本空间 $\Omega$ 的一个<strong>分割</strong>（或<strong>完备事件组</strong>）。</p>
+                </div>
+            </div>
+
+            <!-- 定理卡片 - 全概率公式 -->
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>定理 — 全概率公式</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $\{B_1, B_2, \cdots, B_n\}$ 是样本空间的一个分割，且 $P(B_i) > 0$，则对任意事件 A：</p>
+                    
+                    <div class="formula-card" style="margin: 1.5rem 0;">
+                        <div class="formula-label">全概率公式</div>
+                        <div class="formula-content">
+                            $$P(A) = \sum_{i=1}^{n} P(B_i) P(A|B_i)$$
+                        </div>
+                    </div>
+
+                    <div class="proof-block">
+                        <button class="proof-toggle" onclick="toggleProof(this)">
+                            <span>查看证明</span>
+                            <span class="arrow">▼</span>
+                        </button>
+                        <div class="proof-content">
+                            <p><strong>证明：</strong></p>
+                            <p>由于 $\{B_1, B_2, \cdots, B_n\}$ 是分割，所以</p>
+                            <div class="math-block">
+                                $$A = A\Omega = A(B_1 + B_2 + \cdots + B_n) = AB_1 + AB_2 + \cdots + AB_n$$
+                            </div>
+                            <p>且 $AB_1, AB_2, \cdots, AB_n$ 两两互斥，由概率的可加性：</p>
+                            <div class="math-block">
+                                $$P(A) = \sum_{i=1}^{n} P(AB_i) = \sum_{i=1}^{n} P(B_i)P(A|B_i)$$
+                            </div>
+                            <div class="proof-end">□</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 定理卡片 - 贝叶斯公式 -->
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>定理 — 贝叶斯 (Bayes) 公式</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $\{B_1, B_2, \cdots, B_n\}$ 是样本空间的一个分割，$P(A) > 0$，$P(B_i) > 0$，则：</p>
+                    
+                    <div class="formula-card" style="margin: 1.5rem 0;">
+                        <div class="formula-label">贝叶斯公式</div>
+                        <div class="formula-content">
+                            $$P(B_k|A) = \frac{P(B_k)P(A|B_k)}{\sum_{i=1}^{n} P(B_i)P(A|B_i)}$$
+                        </div>
+                    </div>
+
+                    <div class="note-card" style="margin-top: 1.5rem;">
+                        <div class="note-label">理解贝叶斯公式</div>
+                        <p><strong>先验概率</strong>：$P(B_k)$ — 在观察到事件 A 之前，对 $B_k$ 发生概率的估计</p>
+                        <p style="margin-top: 0.5rem;"><strong>后验概率</strong>：$P(B_k|A)$ — 在观察到事件 A 发生后，对 $B_k$ 发生概率的更新</p>
+                        <p style="margin-top: 0.5rem;"><strong>似然</strong>：$P(A|B_k)$ — 在 $B_k$ 发生的条件下观察到 A 的概率</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 交互演示入口 -->
+            <a href="chapter1/bayes/index.html" class="demo-entry">
+                <div class="demo-info">
+                    <div class="demo-title">贝叶斯公式交互演示</div>
+                    <div class="demo-desc">以医疗筛查为例，直观理解先验概率如何在新证据下更新为后验概率</div>
+                </div>
+                <span class="demo-arrow">→</span>
+            </a>
+        </section>
+    </main>
+
+    <!-- 页脚导航 -->
+    <footer class="chapter-footer">
+        <div class="footer-nav">
+            <a href="index.html" class="footer-btn">
+                ← 返回主页
+            </a>
+            <a href="chapter2.html" class="footer-btn next">
+                第二章 随机变量和概率分布 →
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // 渲染数学公式
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+        });
+
+        // 切换解答显示
+        function toggleSolution(btn) {
+            const content = btn.nextElementSibling;
+            content.classList.toggle('show');
+            btn.textContent = content.classList.contains('show') ? '隐藏解答' : '显示解答';
+        }
+
+        // 切换证明显示
+        function toggleProof(btn) {
+            btn.classList.toggle('active');
+            const content = btn.nextElementSibling;
+            content.classList.toggle('show');
+        }
+    </script>
+</body>
+</html>
