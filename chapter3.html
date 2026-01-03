@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第三章 随机向量及其分布 | 概率论交互学习</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #faf9f7; --bg-secondary: #f5f3ef;
+            --text-primary: #2d2a26; --text-secondary: #6b6560; --text-muted: #9a948d;
+            --definition-bg: #e8f4fc; --definition-border: #3498db; --definition-icon: #2980b9;
+            --theorem-bg: #f3e8fc; --theorem-border: #9b59b6; --theorem-icon: #8e44ad;
+            --formula-bg: #e8fcef; --formula-border: #27ae60; --formula-accent: #1e8449;
+            --example-bg: #fef9e7; --example-border: #f39c12; --example-icon: #d68910;
+            --exercise-bg: #f4f4f4; --exercise-border: #95a5a6;
+            --note-bg: #ebf5fb; --note-border: #5dade2;
+            --proof-bg: #fafafa; --proof-border: #bdc3c7;
+            --demo-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --radius: 12px; --radius-sm: 8px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Serif SC', serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.8; min-height: 100vh; }
+        .top-nav { background: white; border-bottom: 1px solid #eee; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 1rem; }
+        .back-btn { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border-radius: 20px; transition: all 0.2s; }
+        .back-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+        .breadcrumb { color: var(--text-muted); font-size: 0.85rem; }
+        .breadcrumb a { color: var(--definition-border); text-decoration: none; }
+        .chapter-header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; padding: 4rem 2rem; position: relative; overflow: hidden; }
+        .chapter-header-content { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+        .chapter-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1.5rem; backdrop-filter: blur(10px); }
+        .chapter-number { font-family: 'ZCOOL XiaoWei', serif; font-size: 4rem; font-weight: 700; opacity: 0.15; position: absolute; right: 0; top: 0; }
+        .chapter-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+        .chapter-subtitle { font-size: 1.1rem; opacity: 0.8; font-style: italic; }
+        .progress-section { background: white; border-bottom: 1px solid #eee; padding: 1.5rem 2rem; }
+        .progress-container { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+        .progress-bar-wrapper { flex: 1; min-width: 200px; }
+        .progress-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .progress-bar { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--demo-gradient); border-radius: 4px; transition: width 0.5s ease; }
+        .progress-stats { display: flex; gap: 2rem; font-size: 0.9rem; }
+        .stat-item { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); }
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+        .main-content { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .chapter-toc { background: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 3rem; box-shadow: var(--shadow-sm); }
+        .toc-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .toc-list { list-style: none; }
+        .toc-item { padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0; }
+        .toc-item:last-child { border-bottom: none; }
+        .toc-link { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--text-primary); transition: all 0.2s; }
+        .toc-link:hover { color: var(--definition-border); }
+        .toc-number { font-family: 'Source Code Pro', monospace; font-size: 0.85rem; color: var(--text-muted); min-width: 50px; }
+        .toc-text { flex: 1; }
+        .section { margin-bottom: 4rem; }
+        .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--text-primary); }
+        .section-number { font-family: 'Source Code Pro', monospace; font-size: 1.5rem; font-weight: 600; color: var(--definition-border); }
+        .section-title { font-size: 1.5rem; font-weight: 600; }
+        .knowledge-card { border-radius: var(--radius); margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .card-header { padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; font-weight: 600; }
+        .card-body { padding: 1.5rem; background: white; }
+        .definition-card .card-header { background: var(--definition-bg); color: var(--definition-icon); border-left: 4px solid var(--definition-border); }
+        .definition-card .card-body { border-left: 4px solid var(--definition-border); }
+        .theorem-card .card-header { background: var(--theorem-bg); color: var(--theorem-icon); border-left: 4px solid var(--theorem-border); }
+        .theorem-card .card-body { border-left: 4px solid var(--theorem-border); }
+        .formula-card { background: var(--formula-bg); border: 2px solid var(--formula-border); padding: 2rem; text-align: center; border-radius: var(--radius-sm); }
+        .formula-card .formula-label { font-size: 0.85rem; color: var(--formula-accent); margin-bottom: 1rem; font-weight: 600; }
+        .formula-card .formula-content { font-size: 1.4rem; color: var(--text-primary); }
+        .example-card .card-header { background: var(--example-bg); color: var(--example-icon); border-left: 4px solid var(--example-border); }
+        .example-card .card-body { border-left: 4px solid var(--example-border); }
+        .example-problem { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed #ddd; }
+        .solution-toggle { display: flex; align-items: center; gap: 0.5rem; background: var(--example-bg); border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.9rem; color: var(--example-icon); font-weight: 600; transition: all 0.2s; }
+        .solution-toggle:hover { background: var(--example-border); color: white; }
+        .solution-content { margin-top: 1.5rem; padding: 1.5rem; background: #fffcf5; border-radius: var(--radius-sm); display: none; }
+        .solution-content.show { display: block; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .note-card { background: var(--note-bg); border-left: 4px solid var(--note-border); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 1.5rem 0; }
+        .note-card .note-label { font-weight: 600; color: var(--note-border); margin-bottom: 0.5rem; }
+        .math-block { overflow-x: auto; padding: 1rem 0; }
+        .chapter-footer { background: white; border-top: 1px solid #eee; padding: 2rem; margin-top: 4rem; }
+        .footer-nav { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; gap: 1rem; }
+        .footer-btn { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-sm); text-decoration: none; color: var(--text-primary); transition: all 0.2s; }
+        .footer-btn:hover { background: var(--definition-bg); color: var(--definition-border); }
+        .footer-btn.next { margin-left: auto; }
+        @media (max-width: 768px) { .chapter-header { padding: 2.5rem 1.5rem; } .chapter-title { font-size: 1.75rem; } .chapter-number { font-size: 2.5rem; } .main-content { padding: 1.5rem; } .progress-container { flex-direction: column; align-items: stretch; gap: 1rem; } .card-body { padding: 1rem; } }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="index.html" class="back-btn">← 返回主页</a>
+        <span class="breadcrumb"><a href="index.html">概率论</a> / 第三章</span>
+    </nav>
+
+    <header class="chapter-header">
+        <div class="chapter-header-content">
+            <div class="chapter-badge">第三章 · 占课程 18% 学时</div>
+            <span class="chapter-number">03</span>
+            <h1 class="chapter-title">随机向量及其分布</h1>
+            <p class="chapter-subtitle">Random Vectors and Their Distributions</p>
+        </div>
+    </header>
+
+    <div class="progress-section">
+        <div class="progress-container">
+            <div class="progress-bar-wrapper">
+                <div class="progress-label">学习进度</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item"><span>知识点: <span class="stat-value">6/6</span></span></div>
+                <div class="stat-item"><span>演示: <span class="stat-value">0个</span></span></div>
+                <div class="stat-item"><span>练习: <span class="stat-value">0/10</span></span></div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="chapter-toc">
+            <h2 class="toc-title">本章目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item"><a href="#s3-1" class="toc-link"><span class="toc-number">§3.1</span><span class="toc-text">随机向量及其联合分布</span></a></li>
+                <li class="toc-item"><a href="#s3-2" class="toc-link"><span class="toc-number">§3.2</span><span class="toc-text">离散型随机向量及其分布</span></a></li>
+                <li class="toc-item"><a href="#s3-3" class="toc-link"><span class="toc-number">§3.3</span><span class="toc-text">连续型随机向量及其联合密度</span></a></li>
+                <li class="toc-item"><a href="#s3-4" class="toc-link"><span class="toc-number">§3.4</span><span class="toc-text">随机向量函数的分布</span></a></li>
+                <li class="toc-item"><a href="#s3-5" class="toc-link"><span class="toc-number">§3.5</span><span class="toc-text">条件分布和条件密度</span></a></li>
+                <li class="toc-item"><a href="#s3-6" class="toc-link"><span class="toc-number">§3.6</span><span class="toc-text">次序统计量</span></a></li>
+            </ul>
+        </div>
+
+        <section class="section" id="s3-1">
+            <div class="section-header">
+                <span class="section-number">§3.1</span>
+                <h2 class="section-title">随机向量及其联合分布</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 随机向量</span></div>
+                <div class="card-body">
+                    <p>设 $X_1, X_2, \cdots, X_n$ 是定义在同一概率空间上的 $n$ 个随机变量，则称 $(X_1, X_2, \cdots, X_n)$ 为 <strong>$n$ 维随机向量</strong>（或<strong>随机向量</strong>）。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 联合分布函数</span></div>
+                <div class="card-body">
+                    <p>设 $(X, Y)$ 是二维随机向量，对任意实数 $x, y$，定义</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">联合分布函数</div>
+                        <div class="formula-content">$$F(x, y) = P(X \le x, Y \le y)$$</div>
+                    </div>
+                    <p>为 $(X, Y)$ 的<strong>联合分布函数</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>联合分布函数的性质</span></div>
+                <div class="card-body">
+                    <p>设 $F(x, y)$ 是二维随机向量 $(X, Y)$ 的联合分布函数，则：</p>
+                    <p style="margin-top: 1rem;">1. $0 \le F(x, y) \le 1$</p>
+                    <p>2. $F(x, y)$ 对每个变量单调不减</p>
+                    <p>3. $F(-\infty, y) = F(x, -\infty) = 0$，$F(+\infty, +\infty) = 1$</p>
+                    <p>4. $F(x, y)$ 对每个变量右连续</p>
+                    <p style="margin-top: 1rem;">5. 对任意 $a_1 < a_2$，$b_1 < b_2$：</p>
+                    <div class="math-block">$$P(a_1 < X \le a_2, b_1 < Y \le b_2) = F(a_2, b_2) - F(a_2, b_1) - F(a_1, b_2) + F(a_1, b_1)$$</div>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 边缘分布函数</span></div>
+                <div class="card-body">
+                    <p>设 $(X, Y)$ 的联合分布函数为 $F(x, y)$，则 $X$ 和 $Y$ 的<strong>边缘分布函数</strong>分别为：</p>
+                    <div class="math-block">$$F_X(x) = P(X \le x) = F(x, +\infty) = \lim_{y \to +\infty} F(x, y)$$</div>
+                    <div class="math-block">$$F_Y(y) = P(Y \le y) = F(+\infty, y) = \lim_{x \to +\infty} F(x, y)$$</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="s3-2">
+            <div class="section-header">
+                <span class="section-number">§3.2</span>
+                <h2 class="section-title">离散型随机向量及其分布</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 离散型随机向量的联合分布律</span></div>
+                <div class="card-body">
+                    <p>设二维离散型随机向量 $(X, Y)$ 的所有可能取值为 $(x_i, y_j)$，则</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$p_{ij} = P(X = x_i, Y = y_j), \quad i, j = 1, 2, \cdots$$</div>
+                    </div>
+                    <p>称为 $(X, Y)$ 的<strong>联合分布律</strong>（或<strong>联合概率分布</strong>）。</p>
+                    <p style="margin-top: 1rem;">性质：$p_{ij} \ge 0$，$\sum_i \sum_j p_{ij} = 1$</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>边缘分布律</span></div>
+                <div class="card-body">
+                    <p>$X$ 的边缘分布律：$p_{i \cdot} = P(X = x_i) = \sum_j p_{ij}$</p>
+                    <p style="margin-top: 0.5rem;">$Y$ 的边缘分布律：$p_{\cdot j} = P(Y = y_j) = \sum_i p_{ij}$</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>离散型随机变量的独立性</span></div>
+                <div class="card-body">
+                    <p>离散型随机变量 $X$ 与 $Y$ 相互独立的充要条件是：对所有 $i, j$，有</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$P(X = x_i, Y = y_j) = P(X = x_i) \cdot P(Y = y_j)$$</div>
+                    </div>
+                    <p>即 $p_{ij} = p_{i \cdot} \cdot p_{\cdot j}$</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="s3-3">
+            <div class="section-header">
+                <span class="section-number">§3.3</span>
+                <h2 class="section-title">连续型随机向量及其联合密度</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 联合概率密度函数</span></div>
+                <div class="card-body">
+                    <p>设二维随机向量 $(X, Y)$ 的联合分布函数为 $F(x, y)$，若存在非负可积函数 $f(x, y)$，使得</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$F(x, y) = \int_{-\infty}^{x} \int_{-\infty}^{y} f(u, v) \, du \, dv$$</div>
+                    </div>
+                    <p>则称 $(X, Y)$ 为<strong>连续型随机向量</strong>，$f(x, y)$ 为<strong>联合概率密度函数</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>联合密度函数的性质</span></div>
+                <div class="card-body">
+                    <p>1. $f(x, y) \ge 0$</p>
+                    <p>2. $\int_{-\infty}^{+\infty} \int_{-\infty}^{+\infty} f(x, y) \, dx \, dy = 1$</p>
+                    <p>3. 在 $f(x, y)$ 连续点处，$\frac{\partial^2 F(x, y)}{\partial x \partial y} = f(x, y)$</p>
+                    <p>4. 对平面上任意区域 $G$，$P((X, Y) \in G) = \iint_G f(x, y) \, dx \, dy$</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>边缘密度函数</span></div>
+                <div class="card-body">
+                    <p>设 $(X, Y)$ 的联合密度函数为 $f(x, y)$，则边缘密度函数为：</p>
+                    <div class="math-block">$$f_X(x) = \int_{-\infty}^{+\infty} f(x, y) \, dy$$</div>
+                    <div class="math-block">$$f_Y(y) = \int_{-\infty}^{+\infty} f(x, y) \, dx$$</div>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>连续型随机变量的独立性</span></div>
+                <div class="card-body">
+                    <p>连续型随机变量 $X$ 与 $Y$ 相互独立的充要条件是：</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$f(x, y) = f_X(x) \cdot f_Y(y)$$</div>
+                    </div>
+                    <p>几乎处处成立。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>二维正态分布</span></div>
+                <div class="card-body">
+                    <p>若 $(X, Y)$ 的联合密度函数为</p>
+                    <div class="math-block">$$f(x,y) = \frac{1}{2\pi\sigma_1\sigma_2\sqrt{1-\rho^2}} \exp\left\{-\frac{1}{2(1-\rho^2)}\left[\frac{(x-\mu_1)^2}{\sigma_1^2} - 2\rho\frac{(x-\mu_1)(y-\mu_2)}{\sigma_1\sigma_2} + \frac{(y-\mu_2)^2}{\sigma_2^2}\right]\right\}$$</div>
+                    <p>则称 $(X, Y)$ 服从<strong>二维正态分布</strong>，记为 $(X, Y) \sim N(\mu_1, \mu_2, \sigma_1^2, \sigma_2^2, \rho)$。</p>
+                    <p style="margin-top: 1rem;">其中 $\rho$ 是 $X$ 与 $Y$ 的相关系数。当 $\rho = 0$ 时，$X$ 与 $Y$ 独立。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="s3-4">
+            <div class="section-header">
+                <span class="section-number">§3.4</span>
+                <h2 class="section-title">随机向量函数的分布</h2>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>两个随机变量和的分布</span></div>
+                <div class="card-body">
+                    <p>设 $(X, Y)$ 的联合密度函数为 $f(x, y)$，$Z = X + Y$，则 $Z$ 的密度函数为：</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">卷积公式</div>
+                        <div class="formula-content">$$f_Z(z) = \int_{-\infty}^{+\infty} f(x, z-x) \, dx = \int_{-\infty}^{+\infty} f(z-y, y) \, dy$$</div>
+                    </div>
+                    <p>若 $X, Y$ 独立，则 $f_Z(z) = \int_{-\infty}^{+\infty} f_X(x) f_Y(z-x) \, dx$（卷积）。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>独立正态分布之和</span></div>
+                <div class="card-body">
+                    <p>若 $X \sim N(\mu_1, \sigma_1^2)$，$Y \sim N(\mu_2, \sigma_2^2)$，且 $X, Y$ 独立，则</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$X + Y \sim N(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2)$$</div>
+                    </div>
+                    <p>更一般地，$aX + bY + c \sim N(a\mu_1 + b\mu_2 + c, a^2\sigma_1^2 + b^2\sigma_2^2)$。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>最大值和最小值的分布</span></div>
+                <div class="card-body">
+                    <p>设 $X_1, X_2, \cdots, X_n$ 独立同分布，分布函数为 $F(x)$。令 $M = \max\{X_1, \cdots, X_n\}$，$N = \min\{X_1, \cdots, X_n\}$，则：</p>
+                    <div class="math-block">$$F_M(x) = [F(x)]^n$$</div>
+                    <div class="math-block">$$F_N(x) = 1 - [1 - F(x)]^n$$</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="s3-5">
+            <div class="section-header">
+                <span class="section-number">§3.5</span>
+                <h2 class="section-title">条件分布和条件密度</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 条件分布律（离散型）</span></div>
+                <div class="card-body">
+                    <p>设 $(X, Y)$ 是离散型随机向量，对于 $P(Y = y_j) > 0$，定义</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$P(X = x_i | Y = y_j) = \frac{P(X = x_i, Y = y_j)}{P(Y = y_j)} = \frac{p_{ij}}{p_{\cdot j}}$$</div>
+                    </div>
+                    <p>为在 $Y = y_j$ 条件下 $X$ 的<strong>条件分布律</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 条件密度函数（连续型）</span></div>
+                <div class="card-body">
+                    <p>设 $(X, Y)$ 的联合密度为 $f(x, y)$，边缘密度为 $f_Y(y)$，对于 $f_Y(y) > 0$，定义</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">条件密度函数</div>
+                        <div class="formula-content">$$f_{X|Y}(x|y) = \frac{f(x, y)}{f_Y(y)}$$</div>
+                    </div>
+                    <p>为在 $Y = y$ 条件下 $X$ 的<strong>条件概率密度函数</strong>。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="s3-6">
+            <div class="section-header">
+                <span class="section-number">§3.6</span>
+                <h2 class="section-title">次序统计量</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 次序统计量</span></div>
+                <div class="card-body">
+                    <p>设 $X_1, X_2, \cdots, X_n$ 是来自总体的简单随机样本。将其按从小到大排列为 $X_{(1)} \le X_{(2)} \le \cdots \le X_{(n)}$，则称 $X_{(k)}$ 为第 $k$ 个<strong>次序统计量</strong>。</p>
+                    <p style="margin-top: 1rem;">特别地，$X_{(1)} = \min\{X_1, \cdots, X_n\}$，$X_{(n)} = \max\{X_1, \cdots, X_n\}$。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>次序统计量的分布</span></div>
+                <div class="card-body">
+                    <p>设总体分布函数为 $F(x)$，密度函数为 $f(x)$，则第 $k$ 个次序统计量 $X_{(k)}$ 的密度函数为：</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$f_{(k)}(x) = \frac{n!}{(k-1)!(n-k)!} [F(x)]^{k-1} [1-F(x)]^{n-k} f(x)$$</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="chapter-footer">
+        <div class="footer-nav">
+            <a href="chapter2.html" class="footer-btn">← 第二章 随机变量和概率分布</a>
+            <a href="chapter4.html" class="footer-btn next">第四章 数学期望和方差 →</a>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false });
+        });
+        function toggleSolution(btn) { const content = btn.nextElementSibling; content.classList.toggle('show'); btn.textContent = content.classList.contains('show') ? '隐藏解答' : '显示解答'; }
+    </script>
+</body>
+</html>

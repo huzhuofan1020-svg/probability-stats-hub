@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第七章 参数估计 | 概率论交互学习</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        :root { --bg-primary: #faf9f7; --bg-secondary: #f5f3ef; --text-primary: #2d2a26; --text-secondary: #6b6560; --text-muted: #9a948d; --definition-bg: #e8f4fc; --definition-border: #3498db; --definition-icon: #2980b9; --theorem-bg: #f3e8fc; --theorem-border: #9b59b6; --theorem-icon: #8e44ad; --formula-bg: #e8fcef; --formula-border: #27ae60; --formula-accent: #1e8449; --example-bg: #fef9e7; --example-border: #f39c12; --example-icon: #d68910; --note-bg: #ebf5fb; --note-border: #5dade2; --demo-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --radius: 12px; --radius-sm: 8px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Serif SC', serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.8; min-height: 100vh; }
+        .top-nav { background: white; border-bottom: 1px solid #eee; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 1rem; }
+        .back-btn { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border-radius: 20px; transition: all 0.2s; }
+        .back-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+        .breadcrumb { color: var(--text-muted); font-size: 0.85rem; }
+        .breadcrumb a { color: var(--definition-border); text-decoration: none; }
+        .chapter-header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; padding: 4rem 2rem; position: relative; }
+        .chapter-header-content { max-width: 900px; margin: 0 auto; position: relative; }
+        .chapter-badge { display: inline-flex; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1.5rem; }
+        .chapter-number { font-family: 'ZCOOL XiaoWei', serif; font-size: 4rem; font-weight: 700; opacity: 0.15; position: absolute; right: 0; top: 0; }
+        .chapter-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .chapter-subtitle { font-size: 1.1rem; opacity: 0.8; font-style: italic; }
+        .progress-section { background: white; border-bottom: 1px solid #eee; padding: 1.5rem 2rem; }
+        .progress-container { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+        .progress-bar-wrapper { flex: 1; min-width: 200px; }
+        .progress-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .progress-bar { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--demo-gradient); border-radius: 4px; }
+        .progress-stats { display: flex; gap: 2rem; font-size: 0.9rem; }
+        .stat-item { color: var(--text-secondary); }
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+        .main-content { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .chapter-toc { background: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 3rem; box-shadow: var(--shadow-sm); }
+        .toc-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .toc-list { list-style: none; }
+        .toc-item { padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0; }
+        .toc-item:last-child { border-bottom: none; }
+        .toc-link { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--text-primary); }
+        .toc-link:hover { color: var(--definition-border); }
+        .toc-number { font-family: 'Source Code Pro', monospace; font-size: 0.85rem; color: var(--text-muted); min-width: 50px; }
+        .section { margin-bottom: 4rem; }
+        .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--text-primary); }
+        .section-number { font-family: 'Source Code Pro', monospace; font-size: 1.5rem; font-weight: 600; color: var(--definition-border); }
+        .section-title { font-size: 1.5rem; font-weight: 600; }
+        .knowledge-card { border-radius: var(--radius); margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .card-header { padding: 1rem 1.5rem; font-weight: 600; }
+        .card-body { padding: 1.5rem; background: white; }
+        .definition-card .card-header { background: var(--definition-bg); color: var(--definition-icon); border-left: 4px solid var(--definition-border); }
+        .definition-card .card-body { border-left: 4px solid var(--definition-border); }
+        .theorem-card .card-header { background: var(--theorem-bg); color: var(--theorem-icon); border-left: 4px solid var(--theorem-border); }
+        .theorem-card .card-body { border-left: 4px solid var(--theorem-border); }
+        .formula-card { background: var(--formula-bg); border: 2px solid var(--formula-border); padding: 2rem; text-align: center; border-radius: var(--radius-sm); }
+        .formula-card .formula-label { font-size: 0.85rem; color: var(--formula-accent); margin-bottom: 1rem; font-weight: 600; }
+        .formula-card .formula-content { font-size: 1.2rem; color: var(--text-primary); }
+        .example-card .card-header { background: var(--example-bg); color: var(--example-icon); border-left: 4px solid var(--example-border); }
+        .example-card .card-body { border-left: 4px solid var(--example-border); }
+        .example-problem { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed #ddd; }
+        .solution-toggle { background: var(--example-bg); border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.9rem; color: var(--example-icon); font-weight: 600; transition: all 0.2s; }
+        .solution-toggle:hover { background: var(--example-border); color: white; }
+        .solution-content { margin-top: 1.5rem; padding: 1.5rem; background: #fffcf5; border-radius: var(--radius-sm); display: none; }
+        .solution-content.show { display: block; }
+        .note-card { background: var(--note-bg); border-left: 4px solid var(--note-border); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 1.5rem 0; }
+        .note-card .note-label { font-weight: 600; color: var(--note-border); margin-bottom: 0.5rem; }
+        .math-block { overflow-x: auto; padding: 1rem 0; }
+        .chapter-footer { background: white; border-top: 1px solid #eee; padding: 2rem; margin-top: 4rem; }
+        .footer-nav { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; }
+        .footer-btn { padding: 1rem 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-sm); text-decoration: none; color: var(--text-primary); }
+        .footer-btn:hover { background: var(--definition-bg); color: var(--definition-border); }
+        @media (max-width: 768px) { .chapter-header { padding: 2.5rem 1.5rem; } .chapter-title { font-size: 1.75rem; } .main-content { padding: 1.5rem; } .progress-container { flex-direction: column; gap: 1rem; } .card-body { padding: 1rem; } }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="index.html" class="back-btn">← 返回主页</a>
+        <span class="breadcrumb"><a href="index.html">概率论</a> / 第七章</span>
+    </nav>
+    <header class="chapter-header">
+        <div class="chapter-header-content">
+            <div class="chapter-badge">第七章 · 数理统计</div>
+            <span class="chapter-number">07</span>
+            <h1 class="chapter-title">参数估计</h1>
+            <p class="chapter-subtitle">Parameter Estimation</p>
+        </div>
+    </header>
+    <div class="progress-section">
+        <div class="progress-container">
+            <div class="progress-bar-wrapper">
+                <div class="progress-label">学习进度</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item">知识点: <span class="stat-value">3/3</span></div>
+                <div class="stat-item">演示: <span class="stat-value">0个</span></div>
+            </div>
+        </div>
+    </div>
+    <main class="main-content">
+        <div class="chapter-toc">
+            <h2 class="toc-title">本章目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item"><a href="#s7-1" class="toc-link"><span class="toc-number">§7.1</span><span class="toc-text">点估计和估计量的评选标准</span></a></li>
+                <li class="toc-item"><a href="#s7-2" class="toc-link"><span class="toc-number">§7.2</span><span class="toc-text">估计量的评选标准</span></a></li>
+                <li class="toc-item"><a href="#s7-3" class="toc-link"><span class="toc-number">§7.3</span><span class="toc-text">置信区间和正态总体的置信区间</span></a></li>
+            </ul>
+        </div>
+
+        <!-- §7.1 点估计 -->
+        <section class="section" id="s7-1">
+            <div class="section-header"><span class="section-number">§7.1</span><h2 class="section-title">点估计和估计量的评选标准</h2></div>
+            
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 点估计</span></div>
+                <div class="card-body">
+                    <p>设总体 $X$ 的分布函数 $F(x; \theta)$ 含有未知参数 $\theta$，$X_1, X_2, \cdots, X_n$ 是来自总体的样本。</p>
+                    <p style="margin-top: 0.5rem;">构造一个适当的统计量 $\hat{\theta} = \hat{\theta}(X_1, X_2, \cdots, X_n)$ 作为参数 $\theta$ 的估计值，称为 $\theta$ 的<strong>点估计量</strong>，简称<strong>估计量</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>矩估计法</span></div>
+                <div class="card-body">
+                    <p><strong>基本思想</strong>：用样本矩估计总体矩，建立方程组求解未知参数。</p>
+                    <p style="margin-top: 1rem;"><strong>步骤</strong>：</p>
+                    <p>1. 计算总体的各阶矩 $\mu_k = E(X^k)$（含未知参数 $\theta_1, \cdots, \theta_m$）</p>
+                    <p>2. 用样本矩 $A_k = \frac{1}{n}\sum_{i=1}^{n} X_i^k$ 代替总体矩 $\mu_k$</p>
+                    <p>3. 解方程组 $A_k = \mu_k$（$k = 1, 2, \cdots, m$）得到参数估计</p>
+                    
+                    <div class="formula-card" style="margin: 1.5rem 0;">
+                        <div class="formula-label">常用矩估计</div>
+                        <div class="formula-content">$$\hat{\mu} = \bar{X}, \quad \hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^{n}(X_i - \bar{X})^2 = B_2$$</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>最大似然估计法</span></div>
+                <div class="card-body">
+                    <p><strong>基本思想</strong>：选择使样本出现概率最大的参数值作为估计。</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>似然函数</strong>：</p>
+                    <p>离散型：$L(\theta) = \prod_{i=1}^{n} P(X_i = x_i; \theta)$</p>
+                    <p>连续型：$L(\theta) = \prod_{i=1}^{n} f(x_i; \theta)$</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>最大似然估计</strong>：使 $L(\theta)$ 达到最大的 $\hat{\theta}$</p>
+                    
+                    <div class="formula-card" style="margin: 1.5rem 0;">
+                        <div class="formula-label">似然方程</div>
+                        <div class="formula-content">$$\frac{\partial \ln L(\theta)}{\partial \theta} = 0$$</div>
+                    </div>
+                    
+                    <p><strong>求解步骤</strong>：</p>
+                    <p>1. 写出似然函数 $L(\theta)$</p>
+                    <p>2. 取对数得 $\ln L(\theta)$</p>
+                    <p>3. 对 $\theta$ 求导并令其等于零</p>
+                    <p>4. 解方程得最大似然估计 $\hat{\theta}$</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card example-card">
+                <div class="card-header"><span>例 — 正态分布的最大似然估计</span></div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>设 $X_1, \cdots, X_n$ 来自 $N(\mu, \sigma^2)$，求 $\mu$ 和 $\sigma^2$ 的最大似然估计。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">显示解答</button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <p>似然函数：</p>
+                        <div class="math-block">$$L(\mu, \sigma^2) = \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi}\sigma} \exp\left(-\frac{(x_i - \mu)^2}{2\sigma^2}\right)$$</div>
+                        <p>对数似然：</p>
+                        <div class="math-block">$$\ln L = -\frac{n}{2}\ln(2\pi) - \frac{n}{2}\ln\sigma^2 - \frac{1}{2\sigma^2}\sum_{i=1}^{n}(x_i - \mu)^2$$</div>
+                        <p>令偏导数为零，解得：</p>
+                        <div class="math-block">$$\hat{\mu} = \bar{X}, \quad \hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^{n}(X_i - \bar{X})^2$$</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- §7.2 估计量的评选标准 -->
+        <section class="section" id="s7-2">
+            <div class="section-header"><span class="section-number">§7.2</span><h2 class="section-title">估计量的评选标准</h2></div>
+            
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 无偏性</span></div>
+                <div class="card-body">
+                    <p>若估计量 $\hat{\theta}$ 满足</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">无偏性</div>
+                        <div class="formula-content">$$E(\hat{\theta}) = \theta$$</div>
+                    </div>
+                    <p>则称 $\hat{\theta}$ 是 $\theta$ 的<strong>无偏估计量</strong>。</p>
+                    <p style="margin-top: 1rem;"><strong>例</strong>：$\bar{X}$ 是 $\mu$ 的无偏估计；$S^2$ 是 $\sigma^2$ 的无偏估计；$B_2 = \frac{1}{n}\sum(X_i - \bar{X})^2$ 不是 $\sigma^2$ 的无偏估计。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 有效性</span></div>
+                <div class="card-body">
+                    <p>设 $\hat{\theta}_1$ 和 $\hat{\theta}_2$ 都是 $\theta$ 的无偏估计，若</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$D(\hat{\theta}_1) \le D(\hat{\theta}_2)$$</div>
+                    </div>
+                    <p>则称 $\hat{\theta}_1$ 比 $\hat{\theta}_2$ <strong>更有效</strong>。</p>
+                    <p style="margin-top: 1rem;">方差越小，估计量越集中在真值附近，估计精度越高。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 相合性（一致性）</span></div>
+                <div class="card-body">
+                    <p>若当 $n \to \infty$ 时，估计量 $\hat{\theta}_n$ 依概率收敛于 $\theta$：</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">相合性</div>
+                        <div class="formula-content">$$\hat{\theta}_n \xrightarrow{P} \theta$$</div>
+                    </div>
+                    <p>则称 $\hat{\theta}_n$ 是 $\theta$ 的<strong>相合估计量</strong>（一致估计量）。</p>
+                    <p style="margin-top: 1rem;">相合性意味着样本量越大，估计越准确。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>最小方差无偏估计</span></div>
+                <div class="card-body">
+                    <p>在所有无偏估计中，方差最小的称为<strong>最小方差无偏估计</strong>（MVUE）。</p>
+                    <p style="margin-top: 1rem;"><strong>克拉美-拉奥不等式</strong>：无偏估计量方差的下界为</p>
+                    <div class="math-block">$$D(\hat{\theta}) \ge \frac{1}{nI(\theta)}$$</div>
+                    <p>其中 $I(\theta) = E\left[\left(\frac{\partial \ln f(X;\theta)}{\partial \theta}\right)^2\right]$ 是 Fisher 信息量。</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">评选标准小结</div>
+                <p><strong>无偏性</strong>：估计量的期望等于真值（无系统偏差）</p>
+                <p><strong>有效性</strong>：在无偏估计中方差最小（精度高）</p>
+                <p><strong>相合性</strong>：样本量趋于无穷时估计量收敛于真值（大样本性质）</p>
+            </div>
+        </section>
+
+        <!-- §7.3 置信区间 -->
+        <section class="section" id="s7-3">
+            <div class="section-header"><span class="section-number">§7.3</span><h2 class="section-title">置信区间和正态总体的置信区间</h2></div>
+            
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 置信区间</span></div>
+                <div class="card-body">
+                    <p>设总体 $X$ 的分布含未知参数 $\theta$，对于给定的 $\alpha$（$0 < \alpha < 1$），若统计量 $\hat{\theta}_L$ 和 $\hat{\theta}_U$ 满足</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$P(\hat{\theta}_L < \theta < \hat{\theta}_U) = 1 - \alpha$$</div>
+                    </div>
+                    <p>则称区间 $(\hat{\theta}_L, \hat{\theta}_U)$ 为 $\theta$ 的<strong>置信度</strong>（置信水平）为 $1 - \alpha$ 的<strong>置信区间</strong>。</p>
+                    <p style="margin-top: 1rem;">$\hat{\theta}_L$ 称为<strong>置信下限</strong>，$\hat{\theta}_U$ 称为<strong>置信上限</strong>。</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">置信区间的含义</div>
+                <p>置信区间是一个随机区间。"置信度为 95%"意味着：若重复抽样多次，约有 95% 的区间会包含真实参数值。</p>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>正态总体均值的置信区间</span></div>
+                <div class="card-body">
+                    <p>设 $X_1, \cdots, X_n$ 来自 $N(\mu, \sigma^2)$，置信度为 $1 - \alpha$：</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>情形1：$\sigma^2$ 已知</strong></p>
+                    <p>枢轴量：$\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0, 1)$</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$\mu \in \left(\bar{X} - z_{\alpha/2} \frac{\sigma}{\sqrt{n}}, \bar{X} + z_{\alpha/2} \frac{\sigma}{\sqrt{n}}\right)$$</div>
+                    </div>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>情形2：$\sigma^2$ 未知</strong></p>
+                    <p>枢轴量：$\frac{\bar{X} - \mu}{S/\sqrt{n}} \sim t(n-1)$</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$\mu \in \left(\bar{X} - t_{\alpha/2}(n-1) \frac{S}{\sqrt{n}}, \bar{X} + t_{\alpha/2}(n-1) \frac{S}{\sqrt{n}}\right)$$</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>正态总体方差的置信区间</span></div>
+                <div class="card-body">
+                    <p>设 $X_1, \cdots, X_n$ 来自 $N(\mu, \sigma^2)$，$\mu$ 未知，置信度为 $1 - \alpha$：</p>
+                    <p style="margin-top: 0.5rem;">枢轴量：$\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)$</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$\sigma^2 \in \left(\frac{(n-1)S^2}{\chi^2_{\alpha/2}(n-1)}, \frac{(n-1)S^2}{\chi^2_{1-\alpha/2}(n-1)}\right)$$</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card example-card">
+                <div class="card-header"><span>例 — 构造置信区间</span></div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>从正态总体中抽取 $n = 16$ 个样本，得 $\bar{x} = 50$，$s = 4$。求总体均值 $\mu$ 的 95% 置信区间。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">显示解答</button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <p>$\sigma^2$ 未知，用 $t$ 分布。$\alpha = 0.05$，$t_{0.025}(15) = 2.131$</p>
+                        <div class="math-block">$$\bar{x} \pm t_{\alpha/2}(n-1) \frac{s}{\sqrt{n}} = 50 \pm 2.131 \times \frac{4}{\sqrt{16}} = 50 \pm 2.131$$</div>
+                        <p>95% 置信区间为 $(47.869, 52.131)$</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>单侧置信区间</span></div>
+                <div class="card-body">
+                    <p><strong>置信下限</strong>：$P(\theta > \hat{\theta}_L) = 1 - \alpha$</p>
+                    <p><strong>置信上限</strong>：$P(\theta < \hat{\theta}_U) = 1 - \alpha$</p>
+                    <p style="margin-top: 1rem;">例：$\mu$ 的单侧置信下限（$\sigma$ 未知）：$\hat{\mu}_L = \bar{X} - t_\alpha(n-1) \frac{S}{\sqrt{n}}$</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="chapter-footer">
+        <div class="footer-nav">
+            <a href="chapter6.html" class="footer-btn">← 第六章 样本及抽样分布</a>
+            <a href="index.html" class="footer-btn" style="margin-left: auto;">返回主页 →</a>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() { renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false }); });
+        function toggleSolution(btn) { const content = btn.nextElementSibling; content.classList.toggle('show'); btn.textContent = content.classList.contains('show') ? '隐藏解答' : '显示解答'; }
+    </script>
+</body>
+</html>
