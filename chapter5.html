@@ -170,9 +170,20 @@
             <div class="knowledge-card definition-card">
                 <div class="card-header"><span>定义 — 依概率收敛</span></div>
                 <div class="card-body">
-                    <p>若对任意 $\varepsilon > 0$，$\lim_{n \to \infty} P(|X_n - X| \ge \varepsilon) = 0$，则称 $X_n \xrightarrow{P} X$。</p>
+                    <p>设 $X_1, X_2, \cdots, X_n, \cdots$ 是一个随机变量序列，$a$ 是一个常数，若对于任意给定的正数 $\varepsilon$，有</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">依概率收敛</div>
+                        <div class="formula-content">$$\lim_{n \to \infty} P\{|X_n - a| < \varepsilon\} = 1$$</div>
+                    </div>
+                    <p>则称随机变量序列 $X_1, X_2, \cdots, X_n, \cdots$ <strong>依概率收敛于</strong> $a$，记为 $X_n \xrightarrow{P} a$。</p>
                 </div>
             </div>
+
+            <div class="note-card">
+                <div class="note-label">依概率收敛的性质</div>
+                <p>设 $X_n \xrightarrow{P} a$，$Y_n \xrightarrow{P} b$，又设函数 $g(x,y)$ 在点 $(a,b)$ 连续，则 $g(X_n, Y_n) \xrightarrow{P} g(a,b)$。</p>
+            </div>
+
             <div class="knowledge-card theorem-card">
                 <div class="card-header"><span>辛钦大数律</span></div>
                 <div class="card-body">
@@ -212,7 +223,7 @@
     </main>
     <footer class="chapter-footer">
         <div class="footer-nav">
-            <a href="chapter4.html" class="footer-btn">← 第四章 数学期望和方差</a>
+            <a href="chapter4.html" class="footer-btn">← 第四章 随机变量的数字特征</a>
             <a href="chapter6.html" class="footer-btn next">第六章 泊松过程和马尔可夫链 →</a>
         </div>
     </footer>
