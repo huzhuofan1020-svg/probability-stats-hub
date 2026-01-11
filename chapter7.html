@@ -138,6 +138,13 @@
             </div>
 
             <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>重要结论：均值和方差的矩估计</span></div>
+                <div class="card-body">
+                    <p><strong>不论总体服从什么分布</strong>，其总体均值的矩估计量都是样本均值 $\hat{\mu} = \bar{X}$，总体方差的矩估计量都是二阶样本中心矩 $\hat{\sigma}^2 = B_2$。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
                 <div class="card-header"><span>最大似然估计法</span></div>
                 <div class="card-body">
                     <p><strong>基本思想</strong>：选择使样本出现概率最大的参数值作为估计。</p>
@@ -194,8 +201,33 @@
                         <div class="formula-content">$$E(\hat{\theta}) = \theta$$</div>
                     </div>
                     <p>则称 $\hat{\theta}$ 是 $\theta$ 的<strong>无偏估计量</strong>。</p>
-                    <p style="margin-top: 1rem;"><strong>例</strong>：$\bar{X}$ 是 $\mu$ 的无偏估计；$S^2$ 是 $\sigma^2$ 的无偏估计；$B_2 = \frac{1}{n}\sum(X_i - \bar{X})^2$ 不是 $\sigma^2$ 的无偏估计。</p>
                 </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>重要结论：$B_2$ 有偏，$S^2$ 无偏</span></div>
+                <div class="card-body">
+                    <p>设总体 $X$ 的均值 $\mu$ 及方差 $\sigma^2$ 都存在，$X_1, X_2, \cdots, X_n$ 是来自总体 $X$ 的样本。</p>
+                    
+                    <p style="margin: 1.5rem 0;"><strong>1. 样本均值 $\bar{X}$ 是 $\mu$ 的无偏估计</strong>：$E(\bar{X}) = \mu$</p>
+                    
+                    <p style="margin: 1.5rem 0;"><strong>2. 二阶样本中心矩 $B_2$ 是 $\sigma^2$ 的有偏估计</strong>：</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$E(B_2) = E\left[\frac{1}{n}\sum_{i=1}^{n}(X_i - \bar{X})^2\right] = \frac{n-1}{n}\sigma^2 \ne \sigma^2$$</div>
+                    </div>
+                    
+                    <p style="margin: 1.5rem 0;"><strong>3. 样本方差 $S^2$ 是 $\sigma^2$ 的无偏估计</strong>：</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$E(S^2) = E\left[\frac{1}{n-1}\sum_{i=1}^{n}(X_i - \bar{X})^2\right] = \sigma^2$$</div>
+                    </div>
+                    
+                    <p style="margin-top: 1rem;">因此，从无偏的角度考虑，常用 $S^2$ 作为 $\sigma^2$ 的估计。</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">为什么分母是 $n-1$？</div>
+                <p>直观理解：在计算 $\sum(X_i - \bar{X})^2$ 时，由于 $\bar{X}$ 本身是由样本计算出来的，相当于"损失"了一个自由度，因此要除以 $n-1$ 而不是 $n$ 才能得到无偏估计。</p>
             </div>
 
             <div class="knowledge-card definition-card">
@@ -250,10 +282,27 @@
                 <div class="card-body">
                     <p>设总体 $X$ 的分布含未知参数 $\theta$，对于给定的 $\alpha$（$0 < \alpha < 1$），若统计量 $\hat{\theta}_L$ 和 $\hat{\theta}_U$ 满足</p>
                     <div class="formula-card" style="margin: 1rem 0;">
-                        <div class="formula-content">$$P(\hat{\theta}_L < \theta < \hat{\theta}_U) = 1 - \alpha$$</div>
+                        <div class="formula-content">$$P\{\hat{\theta}_1 < \theta < \hat{\theta}_2\} \ge 1 - \alpha$$</div>
                     </div>
-                    <p>则称区间 $(\hat{\theta}_L, \hat{\theta}_U)$ 为 $\theta$ 的<strong>置信度</strong>（置信水平）为 $1 - \alpha$ 的<strong>置信区间</strong>。</p>
-                    <p style="margin-top: 1rem;">$\hat{\theta}_L$ 称为<strong>置信下限</strong>，$\hat{\theta}_U$ 称为<strong>置信上限</strong>。</p>
+                    <p>则称区间 $(\hat{\theta}_1, \hat{\theta}_2)$ 为 $\theta$ 的<strong>置信度</strong>（置信水平）为 $1 - \alpha$ 的<strong>置信区间</strong>。</p>
+                    <p style="margin-top: 1rem;">$\hat{\theta}_1$ 称为<strong>置信下限</strong>，$\hat{\theta}_2$ 称为<strong>置信上限</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>求置信区间的一般步骤</span></div>
+                <div class="card-body">
+                    <p><strong>步骤 1：明确问题</strong></p>
+                    <p style="margin-left: 1.5rem;">求什么参数的置信区间？置信水平有多大？</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>步骤 2：寻求枢轴量</strong></p>
+                    <p style="margin-left: 1.5rem;">找 $W = W(X_1, X_2, \cdots, X_n; \theta)$，它包含待估参数 $\theta$，但不含其他未知参数，且 $W$ 的分布已知。</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>步骤 3：确定临界值</strong></p>
+                    <p style="margin-left: 1.5rem;">对于给定的置信水平 $1-\alpha$，定出两个常数 $a, b$，使 $P\{a < W < b\} = 1 - \alpha$。</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>步骤 4：变换不等式</strong></p>
+                    <p style="margin-left: 1.5rem;">从 $a < W < b$ 中得到等价不等式 $\hat{\theta}_1 < \theta < \hat{\theta}_2$，其中 $\hat{\theta}_1, \hat{\theta}_2$ 都是统计量。</p>
                 </div>
             </div>
 
