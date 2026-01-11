@@ -193,12 +193,21 @@
             <div class="knowledge-card theorem-card">
                 <div class="card-header"><span>正态总体的抽样分布定理</span></div>
                 <div class="card-body">
-                    <p>设 $X_1, \cdots, X_n$ 来自 $N(\mu, \sigma^2)$，则：</p>
-                    <p style="margin-top: 0.5rem;">1. $\bar{X} \sim N(\mu, \sigma^2/n)$</p>
-                    <p>2. $\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)$</p>
-                    <p>3. $\bar{X}$ 与 $S^2$ 独立</p>
-                    <p>4. $\frac{\bar{X} - \mu}{S/\sqrt{n}} \sim t(n-1)$</p>
+                    <p>设 $X_1, \cdots, X_n$ 是来自正态总体 $N(\mu, \sigma^2)$ 的样本，$\bar{X}$ 和 $S^2$ 分别是样本均值和样本方差，则：</p>
+                    
+                    <p style="margin: 1rem 0;"><strong>定理1：</strong>$\bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)$，即 $\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0, 1)$</p>
+                    
+                    <p style="margin: 1rem 0;"><strong>定理2：</strong>$\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)$</p>
+                    
+                    <p style="margin: 1rem 0;"><strong>定理3：</strong>$\bar{X}$ 与 $S^2$ <strong>相互独立</strong></p>
+                    
+                    <p style="margin: 1rem 0;"><strong>定理4：</strong>$\frac{\bar{X} - \mu}{S/\sqrt{n}} \sim t(n-1)$</p>
                 </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">$\bar{X}$ 与 $S^2$ 独立的重要性</div>
+                <p>定理3是正态总体特有的重要性质。正是由于 $\bar{X}$ 与 $S^2$ 独立，才能构造出定理4中的 $t$ 统计量，从而在 $\sigma^2$ 未知时进行均值的推断。</p>
             </div>
 
             <div class="note-card">
