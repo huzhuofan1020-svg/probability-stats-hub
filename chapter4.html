@@ -126,7 +126,8 @@
                 <li class="toc-item"><a href="#s4-2" class="toc-link"><span class="toc-number">§4.2</span><span class="toc-text">数学期望的性质</span></a></li>
                 <li class="toc-item"><a href="#s4-3" class="toc-link"><span class="toc-number">§4.3</span><span class="toc-text">随机变量的方差</span></a></li>
                 <li class="toc-item"><a href="#s4-4" class="toc-link"><span class="toc-number">§4.4</span><span class="toc-text">协方差和相关系数</span></a></li>
-                <li class="toc-item"><a href="#s4-5" class="toc-link"><span class="toc-number">§4.5</span><span class="toc-text">条件数学期望和熵</span></a></li>
+                <li class="toc-item"><a href="#s4-5" class="toc-link"><span class="toc-number">§4.5</span><span class="toc-text">矩</span></a></li>
+                <li class="toc-item"><a href="#s4-6" class="toc-link"><span class="toc-number">§4.6</span><span class="toc-text">条件数学期望</span></a></li>
             </ul>
         </div>
 
@@ -328,10 +329,45 @@
             </div>
         </section>
 
+
+        <!-- 4.5 矩 -->
         <section class="section" id="s4-5">
             <div class="section-header">
                 <span class="section-number">§4.5</span>
-                <h2 class="section-title">条件数学期望和熵</h2>
+                <h2 class="section-title">矩</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 矩</span></div>
+                <div class="card-body">
+                    <p>设 $X$ 和 $Y$ 是两个随机变量，</p>
+                    <p style="margin: 1rem 0;"><strong>1. k阶原点矩：</strong>若 $E(X^k)$，$k=1,2,\cdots$ 存在，称它为 $X$ 的 <strong>k 阶原点矩</strong>，简称 <strong>k 阶矩</strong>。</p>
+                    <p style="margin: 1rem 0;"><strong>2. k阶中心矩：</strong>若 $E\{[X-E(X)]^k\}$，$k=1,2,\cdots$ 存在，称它为 $X$ 的 <strong>k 阶中心矩</strong>。</p>
+                    <p style="margin: 1rem 0;"><strong>3. k+l阶混合矩：</strong>若 $E(X^k Y^l)$，$k,l=1,2,\cdots$ 存在，称它为 $X$ 和 $Y$ 的 <strong>k+l 阶混合矩</strong>。</p>
+                    <p style="margin: 1rem 0;"><strong>4. k+l阶混合中心矩：</strong>若 $E\{[X-E(X)]^k[Y-E(Y)]^l\}$，$k,l=1,2,\cdots$ 存在，称它为 $X$ 和 $Y$ 的 <strong>k+l 阶混合中心矩</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>矩与常用数字特征的关系</span></div>
+                <div class="card-body">
+                    <p>显然，</p>
+                    <p style="margin: 0.75rem 0;">• <strong>数学期望 $E(X)$</strong> 是 $X$ 的一阶原点矩</p>
+                    <p style="margin: 0.75rem 0;">• <strong>方差 $D(X)$</strong> 是 $X$ 的二阶中心矩</p>
+                    <p style="margin: 0.75rem 0;">• <strong>协方差 $\text{Cov}(X,Y)$</strong> 是 $X$ 和 $Y$ 的二阶混合中心矩</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">矩的重要性</div>
+                <p>矩是描述随机变量分布特征的重要工具。在统计推断中，矩估计法就是利用样本矩来估计总体矩，进而估计未知参数。</p>
+            </div>
+        </section>
+
+        <section class="section" id="s4-6">
+            <div class="section-header">
+                <span class="section-number">§4.6</span>
+                <h2 class="section-title">条件数学期望</h2>
             </div>
 
             <div class="knowledge-card definition-card">
