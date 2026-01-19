@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第2章 随机变量及其分布 | 概率论与数理统计</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #faf9f7;
+            --bg-secondary: #f5f3ef;
+            --text-primary: #2d2a26;
+            --text-secondary: #6b6560;
+            --text-muted: #9a948d;
+            --definition-bg: #e8f4fc;
+            --definition-border: #3498db;
+            --definition-icon: #2980b9;
+            --theorem-bg: #f3e8fc;
+            --theorem-border: #9b59b6;
+            --theorem-icon: #8e44ad;
+            --formula-bg: #e8fcef;
+            --formula-border: #27ae60;
+            --formula-accent: #1e8449;
+            --example-bg: #fef9e7;
+            --example-border: #f39c12;
+            --example-icon: #d68910;
+            --exercise-bg: #f4f4f4;
+            --exercise-border: #95a5a6;
+            --note-bg: #ebf5fb;
+            --note-border: #5dade2;
+            --proof-bg: #fafafa;
+            --proof-border: #bdc3c7;
+            --demo-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #eee;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .breadcrumb {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .breadcrumb a {
+            color: var(--definition-border);
+            text-decoration: none;
+        }
+
+        .chapter-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chapter-header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chapter-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .chapter-number {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            opacity: 0.15;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .chapter-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .chapter-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .progress-section {
+            background: white;
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem 2rem;
+        }
+
+        .progress-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .progress-bar-wrapper { flex: 1; min-width: 200px; }
+
+        .progress-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--demo-gradient);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .chapter-toc {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toc-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .toc-list { list-style: none; }
+
+        .toc-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .toc-item:last-child { border-bottom: none; }
+
+        .toc-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .toc-link:hover { color: var(--definition-border); }
+
+        .toc-number {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-width: 50px;
+        }
+
+        .toc-text { flex: 1; }
+
+        .toc-demo {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--demo-gradient);
+            color: white;
+            border-radius: 20px;
+        }
+
+        .section { margin-bottom: 4rem; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--text-primary);
+        }
+
+        .section-number {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--definition-border);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .knowledge-card {
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            background: white;
+        }
+
+        .definition-card .card-header {
+            background: var(--definition-bg);
+            color: var(--definition-icon);
+            border-left: 4px solid var(--definition-border);
+        }
+
+        .definition-card .card-body {
+            border-left: 4px solid var(--definition-border);
+        }
+
+        .theorem-card .card-header {
+            background: var(--theorem-bg);
+            color: var(--theorem-icon);
+            border-left: 4px solid var(--theorem-border);
+        }
+
+        .theorem-card .card-body {
+            border-left: 4px solid var(--theorem-border);
+        }
+
+        .formula-card {
+            background: var(--formula-bg);
+            border: 2px solid var(--formula-border);
+            padding: 2rem;
+            text-align: center;
+            border-radius: var(--radius-sm);
+        }
+
+        .formula-card .formula-label {
+            font-size: 0.85rem;
+            color: var(--formula-accent);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .formula-card .formula-content {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+        }
+
+        .formula-card .formula-number {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        .example-card .card-header {
+            background: var(--example-bg);
+            color: var(--example-icon);
+            border-left: 4px solid var(--example-border);
+        }
+
+        .example-card .card-body {
+            border-left: 4px solid var(--example-border);
+        }
+
+        .example-problem {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .solution-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--example-bg);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--example-icon);
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .solution-toggle:hover {
+            background: var(--example-border);
+            color: white;
+        }
+
+        .solution-content {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #fffcf5;
+            border-radius: var(--radius-sm);
+            display: none;
+        }
+
+        .solution-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .note-card {
+            background: var(--note-bg);
+            border-left: 4px solid var(--note-border);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 1.5rem 0;
+        }
+
+        .note-card .note-label {
+            font-weight: 600;
+            color: var(--note-border);
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-entry {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .demo-entry:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .demo-info { flex: 1; }
+
+        .demo-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .demo-desc {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .demo-arrow {
+            font-size: 1.5rem;
+            opacity: 0.8;
+            margin-left: 1rem;
+        }
+
+        .math-block {
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+
+        .distribution-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        .distribution-table th,
+        .distribution-table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .distribution-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+        }
+
+        .chapter-footer {
+            background: white;
+            border-top: 1px solid #eee;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-nav {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .footer-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .footer-btn:hover {
+            background: var(--definition-bg);
+            color: var(--definition-border);
+        }
+
+        .footer-btn.next { margin-left: auto; }
+
+        @media (max-width: 768px) {
+            .chapter-header { padding: 2.5rem 1.5rem; }
+            .chapter-title { font-size: 1.75rem; }
+            .chapter-number { font-size: 2.5rem; }
+            .main-content { padding: 1.5rem; }
+            .progress-container { flex-direction: column; align-items: stretch; gap: 1rem; }
+            .demo-entry { flex-direction: column; text-align: center; }
+            .card-body { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="index.html" class="back-btn">← 返回主页</a>
+        <span class="breadcrumb"><a href="index.html">概率论与数理统计</a> / 第2章</span>
+    </nav>
+
+    <header class="chapter-header">
+        <div class="chapter-header-content">
+            <div class="chapter-badge">第二章 · 占课程 14% 学时</div>
+            <span class="chapter-number">02</span>
+            <h1 class="chapter-title">随机变量及其分布</h1>
+            <p class="chapter-subtitle">Random Variables and Probability Distributions</p>
+        </div>
+    </header>
+
+    <div class="progress-section">
+        <div class="progress-container">
+            <div class="progress-bar-wrapper">
+                <div class="progress-label">学习进度</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <span>知识点: <span class="stat-value">6/6</span></span>
+                </div>
+                <div class="stat-item">
+                    <span>演示: <span class="stat-value">1个</span></span>
+                </div>
+                <div class="stat-item">
+                    <span>练习: <span class="stat-value">0/12</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="chapter-toc">
+            <h2 class="toc-title">本章目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <a href="#s2-1" class="toc-link">
+                        <span class="toc-number">§2.1</span>
+                        <span class="toc-text">随机变量及其独立性</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s2-2" class="toc-link">
+                        <span class="toc-number">§2.2</span>
+                        <span class="toc-text">离散型随机变量</span>
+                        <span class="toc-demo">泊松分布</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s2-3" class="toc-link">
+                        <span class="toc-number">§2.3</span>
+                        <span class="toc-text">连续型随机变量</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s2-4" class="toc-link">
+                        <span class="toc-number">§2.4</span>
+                        <span class="toc-text">概率分布函数</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s2-5" class="toc-link">
+                        <span class="toc-number">§2.5</span>
+                        <span class="toc-text">随机变量函数的分布</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#s2-6" class="toc-link">
+                        <span class="toc-number">§2.6</span>
+                        <span class="toc-text">随机变量的 $p$ 分位数</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- §2.1 随机变量及其独立性 -->
+        <section class="section" id="s2-1">
+            <div class="section-header">
+                <span class="section-number">§2.1</span>
+                <h2 class="section-title">随机变量及其独立性</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 随机变量</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $(\Omega, \mathcal{F}, P)$ 是概率空间。如果 $X: \Omega \to \mathbf{R}$ 是一个实值函数，且对任意实数 $a$，有</p>
+                    <div class="math-block">
+                        $$\{X \le a\} = \{\omega \in \Omega : X(\omega) \le a\} \in \mathcal{F}$$
+                    </div>
+                    <p>则称 $X$ 为 $(\Omega, \mathcal{F}, P)$ 上的<strong>随机变量</strong>。</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">直观理解</div>
+                <p>随机变量是将随机试验的结果数值化的函数。例如，掷骰子的点数、某地区一天的降雨量、等待公交车的时间等都可以用随机变量来描述。</p>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 随机变量的独立性</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $X, Y$ 是两个随机变量。如果对任意实数 $a, b$，有</p>
+                    <div class="math-block">
+                        $$P(X \le a, Y \le b) = P(X \le a) \cdot P(Y \le b)$$
+                    </div>
+                    <p>则称随机变量 $X$ 与 $Y$ <strong>相互独立</strong>。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- §2.2 离散型随机变量 -->
+        <section class="section" id="s2-2">
+            <div class="section-header">
+                <span class="section-number">§2.2</span>
+                <h2 class="section-title">离散型随机变量</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 离散型随机变量</span>
+                </div>
+                <div class="card-body">
+                    <p>如果随机变量 $X$ 只取有限个或可列无穷多个值 $x_1, x_2, \cdots$，则称 $X$ 为<strong>离散型随机变量</strong>。</p>
+                    <p style="margin-top: 1rem;">$X$ 的<strong>概率分布</strong>（或<strong>分布律</strong>）为：</p>
+                    <div class="math-block">
+                        $$P(X = x_k) = p_k, \quad k = 1, 2, \cdots$$
+                    </div>
+                    <p>其中 $p_k \ge 0$，$\sum_k p_k = 1$。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>常见离散型分布</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>A. 两点分布 $B(1, p)$</strong></p>
+                    <div class="math-block">
+                        $$P(X = k) = p^k (1-p)^{1-k}, \quad k = 0, 1$$
+                    </div>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>B. 二项分布 $B(n, p)$</strong></p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">二项分布概率公式</div>
+                        <div class="formula-content">
+                            $$P(X = k) = C_n^k p^k (1-p)^{n-k}, \quad k = 0, 1, \cdots, n$$
+                        </div>
+                    </div>
+                    <p>表示 $n$ 次独立重复试验中成功次数的分布，其中每次成功概率为 $p$。</p>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>C. 泊松分布 $\pi(\lambda)$</strong></p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">泊松分布概率公式</div>
+                        <div class="formula-content">
+                            $$P\{X = k\} = \frac{\lambda^k}{k!} e^{-\lambda}, \quad k = 0, 1, 2, \cdots$$
+                        </div>
+                    </div>
+                    <p>其中 $\lambda > 0$ 为参数，表示单位时间（或单位面积）内随机事件发生的平均次数。</p>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>D. 超几何分布 $H(n, M, N)$</strong></p>
+                    <div class="math-block">
+                        $$P(X = k) = \frac{C_M^k C_{N-M}^{n-k}}{C_N^n}, \quad k = 0, 1, \cdots, \min(n, M)$$
+                    </div>
+                    <p>表示从 $N$ 件产品（其中 $M$ 件正品）中不放回抽取 $n$ 件，正品数的分布。</p>
+
+                    <p style="margin-top: 1.5rem;"><strong>E. 几何分布</strong></p>
+                    <div class="math-block">
+                        $$P(X = k) = (1-p)^{k-1} p, \quad k = 1, 2, \cdots$$
+                    </div>
+                    <p>表示首次成功所需试验次数的分布。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>泊松定理（泊松近似）</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $\lambda > 0$ 为常数，$n$ 为正整数，$np_n = \lambda$。则对任意非负整数 $k$，有</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">
+                            $$\lim_{n \to \infty} C_n^k p_n^k (1-p_n)^{n-k} = \frac{\lambda^k}{k!} e^{-\lambda}$$
+                        </div>
+                    </div>
+                    <p>这说明当 $n$ 很大、$p$ 很小、而 $np = \lambda$ 适中时，二项分布可以用泊松分布近似。</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">应用场景</div>
+                <p>泊松分布适用于描述稀有事件在大量试验中出现的次数，例如：某路口一小时内发生交通事故的次数、一页书中印刷错误的个数、某服务台单位时间内到达的顾客数等。</p>
+            </div>
+
+            <a href="chapter2/poisson/index.html" class="demo-entry">
+                <div class="demo-info">
+                    <div class="demo-title">泊松分布交互演示</div>
+                    <div class="demo-desc">通过光子探测实验，直观理解泊松分布的概率质量函数和参数 $\lambda$ 的含义</div>
+                </div>
+                <span class="demo-arrow">→</span>
+            </a>
+        </section>
+
+        <!-- §2.3 连续型随机变量 -->
+        <section class="section" id="s2-3">
+            <div class="section-header">
+                <span class="section-number">§2.3</span>
+                <h2 class="section-title">连续型随机变量</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 连续型随机变量与概率密度函数</span>
+                </div>
+                <div class="card-body">
+                    <p>如果存在<strong>非负可积</strong>函数 $f(x)$，使得随机变量 $X$ 的分布函数可以表示为</p>
+                    <div class="math-block">
+                        $$F(x) = P\{X \le x\} = \int_{-\infty}^{x} f(t) \, dt$$
+                    </div>
+                    <p>则称 $X$ 为<strong>连续型随机变量</strong>，$f(x)$ 称为 $X$ 的<strong>概率密度函数</strong>（PDF，或称密度函数、概率密度）。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>概率密度函数的性质</span>
+                </div>
+                <div class="card-body">
+                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li style="margin-bottom: 0.75rem;"><strong>非负性</strong>：$f(x) \ge 0$</li>
+                        <li style="margin-bottom: 0.75rem;"><strong>规范性</strong>：$\int_{-\infty}^{+\infty} f(x) \, dx = 1$</li>
+                        <li style="margin-bottom: 0.75rem;">$P\{a < X \le b\} = \int_a^b f(x) \, dx = F(b) - F(a)$</li>
+                        <li>对于连续型随机变量，$P\{X = a\} = 0$（单点概率为零）</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>常见连续型分布</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>A. 均匀分布 $U(a, b)$</strong></p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">
+                            $$f(x) = \begin{cases} \dfrac{1}{b-a}, & a \le x \le b \\ 0, & \text{其他} \end{cases}$$
+                        </div>
+                    </div>
+                    <p>其中参数 $a < b$。均匀分布表示随机变量在区间 $[a, b]$ 上等可能取值。</p>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>B. 指数分布 $E(\theta)$</strong></p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">
+                            $$f(x) = \begin{cases} \theta e^{-\theta x}, & x \ge 0 \\ 0, & x < 0 \end{cases}$$
+                        </div>
+                    </div>
+                    <p>其中参数 $\theta > 0$。指数分布具有<strong>无记忆性</strong>：$P\{X > s + t | X > s\} = P\{X > t\}$</p>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>C. 正态分布 $N(\mu, \sigma^2)$</strong></p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">正态分布密度函数</div>
+                        <div class="formula-content">
+                            $$f(x) = \frac{1}{\sqrt{2\pi}\sigma} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)$$
+                        </div>
+                    </div>
+                    <p>其中 $\mu$ 为均值（期望），$\sigma^2$ 为方差。当 $\mu = 0$，$\sigma = 1$ 时，称为<strong>标准正态分布</strong> $N(0, 1)$。</p>
+                    
+                    <p style="margin-top: 1.5rem; color: #6b7280; font-size: 0.9rem;">【拓展】</p>
+                    <p><strong>D. $\Gamma$ 分布 $\Gamma(\alpha, \beta)$</strong></p>
+                    <div class="math-block">
+                        $$f(x) = \begin{cases} \dfrac{\beta^\alpha}{\Gamma(\alpha)} x^{\alpha-1} e^{-\beta x}, & x > 0 \\ 0, & x \le 0 \end{cases}$$
+                    </div>
+                    <p>其中 $\Gamma(\alpha) = \int_0^{+\infty} x^{\alpha-1} e^{-x} dx$ 为 Gamma 函数。</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">正态分布的重要性</div>
+                <p>正态分布是概率论中最重要的分布。根据中心极限定理，大量独立随机变量的和近似服从正态分布，这解释了为什么自然界和社会中许多现象都呈正态分布。</p>
+            </div>
+        </section>
+
+        <!-- §2.4 概率分布函数 -->
+        <section class="section" id="s2-4">
+            <div class="section-header">
+                <span class="section-number">§2.4</span>
+                <h2 class="section-title">概率分布函数</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — 分布函数</span>
+                </div>
+                <div class="card-body">
+                    <p>设 $X$ 是随机变量，对任意实数 $x$，定义</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">分布函数</div>
+                        <div class="formula-content">
+                            $$F(x) = P(X \le x)$$
+                        </div>
+                    </div>
+                    <p>为 $X$ 的<strong>分布函数</strong>（CDF，或称累积分布函数）。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>分布函数的性质</span>
+                </div>
+                <div class="card-body">
+                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li style="margin-bottom: 0.75rem;"><strong>单调性</strong>：$F(x)$ 是单调不减函数</li>
+                        <li style="margin-bottom: 0.75rem;"><strong>有界性</strong>：$0 \le F(x) \le 1$，且 $\lim_{x \to -\infty} F(x) = 0$，$\lim_{x \to +\infty} F(x) = 1$</li>
+                        <li style="margin-bottom: 0.75rem;"><strong>右连续性</strong>：$F(x) = F(x^+) = \lim_{t \to x^+} F(t)$</li>
+                        <li>$P(a < X \le b) = F(b) - F(a)$</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="knowledge-card example-card">
+                <div class="card-header">
+                    <span>例 — 求概率</span>
+                </div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>设随机变量 $X$ 的分布函数为 $F(x) = \begin{cases} 0, & x < 0 \\ x^2, & 0 \le x < 1 \\ 1, & x \ge 1 \end{cases}$</p>
+                        <p>求 $P(0.3 < X \le 0.7)$。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">显示解答</button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <div class="math-block">
+                            $$P(0.3 < X \le 0.7) = F(0.7) - F(0.3) = 0.7^2 - 0.3^2 = 0.49 - 0.09 = 0.40$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- §2.5 随机变量函数的分布 -->
+        <section class="section" id="s2-5">
+            <div class="section-header">
+                <span class="section-number">§2.5</span>
+                <h2 class="section-title">随机变量函数的分布</h2>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>离散型情形</span>
+                </div>
+                <div class="card-body">
+                    <p>设离散型随机变量 $X$ 的分布律为 $P\{X = x_k\} = p_k$（$k = 1, 2, \cdots$），$Y = g(X)$，则 $Y$ 也是离散型随机变量。</p>
+                    <p style="margin-top: 1rem;">设 $Y$ 的所有可能取值为 $y_1, y_2, \cdots$，则 $Y$ 的分布律为</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">
+                            $$P\{Y = y_j\} = \sum_{k: g(x_k) = y_j} p_k, \quad j = 1, 2, \cdots$$
+                        </div>
+                    </div>
+                    <p>即对于 $Y$ 的每一个可能取值 $y_j$，找出所有满足 $g(x_k) = y_j$ 的 $x_k$，把对应的概率 $p_k$ 相加。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header">
+                    <span>连续型情形</span>
+                </div>
+                <div class="card-body">
+                    <p>设连续型随机变量 $X$ 的密度函数为 $f_X(x)$，$Y = g(X)$。</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>方法一：分布函数法</strong></p>
+                    <p>先求 $Y$ 的分布函数 $F_Y(y) = P(Y \le y) = P(g(X) \le y)$，再求导得密度函数。</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>方法二：公式法（当 $g$ 严格单调时）</strong></p>
+                    <p>若 $y = g(x)$ 在 $X$ 的取值范围内严格单调，其反函数为 $x = h(y)$，则</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">
+                            $$f_Y(y) = f_X(h(y)) \cdot |h'(y)|$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card example-card">
+                <div class="card-header">
+                    <span>例 — 线性变换</span>
+                </div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>设 $X \sim N(\mu, \sigma^2)$，$Y = aX + b$（$a \ne 0$），求 $Y$ 的分布。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">显示解答</button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <p>由 $y = ax + b$ 得 $x = \frac{y - b}{a}$，$\frac{dx}{dy} = \frac{1}{a}$。</p>
+                        <div class="math-block">
+                            $$f_Y(y) = f_X\left(\frac{y-b}{a}\right) \cdot \frac{1}{|a|} = \frac{1}{\sqrt{2\pi}|a|\sigma} \exp\left(-\frac{(y-b-a\mu)^2}{2a^2\sigma^2}\right)$$
+                        </div>
+                        <p>因此 $Y \sim N(a\mu + b, a^2\sigma^2)$。</p>
+                        <p style="margin-top: 1rem;">特别地，$Z = \frac{X - \mu}{\sigma} \sim N(0, 1)$（标准化）。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- §2.6 随机变量的p分位数 -->
+        <section class="section" id="s2-6">
+            <div class="section-header">
+                <span class="section-number">§2.6</span>
+                <h2 class="section-title">随机变量的 $p$ 分位数</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header">
+                    <span>定义 — $p$ 分位数</span>
+                </div>
+                <div class="card-body">
+                    <p>设随机变量 $X$ 的分布函数为 $F(x)$，对于 $0 < p < 1$，称满足</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">
+                            $$F(x_p) = P(X \le x_p) = p$$
+                        </div>
+                    </div>
+                    <p>的 $x_p$ 为 $X$ 的 <strong>$p$ 分位数</strong>（或<strong>下侧 $p$ 分位点</strong>）。</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">常用分位数</div>
+                <p><strong>中位数</strong>：$p = 0.5$ 时的分位数，记为 $x_{0.5}$ 或 $M$。</p>
+                <p><strong>四分位数</strong>：$Q_1 = x_{0.25}$（下四分位数），$Q_3 = x_{0.75}$（上四分位数）。</p>
+                <p><strong>标准正态分布分位数</strong>：常用 $z_\alpha$ 表示满足 $P(Z > z_\alpha) = \alpha$ 的值。</p>
+            </div>
+
+            <div class="knowledge-card example-card">
+                <div class="card-header">
+                    <span>例 — 正态分布分位数</span>
+                </div>
+                <div class="card-body">
+                    <div class="example-problem">
+                        <p>设 $X \sim N(0, 1)$，求 $x_{0.975}$。</p>
+                    </div>
+                    <button class="solution-toggle" onclick="toggleSolution(this)">显示解答</button>
+                    <div class="solution-content">
+                        <p><strong>解：</strong></p>
+                        <p>查标准正态分布表，$\Phi(1.96) \approx 0.975$。</p>
+                        <p>因此 $x_{0.975} = 1.96$。</p>
+                        <p style="margin-top: 1rem;">这意味着 $P(X \le 1.96) = 0.975$，或 $P(X > 1.96) = 0.025$。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="chapter-footer">
+        <div class="footer-nav">
+            <a href="chapter1.html" class="footer-btn">← 第1章 随机事件的概率</a>
+            <a href="chapter3.html" class="footer-btn next">第3章 多维随机变量及其分布 →</a>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+        });
+
+        function toggleSolution(btn) {
+            const content = btn.nextElementSibling;
+            content.classList.toggle('show');
+            btn.textContent = content.classList.contains('show') ? '隐藏解答' : '显示解答';
+        }
+    </script>
+</body>
+</html>
