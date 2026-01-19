@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第6章 样本及抽样分布 | 概率论与数理统计</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        :root { --bg-primary: #faf9f7; --bg-secondary: #f5f3ef; --text-primary: #2d2a26; --text-secondary: #6b6560; --text-muted: #9a948d; --definition-bg: #e8f4fc; --definition-border: #3498db; --definition-icon: #2980b9; --theorem-bg: #f3e8fc; --theorem-border: #9b59b6; --theorem-icon: #8e44ad; --formula-bg: #e8fcef; --formula-border: #27ae60; --formula-accent: #1e8449; --example-bg: #fef9e7; --example-border: #f39c12; --example-icon: #d68910; --note-bg: #ebf5fb; --note-border: #5dade2; --demo-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --radius: 12px; --radius-sm: 8px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Serif SC', serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.8; min-height: 100vh; }
+        .top-nav { background: white; border-bottom: 1px solid #eee; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 1rem; }
+        .back-btn { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border-radius: 20px; transition: all 0.2s; }
+        .back-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+        .breadcrumb { color: var(--text-muted); font-size: 0.85rem; }
+        .breadcrumb a { color: var(--definition-border); text-decoration: none; }
+        .chapter-header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; padding: 4rem 2rem; position: relative; }
+        .chapter-header-content { max-width: 900px; margin: 0 auto; position: relative; }
+        .chapter-badge { display: inline-flex; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1.5rem; }
+        .chapter-number { font-family: 'ZCOOL XiaoWei', serif; font-size: 4rem; font-weight: 700; opacity: 0.15; position: absolute; right: 0; top: 0; }
+        .chapter-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .chapter-subtitle { font-size: 1.1rem; opacity: 0.8; font-style: italic; }
+        .progress-section { background: white; border-bottom: 1px solid #eee; padding: 1.5rem 2rem; }
+        .progress-container { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+        .progress-bar-wrapper { flex: 1; min-width: 200px; }
+        .progress-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .progress-bar { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--demo-gradient); border-radius: 4px; }
+        .progress-stats { display: flex; gap: 2rem; font-size: 0.9rem; }
+        .stat-item { color: var(--text-secondary); }
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+        .main-content { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .chapter-toc { background: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 3rem; box-shadow: var(--shadow-sm); }
+        .toc-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .toc-list { list-style: none; }
+        .toc-item { padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0; }
+        .toc-item:last-child { border-bottom: none; }
+        .toc-link { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--text-primary); }
+        .toc-link:hover { color: var(--definition-border); }
+        .toc-number { font-family: 'Source Code Pro', monospace; font-size: 0.85rem; color: var(--text-muted); min-width: 50px; }
+        .section { margin-bottom: 4rem; }
+        .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--text-primary); }
+        .section-number { font-family: 'Source Code Pro', monospace; font-size: 1.5rem; font-weight: 600; color: var(--definition-border); }
+        .section-title { font-size: 1.5rem; font-weight: 600; }
+        .knowledge-card { border-radius: var(--radius); margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .card-header { padding: 1rem 1.5rem; font-weight: 600; }
+        .card-body { padding: 1.5rem; background: white; }
+        .definition-card .card-header { background: var(--definition-bg); color: var(--definition-icon); border-left: 4px solid var(--definition-border); }
+        .definition-card .card-body { border-left: 4px solid var(--definition-border); }
+        .theorem-card .card-header { background: var(--theorem-bg); color: var(--theorem-icon); border-left: 4px solid var(--theorem-border); }
+        .theorem-card .card-body { border-left: 4px solid var(--theorem-border); }
+        .formula-card { background: var(--formula-bg); border: 2px solid var(--formula-border); padding: 2rem; text-align: center; border-radius: var(--radius-sm); }
+        .formula-card .formula-label { font-size: 0.85rem; color: var(--formula-accent); margin-bottom: 1rem; font-weight: 600; }
+        .formula-card .formula-content { font-size: 1.2rem; color: var(--text-primary); }
+        .example-card .card-header { background: var(--example-bg); color: var(--example-icon); border-left: 4px solid var(--example-border); }
+        .example-card .card-body { border-left: 4px solid var(--example-border); }
+        .example-problem { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed #ddd; }
+        .solution-toggle { background: var(--example-bg); border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.9rem; color: var(--example-icon); font-weight: 600; transition: all 0.2s; }
+        .solution-toggle:hover { background: var(--example-border); color: white; }
+        .solution-content { margin-top: 1.5rem; padding: 1.5rem; background: #fffcf5; border-radius: var(--radius-sm); display: none; }
+        .solution-content.show { display: block; }
+        .note-card { background: var(--note-bg); border-left: 4px solid var(--note-border); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 1.5rem 0; }
+        .note-card .note-label { font-weight: 600; color: var(--note-border); margin-bottom: 0.5rem; }
+        .math-block { overflow-x: auto; padding: 1rem 0; }
+        .chapter-footer { background: white; border-top: 1px solid #eee; padding: 2rem; margin-top: 4rem; }
+        .footer-nav { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; }
+        .footer-btn { padding: 1rem 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-sm); text-decoration: none; color: var(--text-primary); }
+        .footer-btn:hover { background: var(--definition-bg); color: var(--definition-border); }
+        .footer-btn.next { margin-left: auto; }
+        @media (max-width: 768px) { .chapter-header { padding: 2.5rem 1.5rem; } .chapter-title { font-size: 1.75rem; } .main-content { padding: 1.5rem; } .progress-container { flex-direction: column; gap: 1rem; } .card-body { padding: 1rem; } }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="index.html" class="back-btn">← 返回主页</a>
+        <span class="breadcrumb"><a href="index.html">概率论与数理统计</a> / 第6章</span>
+    </nav>
+    <header class="chapter-header">
+        <div class="chapter-header-content">
+            <div class="chapter-badge">第六章 · 数理统计基础</div>
+            <span class="chapter-number">06</span>
+            <h1 class="chapter-title">样本及抽样分布</h1>
+            <p class="chapter-subtitle">Samples and Sampling Distributions</p>
+        </div>
+    </header>
+    <div class="progress-section">
+        <div class="progress-container">
+            <div class="progress-bar-wrapper">
+                <div class="progress-label">学习进度</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item">知识点: <span class="stat-value">2/2</span></div>
+                <div class="stat-item">演示: <span class="stat-value">0个</span></div>
+            </div>
+        </div>
+    </div>
+    <main class="main-content">
+        <div class="chapter-toc">
+            <h2 class="toc-title">本章目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item"><a href="#s6-1" class="toc-link"><span class="toc-number">§6.1</span><span class="toc-text">随机样本</span></a></li>
+                <li class="toc-item"><a href="#s6-2" class="toc-link"><span class="toc-number">§6.2</span><span class="toc-text">抽样分布</span></a></li>
+            </ul>
+        </div>
+
+        <section class="section" id="s6-1">
+            <div class="section-header"><span class="section-number">§6.1</span><h2 class="section-title">随机样本</h2></div>
+            
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 总体与个体</span></div>
+                <div class="card-body">
+                    <p>在数理统计中，研究对象的全体称为<strong>总体</strong>，总体中的每个成员称为<strong>个体</strong>。</p>
+                    <p style="margin-top: 0.5rem;">由于关心的是总体中个体的某个数量指标，而该指标的全部可能取值构成一个分布，因此可以用随机变量 $X$ 及其分布来描述总体。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 简单随机样本</span></div>
+                <div class="card-body">
+                    <p>设总体 $X$ 的分布函数为 $F(x)$。若 $X_1, X_2, \cdots, X_n$ 满足：</p>
+                    <p style="margin-top: 0.5rem;">1. <strong>独立性</strong>：$X_1, X_2, \cdots, X_n$ 相互独立</p>
+                    <p>2. <strong>同分布性</strong>：每个 $X_i$ 都与总体 $X$ 同分布</p>
+                    <p style="margin-top: 0.5rem;">则称 $(X_1, X_2, \cdots, X_n)$ 为来自总体 $X$ 的<strong>简单随机样本</strong>，$n$ 为<strong>样本容量</strong>。</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">抽样方法</div>
+                <p><strong>简单随机抽样</strong>：有放回抽样，每次独立抽取。</p>
+                <p><strong>分层抽样</strong>：将总体分层，各层分别抽样。</p>
+                <p><strong>系统抽样</strong>：按固定间隔抽取样本。</p>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>常用统计量</span></div>
+                <div class="card-body">
+                    <p><strong>样本均值</strong>：</p>
+                    <div class="formula-card" style="margin: 1rem 0;"><div class="formula-content">$$\bar{X} = \frac{1}{n} \sum_{i=1}^{n} X_i$$</div></div>
+                    
+                    <p><strong>样本方差</strong>：</p>
+                    <div class="formula-card" style="margin: 1rem 0;"><div class="formula-content">$$S^2 = \frac{1}{n-1} \sum_{i=1}^{n} (X_i - \bar{X})^2$$</div></div>
+                    
+                    <p><strong>样本 $k$ 阶矩</strong>：$A_k = \frac{1}{n} \sum_{i=1}^{n} X_i^k$，$B_k = \frac{1}{n} \sum_{i=1}^{n} (X_i - \bar{X})^k$</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>样本均值和方差的性质</span></div>
+                <div class="card-body">
+                    <p>设总体 $E(X) = \mu$，$D(X) = \sigma^2$，则：</p>
+                    <p>1. $E(\bar{X}) = \mu$，$D(\bar{X}) = \frac{\sigma^2}{n}$</p>
+                    <p>2. $E(S^2) = \sigma^2$（无偏性）</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="s6-2">
+            <div class="section-header"><span class="section-number">§6.2</span><h2 class="section-title">抽样分布</h2></div>
+            
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — $\chi^2$ 分布</span></div>
+                <div class="card-body">
+                    <p>设 $X_1, X_2, \cdots, X_n$ 相互独立，且都服从标准正态分布 $N(0, 1)$，则</p>
+                    <div class="formula-card" style="margin: 1rem 0;"><div class="formula-content">$$\chi^2 = \sum_{i=1}^{n} X_i^2 \sim \chi^2(n)$$</div></div>
+                    <p>称此随机变量服从自由度为 $n$ 的 <strong>$\chi^2$ 分布</strong>。</p>
+                    <p style="margin-top: 1rem;"><strong>性质</strong>：$E(\chi^2) = n$，$D(\chi^2) = 2n$；可加性成立。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — $t$ 分布</span></div>
+                <div class="card-body">
+                    <p>设 $X \sim N(0,1)$，$Y \sim \chi^2(n)$ 独立，则</p>
+                    <div class="formula-card" style="margin: 1rem 0;"><div class="formula-content">$$T = \frac{X}{\sqrt{Y/n}} \sim t(n)$$</div></div>
+                    <p><strong>性质</strong>：密度函数关于原点对称；$n$ 大时近似 $N(0,1)$。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — $F$ 分布</span></div>
+                <div class="card-body">
+                    <p>设 $U \sim \chi^2(n_1)$，$V \sim \chi^2(n_2)$ 独立，则</p>
+                    <div class="formula-card" style="margin: 1rem 0;"><div class="formula-content">$$F = \frac{U/n_1}{V/n_2} \sim F(n_1, n_2)$$</div></div>
+                    <p><strong>性质</strong>：$1/F \sim F(n_2, n_1)$；$T^2 \sim F(1,n)$ 若 $T \sim t(n)$</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>正态总体的抽样分布定理</span></div>
+                <div class="card-body">
+                    <p>设 $X_1, \cdots, X_n$ 是来自正态总体 $N(\mu, \sigma^2)$ 的样本，$\bar{X}$ 和 $S^2$ 分别是样本均值和样本方差，则：</p>
+                    
+                    <p style="margin: 1rem 0;"><strong>定理1：</strong>$\bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)$，即 $\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0, 1)$</p>
+                    
+                    <p style="margin: 1rem 0;"><strong>定理2：</strong>$\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)$</p>
+                    
+                    <p style="margin: 1rem 0;"><strong>定理3：</strong>$\bar{X}$ 与 $S^2$ <strong>相互独立</strong></p>
+                    
+                    <p style="margin: 1rem 0;"><strong>定理4：</strong>$\frac{\bar{X} - \mu}{S/\sqrt{n}} \sim t(n-1)$</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">$\bar{X}$ 与 $S^2$ 独立的重要性</div>
+                <p>定理3是正态总体特有的重要性质。正是由于 $\bar{X}$ 与 $S^2$ 独立，才能构造出定理4中的 $t$ 统计量，从而在 $\sigma^2$ 未知时进行均值的推断。</p>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">中心极限定理的应用</div>
+                <p>当样本量 $n$ 足够大时，无论总体分布如何，样本均值 $\bar{X}$ 近似服从正态分布，这是抽样分布的重要性质。</p>
+            </div>
+        </section>
+    </main>
+    <footer class="chapter-footer">
+        <div class="footer-nav">
+            <a href="chapter5.html" class="footer-btn">← 第5章 大数定律及中心极限定理</a>
+            <a href="chapter7.html" class="footer-btn next">第7章 参数估计 →</a>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() { renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false }); });
+        function toggleSolution(btn) { const content = btn.nextElementSibling; content.classList.toggle('show'); btn.textContent = content.classList.contains('show') ? '隐藏解答' : '显示解答'; }
+    </script>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第4章 随机变量的数字特征 | 概率论与数理统计</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #faf9f7; --bg-secondary: #f5f3ef;
+            --text-primary: #2d2a26; --text-secondary: #6b6560; --text-muted: #9a948d;
+            --definition-bg: #e8f4fc; --definition-border: #3498db; --definition-icon: #2980b9;
+            --theorem-bg: #f3e8fc; --theorem-border: #9b59b6; --theorem-icon: #8e44ad;
+            --formula-bg: #e8fcef; --formula-border: #27ae60; --formula-accent: #1e8449;
+            --example-bg: #fef9e7; --example-border: #f39c12; --example-icon: #d68910;
+            --note-bg: #ebf5fb; --note-border: #5dade2;
+            --demo-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --radius: 12px; --radius-sm: 8px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Serif SC', serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.8; min-height: 100vh; }
+        .top-nav { background: white; border-bottom: 1px solid #eee; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 1rem; }
+        .back-btn { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border-radius: 20px; transition: all 0.2s; }
+        .back-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+        .breadcrumb { color: var(--text-muted); font-size: 0.85rem; }
+        .breadcrumb a { color: var(--definition-border); text-decoration: none; }
+        .chapter-header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; padding: 4rem 2rem; position: relative; }
+        .chapter-header-content { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+        .chapter-badge { display: inline-flex; align-items: center; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1.5rem; }
+        .chapter-number { font-family: 'ZCOOL XiaoWei', serif; font-size: 4rem; font-weight: 700; opacity: 0.15; position: absolute; right: 0; top: 0; }
+        .chapter-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .chapter-subtitle { font-size: 1.1rem; opacity: 0.8; font-style: italic; }
+        .progress-section { background: white; border-bottom: 1px solid #eee; padding: 1.5rem 2rem; }
+        .progress-container { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+        .progress-bar-wrapper { flex: 1; min-width: 200px; }
+        .progress-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .progress-bar { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--demo-gradient); border-radius: 4px; }
+        .progress-stats { display: flex; gap: 2rem; font-size: 0.9rem; }
+        .stat-item { color: var(--text-secondary); }
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+        .main-content { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .chapter-toc { background: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 3rem; box-shadow: var(--shadow-sm); }
+        .toc-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .toc-list { list-style: none; }
+        .toc-item { padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0; }
+        .toc-item:last-child { border-bottom: none; }
+        .toc-link { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--text-primary); transition: all 0.2s; }
+        .toc-link:hover { color: var(--definition-border); }
+        .toc-number { font-family: 'Source Code Pro', monospace; font-size: 0.85rem; color: var(--text-muted); min-width: 50px; }
+        .section { margin-bottom: 4rem; }
+        .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--text-primary); }
+        .section-number { font-family: 'Source Code Pro', monospace; font-size: 1.5rem; font-weight: 600; color: var(--definition-border); }
+        .section-title { font-size: 1.5rem; font-weight: 600; }
+        .knowledge-card { border-radius: var(--radius); margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .card-header { padding: 1rem 1.5rem; font-weight: 600; }
+        .card-body { padding: 1.5rem; background: white; }
+        .definition-card .card-header { background: var(--definition-bg); color: var(--definition-icon); border-left: 4px solid var(--definition-border); }
+        .definition-card .card-body { border-left: 4px solid var(--definition-border); }
+        .theorem-card .card-header { background: var(--theorem-bg); color: var(--theorem-icon); border-left: 4px solid var(--theorem-border); }
+        .theorem-card .card-body { border-left: 4px solid var(--theorem-border); }
+        .formula-card { background: var(--formula-bg); border: 2px solid var(--formula-border); padding: 2rem; text-align: center; border-radius: var(--radius-sm); }
+        .formula-card .formula-label { font-size: 0.85rem; color: var(--formula-accent); margin-bottom: 1rem; font-weight: 600; }
+        .formula-card .formula-content { font-size: 1.3rem; color: var(--text-primary); }
+        .example-card .card-header { background: var(--example-bg); color: var(--example-icon); border-left: 4px solid var(--example-border); }
+        .example-card .card-body { border-left: 4px solid var(--example-border); }
+        .example-problem { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed #ddd; }
+        .solution-toggle { background: var(--example-bg); border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.9rem; color: var(--example-icon); font-weight: 600; transition: all 0.2s; }
+        .solution-toggle:hover { background: var(--example-border); color: white; }
+        .solution-content { margin-top: 1.5rem; padding: 1.5rem; background: #fffcf5; border-radius: var(--radius-sm); display: none; }
+        .solution-content.show { display: block; }
+        .note-card { background: var(--note-bg); border-left: 4px solid var(--note-border); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 1.5rem 0; }
+        .note-card .note-label { font-weight: 600; color: var(--note-border); margin-bottom: 0.5rem; }
+        .math-block { overflow-x: auto; padding: 1rem 0; }
+        .dist-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+        .dist-table th, .dist-table td { padding: 0.75rem; border: 1px solid #ddd; text-align: center; }
+        .dist-table th { background: var(--bg-secondary); }
+        .chapter-footer { background: white; border-top: 1px solid #eee; padding: 2rem; margin-top: 4rem; }
+        .footer-nav { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; gap: 1rem; }
+        .footer-btn { padding: 1rem 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-sm); text-decoration: none; color: var(--text-primary); transition: all 0.2s; }
+        .footer-btn:hover { background: var(--definition-bg); color: var(--definition-border); }
+        .footer-btn.next { margin-left: auto; }
+        @media (max-width: 768px) { .chapter-header { padding: 2.5rem 1.5rem; } .chapter-title { font-size: 1.75rem; } .main-content { padding: 1.5rem; } .progress-container { flex-direction: column; gap: 1rem; } .card-body { padding: 1rem; } }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="index.html" class="back-btn">← 返回主页</a>
+        <span class="breadcrumb"><a href="index.html">概率论与数理统计</a> / 第4章</span>
+    </nav>
+
+    <header class="chapter-header">
+        <div class="chapter-header-content">
+            <div class="chapter-badge">第四章 · 占课程 20% 学时</div>
+            <span class="chapter-number">04</span>
+            <h1 class="chapter-title">随机变量的数字特征</h1>
+            <p class="chapter-subtitle">Mathematical Expectation and Variance</p>
+        </div>
+    </header>
+
+    <div class="progress-section">
+        <div class="progress-container">
+            <div class="progress-bar-wrapper">
+                <div class="progress-label">学习进度</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item">知识点: <span class="stat-value">5/5</span></div>
+                <div class="stat-item">演示: <span class="stat-value">0个</span></div>
+                <div class="stat-item">练习: <span class="stat-value">0/12</span></div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="chapter-toc">
+            <h2 class="toc-title">本章目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item"><a href="#s4-1" class="toc-link"><span class="toc-number">§4.1</span><span class="toc-text">数学期望</span></a></li>
+                <li class="toc-item"><a href="#s4-2" class="toc-link"><span class="toc-number">§4.2</span><span class="toc-text">方差</span></a></li>
+                <li class="toc-item"><a href="#s4-3" class="toc-link"><span class="toc-number">§4.3</span><span class="toc-text">协方差与相关系数</span></a></li>
+                <li class="toc-item"><a href="#s4-4" class="toc-link"><span class="toc-number">§4.4</span><span class="toc-text">矩</span></a></li>
+            </ul>
+        </div>
+
+        <section class="section" id="s4-1">
+            <div class="section-header">
+                <span class="section-number">§4.1</span>
+                <h2 class="section-title">数学期望</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 离散型随机变量的数学期望</span></div>
+                <div class="card-body">
+                    <p>设离散型随机变量 $X$ 的分布律为 $P(X = x_k) = p_k$，若级数 $\sum_k x_k p_k$ 绝对收敛，则定义</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">离散型期望</div>
+                        <div class="formula-content">$$E(X) = \sum_k x_k p_k$$</div>
+                    </div>
+                    <p>为 $X$ 的<strong>数学期望</strong>（或<strong>期望</strong>、<strong>均值</strong>）。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 连续型随机变量的数学期望</span></div>
+                <div class="card-body">
+                    <p>设连续型随机变量 $X$ 的密度函数为 $f(x)$，若积分 $\int_{-\infty}^{+\infty} x f(x) \, dx$ 绝对收敛，则定义</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">连续型期望</div>
+                        <div class="formula-content">$$E(X) = \int_{-\infty}^{+\infty} x f(x) \, dx$$</div>
+                    </div>
+                    <p>为 $X$ 的<strong>数学期望</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>随机变量函数的期望</span></div>
+                <div class="card-body">
+                    <p>设 $Y = g(X)$，则：</p>
+                    <p style="margin-top: 1rem;"><strong>离散型：</strong>$E(Y) = E(g(X)) = \sum_k g(x_k) p_k$</p>
+                    <p style="margin-top: 0.5rem;"><strong>连续型：</strong>$E(Y) = E(g(X)) = \int_{-\infty}^{+\infty} g(x) f(x) \, dx$</p>
+                    <p style="margin-top: 1rem;">对于二维随机向量 $(X, Y)$ 和函数 $Z = g(X, Y)$：</p>
+                    <div class="math-block">$$E(Z) = \sum_i \sum_j g(x_i, y_j) p_{ij} \quad \text{或} \quad E(Z) = \iint g(x, y) f(x, y) \, dx \, dy$$</div>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>常见分布的期望</span></div>
+                <div class="card-body">
+                    <table class="dist-table">
+                        <tr><th>分布</th><th>记号</th><th>期望 $E(X)$</th></tr>
+                        <tr><td>两点分布</td><td>$B(1, p)$</td><td>$p$</td></tr>
+                        <tr><td>二项分布</td><td>$B(n, p)$</td><td>$np$</td></tr>
+                        <tr><td>泊松分布</td><td>$P(\lambda)$</td><td>$\lambda$</td></tr>
+                        <tr><td>几何分布</td><td>$Ge(p)$</td><td>$1/p$</td></tr>
+                        <tr><td>均匀分布</td><td>$U(a, b)$</td><td>$(a+b)/2$</td></tr>
+                        <tr><td>指数分布</td><td>$Exp(\lambda)$</td><td>$1/\lambda$</td></tr>
+                        <tr><td>正态分布</td><td>$N(\mu, \sigma^2)$</td><td>$\mu$</td></tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="s4-2">
+            <div class="section-header">
+                <span class="section-number">§4.2</span>
+                <h2 class="section-title">数学期望的性质</h2>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>期望的基本性质</span></div>
+                <div class="card-body">
+                    <p>设 $X, Y$ 的期望存在，$a, b, c$ 为常数，则：</p>
+                    <p style="margin-top: 1rem;">1. $E(c) = c$</p>
+                    <p>2. $E(aX) = aE(X)$</p>
+                    <p>3. $E(X + Y) = E(X) + E(Y)$（对任意有限个随机变量成立）</p>
+                    <p>4. $E(aX + bY + c) = aE(X) + bE(Y) + c$</p>
+                    <p>5. 若 $X, Y$ 独立，则 $E(XY) = E(X)E(Y)$</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">注意</div>
+                <p>期望的线性性质对任意随机变量成立（无需独立），但乘积的期望等于期望的乘积需要独立性条件。</p>
+            </div>
+        </section>
+
+        <section class="section" id="s4-3">
+            <div class="section-header">
+                <span class="section-number">§4.3</span>
+                <h2 class="section-title">方差</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 方差与标准差</span></div>
+                <div class="card-body">
+                    <p>设随机变量 $X$ 的期望为 $E(X) = \mu$，若 $E[(X - \mu)^2]$ 存在，则定义</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">方差</div>
+                        <div class="formula-content">$$\text{Var}(X) = D(X) = E[(X - \mu)^2] = E(X^2) - [E(X)]^2$$</div>
+                    </div>
+                    <p>为 $X$ 的<strong>方差</strong>。$\sqrt{D(X)}$ 称为<strong>标准差</strong>（或均方差）。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>方差的性质</span></div>
+                <div class="card-body">
+                    <p>1. $D(c) = 0$（常数的方差为零）</p>
+                    <p>2. $D(aX + b) = a^2 D(X)$</p>
+                    <p>3. $D(X) = E(X^2) - [E(X)]^2$（计算公式）</p>
+                    <p>4. 若 $X, Y$ 独立，则 $D(X + Y) = D(X) + D(Y)$</p>
+                    <p>5. $D(X) = 0$ 当且仅当 $P(X = c) = 1$（$c$ 为常数）</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>常见分布的方差</span></div>
+                <div class="card-body">
+                    <table class="dist-table">
+                        <tr><th>分布</th><th>记号</th><th>方差 $D(X)$</th></tr>
+                        <tr><td>两点分布</td><td>$B(1, p)$</td><td>$p(1-p)$</td></tr>
+                        <tr><td>二项分布</td><td>$B(n, p)$</td><td>$np(1-p)$</td></tr>
+                        <tr><td>泊松分布</td><td>$P(\lambda)$</td><td>$\lambda$</td></tr>
+                        <tr><td>均匀分布</td><td>$U(a, b)$</td><td>$(b-a)^2/12$</td></tr>
+                        <tr><td>指数分布</td><td>$Exp(\lambda)$</td><td>$1/\lambda^2$</td></tr>
+                        <tr><td>正态分布</td><td>$N(\mu, \sigma^2)$</td><td>$\sigma^2$</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>切比雪夫不等式</span></div>
+                <div class="card-body">
+                    <p>设随机变量 $X$ 的期望 $E(X) = \mu$，方差 $D(X) = \sigma^2$，则对任意 $\varepsilon > 0$：</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">切比雪夫不等式</div>
+                        <div class="formula-content">$$P(|X - \mu| \ge \varepsilon) \le \frac{\sigma^2}{\varepsilon^2}$$</div>
+                    </div>
+                    <p>或等价地：$P(|X - \mu| < \varepsilon) \ge 1 - \frac{\sigma^2}{\varepsilon^2}$</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="s4-4">
+            <div class="section-header">
+                <span class="section-number">§4.4</span>
+                <h2 class="section-title">协方差与相关系数</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 协方差</span></div>
+                <div class="card-body">
+                    <p>设 $(X, Y)$ 是二维随机向量，定义</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">协方差</div>
+                        <div class="formula-content">$$\text{Cov}(X, Y) = E[(X - E(X))(Y - E(Y))] = E(XY) - E(X)E(Y)$$</div>
+                    </div>
+                    <p>为 $X$ 与 $Y$ 的<strong>协方差</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>协方差的性质</span></div>
+                <div class="card-body">
+                    <p>1. $\text{Cov}(X, X) = D(X)$</p>
+                    <p>2. $\text{Cov}(X, Y) = \text{Cov}(Y, X)$（对称性）</p>
+                    <p>3. $\text{Cov}(aX, bY) = ab \cdot \text{Cov}(X, Y)$</p>
+                    <p>4. $\text{Cov}(X_1 + X_2, Y) = \text{Cov}(X_1, Y) + \text{Cov}(X_2, Y)$</p>
+                    <p>5. $D(X \pm Y) = D(X) + D(Y) \pm 2\text{Cov}(X, Y)$</p>
+                    <p>6. 若 $X, Y$ 独立，则 $\text{Cov}(X, Y) = 0$（反之不一定成立）</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 相关系数</span></div>
+                <div class="card-body">
+                    <p>设 $D(X) > 0$，$D(Y) > 0$，定义</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">相关系数</div>
+                        <div class="formula-content">$$\rho_{XY} = \frac{\text{Cov}(X, Y)}{\sqrt{D(X)} \sqrt{D(Y)}}$$</div>
+                    </div>
+                    <p>为 $X$ 与 $Y$ 的<strong>相关系数</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>相关系数的性质</span></div>
+                <div class="card-body">
+                    <p>1. $|\rho_{XY}| \le 1$</p>
+                    <p>2. $|\rho_{XY}| = 1$ 当且仅当存在常数 $a, b$（$a \ne 0$）使得 $P(Y = aX + b) = 1$</p>
+                    <p>3. $\rho_{XY} = 0$ 时称 $X$ 与 $Y$ <strong>不相关</strong></p>
+                    <p>4. 独立 $\Rightarrow$ 不相关，但不相关 $\not\Rightarrow$ 独立</p>
+                    <p>5. 对于二维正态分布，不相关 $\Leftrightarrow$ 独立</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">独立与不相关</div>
+                <p><strong>独立</strong>描述的是两个随机变量之间没有任何关系；<strong>不相关</strong>只说明两个随机变量之间没有线性关系。独立是更强的条件。</p>
+            </div>
+        </section>
+
+
+        <!-- 4.5 矩 -->
+        <section class="section" id="s4-5">
+            <div class="section-header">
+                <span class="section-number">§4.5</span>
+                <h2 class="section-title">矩</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 矩</span></div>
+                <div class="card-body">
+                    <p>设 $X$ 和 $Y$ 是两个随机变量，</p>
+                    <p style="margin: 1rem 0;"><strong>1. k阶原点矩：</strong>若 $E(X^k)$，$k=1,2,\cdots$ 存在，称它为 $X$ 的 <strong>k 阶原点矩</strong>，简称 <strong>k 阶矩</strong>。</p>
+                    <p style="margin: 1rem 0;"><strong>2. k阶中心矩：</strong>若 $E\{[X-E(X)]^k\}$，$k=1,2,\cdots$ 存在，称它为 $X$ 的 <strong>k 阶中心矩</strong>。</p>
+                    <p style="margin: 1rem 0;"><strong>3. k+l阶混合矩：</strong>若 $E(X^k Y^l)$，$k,l=1,2,\cdots$ 存在，称它为 $X$ 和 $Y$ 的 <strong>k+l 阶混合矩</strong>。</p>
+                    <p style="margin: 1rem 0;"><strong>4. k+l阶混合中心矩：</strong>若 $E\{[X-E(X)]^k[Y-E(Y)]^l\}$，$k,l=1,2,\cdots$ 存在，称它为 $X$ 和 $Y$ 的 <strong>k+l 阶混合中心矩</strong>。</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>矩与常用数字特征的关系</span></div>
+                <div class="card-body">
+                    <p>显然，</p>
+                    <p style="margin: 0.75rem 0;">• <strong>数学期望 $E(X)$</strong> 是 $X$ 的一阶原点矩</p>
+                    <p style="margin: 0.75rem 0;">• <strong>方差 $D(X)$</strong> 是 $X$ 的二阶中心矩</p>
+                    <p style="margin: 0.75rem 0;">• <strong>协方差 $\text{Cov}(X,Y)$</strong> 是 $X$ 和 $Y$ 的二阶混合中心矩</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-label">矩的重要性</div>
+                <p>矩是描述随机变量分布特征的重要工具。在统计推断中，矩估计法就是利用样本矩来估计总体矩，进而估计未知参数。</p>
+            </div>
+        </section>
+
+        <section class="section" id="s4-6">
+            <div class="section-header">
+                <span class="section-number">§4.6</span>
+                <h2 class="section-title">条件数学期望</h2>
+            </div>
+
+            <div class="knowledge-card definition-card">
+                <div class="card-header"><span>定义 — 条件期望</span></div>
+                <div class="card-body">
+                    <p>设 $(X, Y)$ 是二维随机向量。在给定 $Y = y$ 的条件下，$X$ 的条件期望定义为：</p>
+                    <p style="margin-top: 1rem;"><strong>离散型：</strong>$E(X | Y = y) = \sum_i x_i P(X = x_i | Y = y)$</p>
+                    <p><strong>连续型：</strong>$E(X | Y = y) = \int_{-\infty}^{+\infty} x f_{X|Y}(x|y) \, dx$</p>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>全期望公式</span></div>
+                <div class="card-body">
+                    <p>$E(X | Y)$ 是 $Y$ 的函数，作为随机变量，有：</p>
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-label">全期望公式</div>
+                        <div class="formula-content">$$E(X) = E[E(X|Y)]$$</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="knowledge-card theorem-card">
+                <div class="card-header"><span>条件方差公式</span></div>
+                <div class="card-body">
+                    <div class="formula-card" style="margin: 1rem 0;">
+                        <div class="formula-content">$$D(X) = E[D(X|Y)] + D[E(X|Y)]$$</div>
+                    </div>
+                    <p>即总方差 = 组内方差的期望 + 组间方差</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="chapter-footer">
+        <div class="footer-nav">
+            <a href="chapter3.html" class="footer-btn">← 第3章 多维随机变量及其分布</a>
+            <a href="chapter5.html" class="footer-btn next">第5章 大数定律及中心极限定理 →</a>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false });
+        });
+        function toggleSolution(btn) { const content = btn.nextElementSibling; content.classList.toggle('show'); btn.textContent = content.classList.contains('show') ? '隐藏解答' : '显示解答'; }
+    </script>
+</body>
+</html>
