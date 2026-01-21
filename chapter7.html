@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第7章 参数估计 | Neo Learning Hub</title>
+    <!-- Neo-Pop CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        body {
+            background-color: var(--color-bg);
+        }
+
+        .solution-toggle {
+            margin-top: 1rem;
+        }
+
+        .solution-content {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #FFFBF0;
+            border: 2px dashed var(--color-text);
+            border-radius: 8px;
+        }
+
+        .solution-content.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="container navbar-container">
+        <nav class="navbar">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back</span>
+            </a>
+            <div class="nav-menu"><span style="font-weight: 700;">第7章：参数估计</span></div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div class="badge" style="margin-bottom: 0;">数理统计</div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container chapter-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="toc-card">
+                <h4 style="margin-bottom: 1rem; font-size: 1.1rem;">本章目录</h4>
+                <nav>
+                    <a href="#s7-1" class="toc-link active">7.1 点估计</a>
+                    <a href="#s7-2" class="toc-link">7.2 估计量的评选标准</a>
+                    <a href="#s7-3" class="toc-link">7.3 置信区间</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content-area">
+
+            <div class="chapter-hero">
+                <div class="chapter-badge">Chapter 07</div>
+                <h1>参数估计</h1>
+                <p style="font-size: 1.1rem; color: #4B5563; margin-top: 1rem;">
+                    本章研究如何利用样本信息对总体中的未知参数进行估计。包括点估计（矩估计与最大似然估计）以及衡量估计精度和可靠性的区间估计。
+                </p>
+            </div>
+
+            <!-- §7.1 -->
+            <section id="s7-1" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§7.1</span>
+                    <h2>点估计</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-cube"></i> 矩估计法 (Moment Estimation)
+                    </div>
+                    <div class="card-body">
+                        <p><strong>基本思想：</strong> 用样本矩估计总体矩。</p>
+                        <p style="margin-top: 1rem;">若要求参数 $\theta$，建立方程：</p>
+                        <p>$$ E(X) = \mu(\theta) = \bar{X} $$</p>
+                        <p style="margin-top: 1rem;"><strong>结论：</strong> 样本均值 $\bar{X}$ 是总体均值 $\mu$ 的矩估计，样本方差 $B_2$
+                            是总体方差 $\sigma^2$ 的矩估计。</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-magnifying-glass-plus"></i> 最大似然估计 (MLE)
+                    </div>
+                    <div class="card-body">
+                        <p><strong>基本思想：</strong> 选择使观测样本出现概率最大的参数 $\theta$。</p>
+                        <p style="margin-top: 1rem;"><strong>似然函数：</strong> $L(\theta) = \prod_{i=1}^{n} f(x_i; \theta)$
+                        </p>
+                        <p style="margin-top: 0.5rem;">通过求解 $\frac{d \ln L(\theta)}{d\theta} = 0$ 得到估计值。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- §7.2 -->
+            <section id="s7-2" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§7.2</span>
+                    <h2>评选标准</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-scales"></i> 评选维度
+                    </div>
+                    <div class="card-body">
+                        <ul style="margin-left: 1.5rem; line-height: 2;">
+                            <li><strong>无偏性</strong> (Unbiasedness): $E(\hat{\theta}) = \theta$</li>
+                            <li><strong>有效性</strong> (Efficiency): 在无偏估计中，方差更小者更有效。</li>
+                            <li><strong>一致性</strong> (Consistency): 当 $n \to \infty$ 时，$\hat{\theta}_n \xrightarrow{P}
+                                \theta$。</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- §7.3 -->
+            <section id="s7-3" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§7.3</span>
+                    <h2>置信区间</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-brackets-square"></i> 定义
+                    </div>
+                    <div class="card-body">
+                        <p>给定置信度 $1-\alpha$，找到随机区间 $(\hat{\theta}_L, \hat{\theta}_U)$，使得：</p>
+                        <p>$$ P(\hat{\theta}_L < \theta < \hat{\theta}_U)=1 - \alpha $$</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-info"></i> 正态总体均值区间 ($\sigma^2$ 未知)
+                    </div>
+                    <div class="card-body">
+                        <p>$$ \left[ \bar{X} - t_{\alpha/2}(n-1)\frac{S}{\sqrt{n}}, \bar{X} +
+                            t_{\alpha/2}(n-1)\frac{S}{\sqrt{n}} \right] $$</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer" style="background: white; border-top: 3px solid #1E1B4B; padding: 3rem 0;">
+        <div class="container" style="text-align: center;">
+            <p style="color: #6B7280;">© 2026 Probability Hub. Designed for BUECEA Students.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }] });
+        });
+        function toggleSolution(btn) {
+            const content = btn.nextElementSibling;
+            content.classList.toggle('show');
+            btn.textContent = content.classList.contains('show') ? '隐藏解答' : '显示解答';
+        }
+    </script>
+</body>
+
+</html>

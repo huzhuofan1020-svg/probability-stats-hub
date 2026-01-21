@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第6章 样本及抽样分布 | Neo Learning Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        body {
+            background-color: var(--color-bg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container navbar-container">
+        <nav class="navbar">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back</span>
+            </a>
+            <div class="nav-menu"><span style="font-weight: 700;">第6章：样本及抽样分布</span></div>
+            <div class="badge" style="margin-bottom: 0;">数理统计基础</div>
+        </nav>
+    </div>
+
+    <div class="container chapter-container">
+        <aside class="sidebar">
+            <div class="toc-card">
+                <h4 style="margin-bottom: 1rem;">本章目录</h4>
+                <nav>
+                    <a href="#s6-1" class="toc-link active">6.1 随机样本</a>
+                    <a href="#s6-2" class="toc-link">6.2 抽样分布</a>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div class="chapter-hero">
+                <div class="chapter-badge">Chapter 06</div>
+                <h1>样本及抽样分布</h1>
+                <p style="font-size: 1.1rem; color: #4B5563; margin-top: 1rem;">
+                    本章是数理统计的基础，介绍样本、统计量的概念，以及三大抽样分布（χ²、t、F 分布）及其在正态总体中的应用。
+                </p>
+            </div>
+
+            <section id="s6-1" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§6.1</span>
+                    <h2>随机样本</h2>
+                </div>
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header"><i class="ph-bold ph-database"></i> 定义 — 简单随机样本</div>
+                    <div class="card-body">
+                        <p>若 $X_1, \cdots, X_n$ 满足：</p>
+                        <ul style="margin-left: 1.5rem; line-height: 1.8; margin-top: 0.5rem;">
+                            <li><strong>独立性</strong>：$X_1, \cdots, X_n$ 相互独立</li>
+                            <li><strong>同分布性</strong>：每个 $X_i$ 都与总体 $X$ 同分布</li>
+                        </ul>
+                        <p style="margin-top: 1rem;">则称 $(X_1, \cdots, X_n)$ 为来自总体 $X$ 的<strong>简单随机样本</strong>。</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header"><i class="ph-bold ph-function"></i> 常用统计量</div>
+                    <div class="card-body">
+                        <p><strong>样本均值：</strong> $\bar{X} = \frac{1}{n} \sum_{i=1}^{n} X_i$</p>
+                        <p style="margin-top: 1rem;"><strong>样本方差：</strong> $S^2 = \frac{1}{n-1} \sum_{i=1}^{n} (X_i -
+                            \bar{X})^2$</p>
+                        <p style="margin-top: 1.5rem; font-weight: 700;">性质：</p>
+                        <ul style="margin-left: 1.5rem; line-height: 1.8;">
+                            <li>$E(\bar{X}) = \mu$，$D(\bar{X}) = \frac{\sigma^2}{n}$</li>
+                            <li>$E(S^2) = \sigma^2$（无偏性）</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="s6-2" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§6.2</span>
+                    <h2>抽样分布</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header"><i class="ph-bold ph-greek-chi"></i> χ² 分布</div>
+                    <div class="card-body">
+                        <p>设 $X_1, \cdots, X_n$ 独立同分布于 $N(0, 1)$，则</p>
+                        <p>$$\chi^2 = \sum_{i=1}^{n} X_i^2 \sim \chi^2(n)$$</p>
+                        <p style="margin-top: 1rem;"><strong>性质：</strong> $E(\chi^2) = n$，$D(\chi^2) = 2n$</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header"><i class="ph-bold ph-t-logo"></i> t 分布</div>
+                    <div class="card-body">
+                        <p>设 $X \sim N(0,1)$，$Y \sim \chi^2(n)$ 独立，则</p>
+                        <p>$$T = \frac{X}{\sqrt{Y/n}} \sim t(n)$$</p>
+                        <p style="margin-top: 1rem;"><strong>性质：</strong> 密度函数关于原点对称；$n$ 大时近似 $N(0,1)$</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header"><i class="ph-bold ph-f-logo"></i> F 分布</div>
+                    <div class="card-body">
+                        <p>设 $U \sim \chi^2(n_1)$，$V \sim \chi^2(n_2)$ 独立，则</p>
+                        <p>$$F = \frac{U/n_1}{V/n_2} \sim F(n_1, n_2)$$</p>
+                        <p style="margin-top: 1rem;"><strong>性质：</strong> $1/F \sim F(n_2, n_1)$</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header"><i class="ph-bold ph-star"></i> 正态总体的抽样分布定理</div>
+                    <div class="card-body">
+                        <p>设 $X_1, \cdots, X_n$ 来自 $N(\mu, \sigma^2)$，则：</p>
+                        <p style="margin-top: 1rem;"><strong>定理1：</strong> $\bar{X} \sim N\left(\mu,
+                            \frac{\sigma^2}{n}\right)$</p>
+                        <p style="margin-top: 1rem;"><strong>定理2：</strong> $\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)$
+                        </p>
+                        <p style="margin-top: 1rem;"><strong>定理3：</strong> $\bar{X}$ 与 $S^2$ 相互独立</p>
+                        <p style="margin-top: 1rem;"><strong>定理4：</strong> $\frac{\bar{X} - \mu}{S/\sqrt{n}} \sim
+                            t(n-1)$</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="main-footer" style="background: white; border-top: 3px solid #1E1B4B; padding: 3rem 0;">
+        <div class="container" style="text-align: center;">
+            <p style="color: #6B7280;">© 2026 Probability Hub. Designed for BUECEA Students.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }] });
+        });
+    </script>
+</body>
+
+</html>

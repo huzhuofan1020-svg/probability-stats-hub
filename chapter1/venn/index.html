@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机事件与韦恩图 | Probability Hub</title>
+    <!-- Neo-Pop Design System -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        :root {
+            --primary: var(--color-primary);
+            --secondary: var(--color-secondary);
+            --accent: var(--color-accent);
+            --bg: var(--color-bg);
+            --card: #ffffff;
+            --text: var(--color-text);
+            --border: var(--color-text);
+            --shadow: var(--shadow-hard);
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            padding-bottom: 80px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 12px;
+            letter-spacing: -1.5px;
+            text-transform: uppercase;
+        }
+
+        .header h1 span {
+            color: var(--primary);
+        }
+
+        .card {
+            background: var(--card);
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-hard);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 参数设置卡片 - 全宽 */
+        .params-card {
+            width: 100%;
+        }
+
+        .params-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 1200px) {
+            .params-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 中间区域：韦恩图 + 右侧面板 */
+        .middle-section {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .middle-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 右侧面板 */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 垂直模式按钮 - 简约风格 */
+        .mode-buttons-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mode-buttons-vertical .mode-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        .mode-buttons-vertical .mode-text {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .mode-buttons-vertical .mode-formula {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .mode-buttons-vertical .mode-btn.active .mode-formula {
+            color: inherit;
+            opacity: 0.75;
+        }
+
+        /* 独立性检验内容 */
+        .check-content {
+            text-align: center;
+        }
+
+        .check-content .check-row {
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            padding: 10px 16px;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .check-content .check-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .check-content .check-val {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .check-divider {
+            padding: 6px 0;
+        }
+
+        .check-vs {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .check-content .status-badge {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* 公式区域 */
+        .formulas-section {
+            width: 100%;
+        }
+
+        @media (max-width: 1000px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* 概率控制器 */
+        .prob-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            flex-wrap: wrap;
+        }
+
+        .prob-item>.prob-circle,
+        .prob-item>.prob-content {
+            flex-shrink: 0;
+        }
+
+        .prob-item>.delta-container {
+            flex-basis: 100%;
+        }
+
+        .prob-item:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .prob-circle {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            flex-shrink: 0;
+        }
+
+        .prob-circle svg {
+            transform: rotate(-90deg);
+            width: 64px;
+            height: 64px;
+        }
+
+        .prob-circle .bg-ring {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 6;
+        }
+
+        .prob-circle .progress-ring {
+            fill: none;
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.3s ease;
+        }
+
+        .prob-circle.circle-a .progress-ring {
+            stroke: #f97316;
+        }
+
+        .prob-circle.circle-b .progress-ring {
+            stroke: #3b82f6;
+        }
+
+        .prob-circle.circle-ab .progress-ring {
+            stroke: #a855f7;
+        }
+
+        .prob-circle .value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .circle-a .value {
+            color: #f97316;
+        }
+
+        .circle-b .value {
+            color: #3b82f6;
+        }
+
+        .circle-ab .value {
+            color: #a855f7;
+        }
+
+        .prob-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .prob-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .prob-label .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 800;
+            border: 2px solid var(--color-text);
+        }
+
+        .tag-a {
+            background: var(--color-accent);
+            color: var(--color-text);
+        }
+
+        .tag-b {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .tag-ab {
+            background: var(--color-secondary);
+            color: white;
+        }
+
+        .prob-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        /* 滑块与数值输入的组合 */
+        .slider-with-input {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-with-input .prob-slider {
+            flex: 1;
+        }
+
+        /* 滑块轴容器 */
+        .slider-axis-container {
+            position: relative;
+            flex: 1;
+            padding: 0 9px;
+            /* 滑块thumb半径，确保刻度和滑块对齐 */
+        }
+
+        .slider-axis-container .prob-slider {
+            width: 100%;
+            margin: 0 -9px;
+            /* 抵消padding，让滑块占满宽度 */
+            width: calc(100% + 18px);
+        }
+
+        /* 刻度轴 */
+        .slider-axis {
+            position: relative;
+            height: 16px;
+            margin-top: 2px;
+        }
+
+        .axis-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .axis-ticks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .axis-tick {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .axis-tick::before {
+            content: '';
+            width: 1px;
+            height: 5px;
+            background: var(--border);
+        }
+
+        .axis-tick.major::before {
+            height: 7px;
+            background: var(--text-muted);
+        }
+
+        .axis-tick-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        .axis-tick.major .axis-tick-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+        }
+
+        /* 当前值指示器 */
+        .current-value-indicator {
+            position: absolute;
+            top: -4px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 5px solid var(--primary);
+            /* 移除 left 的 transition 以获得更跟手的滑动体验 */
+            transition: border-bottom-color 0.2s ease;
+            pointer-events: none;
+            will-change: left;
+            /* 性能优化 */
+        }
+
+        .slider-axis-container.axis-a .current-value-indicator {
+            border-bottom-color: #f97316;
+        }
+
+        .slider-axis-container.axis-b .current-value-indicator {
+            border-bottom-color: #3b82f6;
+        }
+
+        .slider-axis-container.axis-ab .current-value-indicator {
+            border-bottom-color: #a855f7;
+        }
+
+        /* 当吸附到独立点时，小三角变绿 */
+        .slider-axis-container.axis-ab .current-value-indicator.snapped {
+            border-bottom-color: #10b981;
+        }
+
+        /* 独立点偏移量显示 - 放在刻度轴下方居中 */
+        .independence-delta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .independence-delta.show {
+            opacity: 1;
+        }
+
+        .independence-delta.positive {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.08));
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        .independence-delta.negative {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.08));
+            color: #7c3aed;
+            border: 1px solid rgba(139, 92, 246, 0.25);
+        }
+
+        .independence-delta.zero {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08));
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        /* Delta Formula Hint */
+        .delta-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .independence-delta {
+            position: relative;
+            cursor: default;
+        }
+
+        .delta-formula-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: #94a3b8;
+            margin-left: 10px;
+            padding-left: 10px;
+            border-left: 1px solid #cbd5e1;
+            line-height: 1.2;
+            font-weight: 400;
+            white-space: nowrap;
+            opacity: 1;
+        }
+
+        /* P(AB) 范围指示器 */
+        .pab-range-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            padding: 4px 8px;
+            background: linear-gradient(90deg, rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.08));
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+        }
+
+        .pab-range-indicator .range-min,
+        .pab-range-indicator .range-max {
+            font-weight: 600;
+            color: #a855f7;
+            background: rgba(168, 85, 247, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .pab-range-indicator .range-arrow {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .value-input {
+            width: 85px;
+            padding: 8px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--text);
+            text-align: center;
+            outline: none;
+            box-shadow: 2px 2px 0 var(--border);
+        }
+
+        .value-input:hover {
+            border-color: var(--text-muted);
+        }
+
+        .value-input:focus {
+            border-color: var(--primary);
+            box-shadow: 3px 3px 0 var(--primary);
+        }
+
+        .value-input.input-a:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        .value-input.input-b:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .value-input.input-ab:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+        /* 数值输入框后缀 */
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 8px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .value-input.has-suffix {
+            padding-right: 24px;
+        }
+
+        .prob-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .prob-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .prob-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .slider-a::-webkit-slider-thumb {
+            background: #f97316;
+        }
+
+        .slider-b::-webkit-slider-thumb {
+            background: #3b82f6;
+        }
+
+        .slider-ab::-webkit-slider-thumb {
+            background: #a855f7;
+        }
+
+        .prob-slider:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* 滑块容器和独立性标记 */
+        .slider-container {
+            position: relative;
+            padding-top: 8px;
+        }
+
+        /* 独立性标记 - 隐藏，改用小三角颜色变化来表示 */
+        .independence-marker {
+            display: none;
+        }
+
+
+
+        /* 公式显示（非自由模式） */
+        .formula-display {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.08));
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        .formula-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* P(AB) 项在不同模式下的样式 */
+        .prob-item.locked {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02));
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        .prob-item.locked-disjoint {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.02));
+            border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+
+        /* 模式选择 */
+        .mode-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .mode-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .mode-btn {
+            padding: 12px 8px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--card);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--text-muted);
+            background: var(--bg);
+        }
+
+        .mode-btn.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--primary);
+        }
+
+        .mode-btn.active.mode-independent {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.08);
+            color: var(--success);
+        }
+
+        .mode-btn.active.mode-disjoint {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.08);
+            color: var(--danger);
+        }
+
+        /* 独立性检验 */
+        .independence-check {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 14px;
+        }
+
+        .check-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .check-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .check-row .val {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-badge.independent {
+            background: rgba(16, 185, 129, 0.12);
+            color: #059669;
+        }
+
+        .status-badge.positive {
+            background: rgba(245, 158, 11, 0.12);
+            color: #d97706;
+        }
+
+        .status-badge.negative {
+            background: rgba(139, 92, 246, 0.12);
+            color: #7c3aed;
+        }
+
+        .status-badge.disjoint {
+            background: rgba(239, 68, 68, 0.12);
+            color: #dc2626;
+        }
+
+        /* 可视化区域 */
+        .viz-area {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .canvas-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 韦恩图板块内部布局 */
+        .venn-layout {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .venn-left {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .venn-right {
+            width: 240px;
+            flex-shrink: 0;
+            background: var(--bg);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .panel-section {
+            margin-bottom: 0;
+        }
+
+        .panel-section .section-label {
+            margin-bottom: 12px;
+        }
+
+        .panel-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 16px 0;
+        }
+
+        /* 右侧面板的模式按钮 */
+        .venn-right .mode-buttons-vertical {
+            gap: 8px;
+        }
+
+        .venn-right .mode-btn {
+            padding: 10px 12px;
+            gap: 10px;
+        }
+
+        .venn-right .mode-icon {
+            font-size: 1.1rem;
+        }
+
+        .venn-right .mode-info {
+            flex: 1;
+        }
+
+        .venn-right .mode-text {
+            font-size: 0.85rem;
+        }
+
+        .venn-right .mode-desc {
+            font-size: 0.65rem;
+        }
+
+        /* 简约大气的模式按钮 */
+        .mode-buttons-simple {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mode-btn-simple {
+            padding: 14px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--card);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .mode-btn-simple:hover {
+            border-color: var(--primary-light);
+            background: rgba(99, 102, 241, 0.04);
+            color: var(--text);
+        }
+
+        .mode-btn-simple.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05));
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+        }
+
+        .mode-btn-simple.active.mode-independent {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            color: var(--success);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+        }
+
+        .mode-btn-simple.active.mode-disjoint {
+            border-color: var(--danger);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+            color: var(--danger);
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
+        }
+
+        /* 右侧面板的独立性检验 */
+        .check-comparison {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .check-item {
+            text-align: center;
+            padding: 8px 12px;
+            background: var(--card);
+            border-radius: 10px;
+            flex: 1;
+        }
+
+        .check-item .check-label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .check-item .check-val {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .check-comparison .check-vs {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 4px 6px;
+        }
+
+        .venn-right .status-badge {
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 900px) {
+            .venn-layout {
+                flex-direction: column;
+            }
+
+            .venn-right {
+                width: 100%;
+            }
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 12px;
+        }
+
+        .canvas-legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+        }
+
+        .legend-dot.a {
+            background: rgba(249, 115, 22, 0.7);
+        }
+
+        .legend-dot.b {
+            background: rgba(59, 130, 246, 0.7);
+        }
+
+        .legend-dot.ab {
+            background: rgba(168, 85, 247, 0.8);
+        }
+
+        /* 公式卡片 */
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 800px) {
+            .formula-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .formula-card {
+            background: #ffffff;
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: 4px 4px 0px var(--color-text);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.2s;
+        }
+
+        .formula-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--color-text);
+        }
+
+        .formula-card h4 {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .formula-card .formula {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text);
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .formula-card .result {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            align-self: flex-end;
+        }
+
+        /* 底部提示 */
+        .hint-bar {
+            text-align: center;
+            margin-top: 32px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .hint-bar span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+        }
+
+        /* 互斥冲突提示 */
+        .conflict-hint {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(239, 68, 68, 0.06));
+            color: #dc2626;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+        }
+
+        .conflict-hint.show {
+            opacity: 1;
+        }
+
+        /* 键盘微调提示 */
+        .keyboard-hint {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .keyboard-hint kbd {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 18px;
+            padding: 0 4px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 滑块获得焦点时的提示 */
+        .slider-focus-hint {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .prob-slider:focus+.slider-axis+.slider-focus-hint,
+        .prob-slider:focus~.slider-focus-hint {
+            opacity: 1;
+        }
+
+        /* 装饰元素 */
+        .decoration {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .decoration-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+        }
+
+        .decoration-2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.06) 0%, transparent 70%);
+            bottom: -50px;
+            right: -50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 装饰背景 -->
+    <div class="decoration decoration-1"></div>
+    <div class="decoration decoration-2"></div>
+
+    <!-- SVG渐变定义 -->
+    <svg width="0" height="0">
+        <defs>
+            <linearGradient id="gradientA" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f97316" />
+                <stop offset="100%" stop-color="#ef4444" />
+            </linearGradient>
+            <linearGradient id="gradientB" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#3b82f6" />
+                <stop offset="100%" stop-color="#06b6d4" />
+            </linearGradient>
+            <linearGradient id="gradientAB" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#a855f7" />
+                <stop offset="100%" stop-color="#ec4899" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <div class="container" style="margin-top: var(--space-md); margin-bottom: 40px;">
+        <nav class="navbar">
+            <a href="../../chapter1.html" class="logo">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back to Chapter 1</span>
+            </a>
+            <div class="nav-menu">
+                <span style="font-weight: 800; font-size: 1.1rem;">随机事件与韦恩图互动实验</span>
+            </div>
+            <div class="badge" style="margin-bottom: 0; background: var(--color-accent);">模型演示</div>
+        </nav>
+    </div>
+
+    <div class="header">
+        <div class="header-badge">概率论 · 互动教学</div>
+        <h1>随机事件与<span>韦恩图</span></h1>
+        <p>通过可视化交互，探索事件关系、独立性与条件概率</p>
+    </div>
+
+    <div class="main-container">
+        <!-- 概率参数设置 - 顶部 -->
+        <div class="card params-card">
+            <div class="section-label">概率参数设置</div>
+            <div class="params-grid">
+                <!-- P(A) -->
+                <div class="prob-item">
+                    <div class="prob-circle circle-a">
+                        <svg viewBox="0 0 64 64">
+                            <circle class="bg-ring" cx="32" cy="32" r="26" />
+                            <circle class="progress-ring" cx="32" cy="32" r="26" stroke-dasharray="163.36"
+                                stroke-dashoffset="81.68" id="progress-a" />
+                        </svg>
+                        <div class="value" id="val-pa">0.50</div>
+                    </div>
+                    <div class="prob-content">
+                        <div class="prob-label">
+                            事件 A 的概率
+                            <span class="tag tag-a">P(A)</span>
+                        </div>
+                        <div class="prob-desc">事件 A 发生的可能性</div>
+                        <div class="slider-with-input">
+                            <div class="slider-axis-container axis-a" id="axis-container-pa">
+                                <input type="range" class="prob-slider slider-a" id="range-pa" min="0.0001" max="0.9999"
+                                    step="0.0001" value="0.5">
+                                <div class="slider-axis">
+                                    <div class="axis-line"></div>
+                                    <div class="axis-ticks" id="axis-ticks-pa"></div>
+                                    <div class="current-value-indicator" id="indicator-pa"></div>
+                                </div>
+                            </div>
+                            <input type="number" class="value-input input-a" id="input-pa" min="0.0001" max="0.9999"
+                                step="0.0001" value="0.5000">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- P(B) -->
+                <div class="prob-item">
+                    <div class="prob-circle circle-b">
+                        <svg viewBox="0 0 64 64">
+                            <circle class="bg-ring" cx="32" cy="32" r="26" />
+                            <circle class="progress-ring" cx="32" cy="32" r="26" stroke-dasharray="163.36"
+                                stroke-dashoffset="98" id="progress-b" />
+                        </svg>
+                        <div class="value" id="val-pb">0.40</div>
+                    </div>
+                    <div class="prob-content">
+                        <div class="prob-label">
+                            事件 B 的概率
+                            <span class="tag tag-b">P(B)</span>
+                        </div>
+                        <div class="prob-desc">事件 B 发生的可能性</div>
+                        <div class="slider-with-input">
+                            <div class="slider-axis-container axis-b" id="axis-container-pb">
+                                <input type="range" class="prob-slider slider-b" id="range-pb" min="0.0001" max="0.9999"
+                                    step="0.0001" value="0.4">
+                                <div class="slider-axis">
+                                    <div class="axis-line"></div>
+                                    <div class="axis-ticks" id="axis-ticks-pb"></div>
+                                    <div class="current-value-indicator" id="indicator-pb"></div>
+                                </div>
+                            </div>
+                            <input type="number" class="value-input input-b" id="input-pb" min="0.0001" max="0.9999"
+                                step="0.0001" value="0.4000">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- P(AB) -->
+                <div class="prob-item" id="pab-item">
+                    <div class="prob-circle circle-ab">
+                        <svg viewBox="0 0 64 64">
+                            <circle class="bg-ring" cx="32" cy="32" r="26" />
+                            <circle class="progress-ring" cx="32" cy="32" r="26" stroke-dasharray="163.36"
+                                stroke-dashoffset="130.69" id="progress-ab" />
+                        </svg>
+                        <div class="value" id="val-pab">0.20</div>
+                    </div>
+                    <div class="prob-content">
+                        <div class="prob-label">
+                            交事件概率
+                            <span class="tag tag-ab">P(A∩B)</span>
+                        </div>
+                        <div class="prob-desc" id="pab-desc">A 和 B 同时发生的概率</div>
+                        <!-- 自由模式下的滑块 -->
+                        <div class="slider-container" id="pab-slider-container">
+                            <div class="slider-with-input">
+                                <div class="slider-axis-container axis-ab" id="axis-container-pab">
+                                    <input type="range" class="prob-slider slider-ab" id="range-pab" min="0" max="0.4"
+                                        step="0.0001" value="0.2">
+                                    <div class="slider-axis">
+                                        <div class="axis-line"></div>
+                                        <div class="axis-ticks" id="axis-ticks-pab"></div>
+                                        <div class="current-value-indicator" id="indicator-pab"></div>
+                                    </div>
+                                </div>
+                                <input type="number" class="value-input input-ab" id="input-pab" min="0" max="0.4"
+                                    step="0.0001" value="0.2000">
+                            </div>
+                        </div>
+                        <!-- 非自由模式下的计算公式显示 -->
+                        <div class="formula-display" id="pab-formula" style="display: none;">
+                            <span class="formula-text" id="formula-text">P(A) × P(B) = 0.20</span>
+                        </div>
+                    </div>
+                    <div class="delta-container">
+                        <div class="independence-delta" id="independence-delta">Δ = 0</div>
+                        <div class="delta-formula-hint">Δ = P(AB) - P(A)P(B)</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 韦恩图板块（包含韦恩图 + 快捷模式 + 独立性检验） -->
+        <div class="card canvas-card">
+            <div class="venn-layout">
+                <!-- 左侧：韦恩图 -->
+                <div class="venn-left">
+                    <canvas id="vennCanvas" width="480" height="380"></canvas>
+                    <div class="canvas-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot a"></span>
+                            <span>事件 A</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot b"></span>
+                            <span>事件 B</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot ab"></span>
+                            <span>A ∩ B</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：快捷模式 + 独立性检验 -->
+                <div class="venn-right">
+                    <!-- 快捷模式 -->
+                    <div class="panel-section">
+                        <div class="section-label">快捷模式</div>
+                        <div class="mode-buttons-simple">
+                            <button class="mode-btn-simple active" id="btn-free">自由调节</button>
+                            <button class="mode-btn-simple" id="btn-independent">相互独立</button>
+                            <button class="mode-btn-simple" id="btn-disjoint">互不相容</button>
+                        </div>
+                    </div>
+
+                    <!-- 分隔线 -->
+                    <div class="panel-divider"></div>
+
+                    <!-- 独立性检验 -->
+                    <div class="panel-section">
+                        <div class="section-label">独立性检验</div>
+                        <div class="check-content">
+                            <div class="check-comparison">
+                                <div class="check-item">
+                                    <span class="check-label">P(A∩B)</span>
+                                    <span class="check-val" id="disp-pab">0.2000</span>
+                                </div>
+                                <div class="check-vs">vs</div>
+                                <div class="check-item">
+                                    <span class="check-label">P(A)×P(B)</span>
+                                    <span class="check-val" id="disp-papb">0.2000</span>
+                                </div>
+                            </div>
+                            <div class="status-badge independent" id="relation-status">
+                                相互独立
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 公式卡片区域 -->
+        <div class="formulas-section">
+            <div class="formula-grid">
+                <div class="formula-card">
+                    <h4>并事件</h4>
+                    <div class="formula">P(A∪B) = P(A) + P(B) - P(A∩B)</div>
+                    <div class="result" id="calc-union">0.70</div>
+                </div>
+                <div class="formula-card">
+                    <h4>差事件</h4>
+                    <div class="formula">P(A - B) = P(A) - P(A∩B)</div>
+                    <div class="result" id="calc-diff">0.30</div>
+                </div>
+                <div class="formula-card">
+                    <h4>条件概率</h4>
+                    <div class="formula">P(B|A) = P(A∩B) / P(A)</div>
+                    <div class="result" id="calc-cond">0.40</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hint-bar">
+        <span>💡 拖动滑块调整概率参数 · 点击滑块后可用 <kbd>←</kbd> <kbd>→</kbd> 键微调（步进 0.0001）</span>
+    </div>
+
+    <script>
+        // DOM 元素
+        const elements = {
+            rangePA: document.getElementById('range-pa'),
+            rangePB: document.getElementById('range-pb'),
+            rangePAB: document.getElementById('range-pab'),
+            inputPA: document.getElementById('input-pa'),
+            inputPB: document.getElementById('input-pb'),
+            inputPAB: document.getElementById('input-pab'),
+            valPA: document.getElementById('val-pa'),
+            valPB: document.getElementById('val-pb'),
+            valPAB: document.getElementById('val-pab'),
+            progressA: document.getElementById('progress-a'),
+            progressB: document.getElementById('progress-b'),
+            progressAB: document.getElementById('progress-ab'),
+            dispPAB: document.getElementById('disp-pab'),
+            dispPAPB: document.getElementById('disp-papb'),
+            relationStatus: document.getElementById('relation-status'),
+            calcUnion: document.getElementById('calc-union'),
+            calcDiff: document.getElementById('calc-diff'),
+            calcCond: document.getElementById('calc-cond'),
+            btnFree: document.getElementById('btn-free'),
+            btnIndependent: document.getElementById('btn-independent'),
+            btnDisjoint: document.getElementById('btn-disjoint'),
+            pabItem: document.getElementById('pab-item'),
+            pabDesc: document.getElementById('pab-desc'),
+            pabSliderContainer: document.getElementById('pab-slider-container'),
+            pabFormula: document.getElementById('pab-formula'),
+            formulaText: document.getElementById('formula-text'),
+            independenceMarker: document.getElementById('independence-marker')
+        };
+
+        const canvas = document.getElementById('vennCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 状态
+        let state = {
+            pa: 0.5,
+            pb: 0.4,
+            pab: 0.2,
+            mode: 'free',
+            isSnapped: false  // 是否吸附到独立点
+        };
+
+        // 吸附阈值（当滑块值与独立点相差在此范围内时自动吸附）
+        const SNAP_THRESHOLD = 0.001;
+
+        // 圆环周长
+        const circumference = 2 * Math.PI * 26;
+
+        // 刻度轴元素
+        const axisElements = {
+            ticksPA: document.getElementById('axis-ticks-pa'),
+            ticksPB: document.getElementById('axis-ticks-pb'),
+            ticksPAB: document.getElementById('axis-ticks-pab'),
+            indicatorPA: document.getElementById('indicator-pa'),
+            indicatorPB: document.getElementById('indicator-pb'),
+            indicatorPAB: document.getElementById('indicator-pab')
+        };
+
+        // 生成刻度轴
+        function generateAxisTicks(container, min, max, step = 0.1) {
+            container.innerHTML = '';
+            const range = max - min;
+            const numTicks = Math.round(range / step) + 1;
+
+            for (let i = 0; i < numTicks; i++) {
+                const value = min + i * step;
+                const tick = document.createElement('div');
+                tick.className = 'axis-tick';
+
+                // 0, 0.5, 1 为主刻度
+                if (Math.abs(value % 0.5) < 0.001 || Math.abs(value) < 0.001 || Math.abs(value - 1) < 0.001) {
+                    tick.classList.add('major');
+                }
+
+                const label = document.createElement('span');
+                label.className = 'axis-tick-label';
+                // 只显示主刻度的标签
+                if (tick.classList.contains('major')) {
+                    label.textContent = value.toFixed(1);
+                }
+                tick.appendChild(label);
+                container.appendChild(tick);
+            }
+        }
+
+        // 更新指示器位置 - 使用百分比定位，与刻度轴对齐
+        function updateValueIndicator(slider, indicator, value) {
+            const min = parseFloat(slider.min);
+            const max = parseFloat(slider.max);
+            const percent = (value - min) / (max - min) * 100;
+            indicator.style.left = `${percent}%`;
+        }
+
+        // 初始化刻度轴
+        function initAxis() {
+            generateAxisTicks(axisElements.ticksPA, 0, 1, 0.1);
+            generateAxisTicks(axisElements.ticksPB, 0, 1, 0.1);
+            updatePABAxis();
+        }
+
+        // 更新 P(AB) 刻度轴（范围动态变化）
+        function updatePABAxis() {
+            const min = parseFloat(elements.rangePAB.min);
+            const max = parseFloat(elements.rangePAB.max);
+            const range = max - min;
+
+            axisElements.ticksPAB.innerHTML = '';
+
+            // 固定显示 5 个刻度点，全部显示数值
+            const numTicks = 5;
+
+            for (let i = 0; i < numTicks; i++) {
+                const value = min + (range * i / (numTicks - 1));
+                const tick = document.createElement('div');
+                tick.className = 'axis-tick major'; // 全部作为主刻度显示数值
+
+                const label = document.createElement('span');
+                label.className = 'axis-tick-label';
+                label.textContent = value.toFixed(4);
+                tick.appendChild(label);
+                axisElements.ticksPAB.appendChild(tick);
+            }
+
+            // 更新范围指示器
+            updateRangeIndicator(min, max);
+        }
+
+        // 添加范围变化指示器
+        function updateRangeIndicator(min, max) {
+            let indicator = document.getElementById('pab-range-indicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'pab-range-indicator';
+                indicator.className = 'pab-range-indicator';
+                const container = document.getElementById('axis-container-pab');
+                container.insertBefore(indicator, container.firstChild);
+            }
+            indicator.innerHTML = `<span class="range-min">${min.toFixed(4)}</span><span class="range-arrow">↔</span><span class="range-max">${max.toFixed(4)}</span>`;
+        }
+
+        // 初始化
+        function init() {
+            initAxis();
+            updateModeButtons();
+            updatePABUI();
+            addEventListeners();
+            update();
+        }
+
+        function addEventListeners() {
+            // P(A) 滑块
+            elements.rangePA.addEventListener('input', e => {
+                state.pa = parseFloat(e.target.value);
+                state.isSnapped = false; // 调整 P(A) 时强制解除吸附
+                if (state.mode !== 'free') {
+                    applyModeConstraints();
+                }
+                update();
+            });
+
+            // P(A) 数值输入
+            elements.inputPA.addEventListener('input', e => {
+                let val = parseFloat(e.target.value);
+                if (!isNaN(val)) {
+                    val = Math.max(0.01, Math.min(0.99, val));
+                    state.pa = val;
+                    state.isSnapped = false; // 调整 P(A) 时强制解除吸附
+                    if (state.mode !== 'free') {
+                        applyModeConstraints();
+                    }
+                    update();
+                }
+            });
+
+            elements.inputPA.addEventListener('blur', e => {
+                e.target.value = state.pa.toFixed(4);
+            });
+
+            // P(B) 滑块
+            elements.rangePB.addEventListener('input', e => {
+                state.pb = parseFloat(e.target.value);
+                state.isSnapped = false; // 调整 P(B) 时强制解除吸附
+                if (state.mode !== 'free') {
+                    applyModeConstraints();
+                }
+                update();
+            });
+
+            // P(B) 数值输入
+            elements.inputPB.addEventListener('input', e => {
+                let val = parseFloat(e.target.value);
+                if (!isNaN(val)) {
+                    val = Math.max(0.01, Math.min(0.99, val));
+                    state.pb = val;
+                    state.isSnapped = false; // 调整 P(B) 时强制解除吸附
+                    if (state.mode !== 'free') {
+                        applyModeConstraints();
+                    }
+                    update();
+                }
+            });
+
+            elements.inputPB.addEventListener('blur', e => {
+                e.target.value = state.pb.toFixed(4);
+            });
+
+            // P(AB) 滑块
+            elements.rangePAB.addEventListener('input', e => {
+                let newPab = parseFloat(e.target.value);
+                const independentValue = state.pa * state.pb;
+
+                // 吸附逻辑：当接近独立点时自动吸附
+                if (Math.abs(newPab - independentValue) < SNAP_THRESHOLD) {
+                    state.pab = independentValue;
+                    state.isSnapped = true;
+                } else {
+                    state.pab = newPab;
+                    state.isSnapped = false;
+                }
+
+                state.mode = 'free';
+                updateModeButtons();
+                updatePABUI();
+                update();
+            });
+
+            // P(AB) 数值输入
+            elements.inputPAB.addEventListener('input', e => {
+                let val = parseFloat(e.target.value);
+                if (!isNaN(val)) {
+                    const maxPAB = Math.min(state.pa, state.pb);
+                    const minPAB = Math.max(0, state.pa + state.pb - 1);
+                    val = Math.max(minPAB, Math.min(maxPAB, val));
+
+                    const independentValue = state.pa * state.pb;
+                    // 吸附逻辑
+                    if (Math.abs(val - independentValue) < SNAP_THRESHOLD) {
+                        state.pab = independentValue;
+                        state.isSnapped = true;
+                    } else {
+                        state.pab = val;
+                        state.isSnapped = false;
+                    }
+
+                    state.mode = 'free';
+                    updateModeButtons();
+                    updatePABUI();
+                    update();
+                }
+            });
+
+            elements.inputPAB.addEventListener('blur', e => {
+                e.target.value = state.pab.toFixed(4);
+            });
+
+            elements.btnFree.addEventListener('click', () => {
+                state.mode = 'free';
+                state.isSnapped = false;
+                updateModeButtons();
+                updatePABUI();
+                update();
+            });
+
+            elements.btnIndependent.addEventListener('click', () => {
+                state.mode = 'independent';
+                applyModeConstraints();
+                updateModeButtons();
+                updatePABUI();
+                update();
+            });
+
+            elements.btnDisjoint.addEventListener('click', () => {
+                state.mode = 'disjoint';
+                applyModeConstraints();
+                updateModeButtons();
+                updatePABUI();
+                update();
+            });
+        }
+
+        function applyModeConstraints() {
+            if (state.mode === 'independent') {
+                state.pab = state.pa * state.pb;
+            } else if (state.mode === 'disjoint') {
+                state.pab = 0;
+                if (state.pa + state.pb > 1) {
+                    const ratio = state.pa / (state.pa + state.pb);
+                    state.pa = ratio * 0.99;
+                    state.pb = (1 - ratio) * 0.99;
+                    elements.rangePA.value = state.pa;
+                    elements.rangePB.value = state.pb;
+                }
+            }
+        }
+
+        function updateModeButtons() {
+            elements.btnFree.classList.toggle('active', state.mode === 'free');
+            elements.btnIndependent.classList.remove('active', 'mode-independent');
+            elements.btnDisjoint.classList.remove('active', 'mode-disjoint');
+
+            if (state.mode === 'independent') {
+                elements.btnIndependent.classList.add('active', 'mode-independent');
+            } else if (state.mode === 'disjoint') {
+                elements.btnDisjoint.classList.add('active', 'mode-disjoint');
+            }
+        }
+
+        // 更新 P(AB) 区域的 UI 显示
+        function updatePABUI() {
+            const pabItem = elements.pabItem;
+            const sliderContainer = elements.pabSliderContainer;
+            const formulaDisplay = elements.pabFormula;
+            const formulaText = elements.formulaText;
+            const pabDesc = elements.pabDesc;
+
+            // 清除样式
+            pabItem.classList.remove('locked', 'locked-disjoint');
+
+            if (state.mode === 'free') {
+                // 自由模式：显示滑块
+                sliderContainer.style.display = 'block';
+                formulaDisplay.style.display = 'none';
+                elements.rangePAB.disabled = false;
+                pabDesc.textContent = 'A 和 B 同时发生的概率';
+            } else if (state.mode === 'independent') {
+                // 独立模式：显示公式
+                sliderContainer.style.display = 'none';
+                formulaDisplay.style.display = 'block';
+                formulaDisplay.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04))';
+                formulaDisplay.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+                formulaText.style.color = '#059669';
+                formulaText.innerHTML = `P(A) × P(B) = ${state.pa.toFixed(2)} × ${state.pb.toFixed(2)} = <strong>${state.pab.toFixed(4)}</strong>`;
+                pabItem.classList.add('locked');
+                pabDesc.textContent = '由独立性自动计算';
+            } else if (state.mode === 'disjoint') {
+                // 互斥模式：显示公式
+                sliderContainer.style.display = 'none';
+                formulaDisplay.style.display = 'block';
+                formulaDisplay.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.04))';
+                formulaDisplay.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+                formulaText.style.color = '#dc2626';
+                formulaText.innerHTML = `A ∩ B = ∅ → P(A∩B) = <strong>0</strong>`;
+                pabItem.classList.add('locked-disjoint');
+                pabDesc.textContent = 'A、B 互不相容，交集为空';
+            }
+
+            // 更新独立性标记位置
+            updateIndependenceMarker();
+        }
+
+        // 更新独立性标记在滑块上的位置 - 使用百分比定位（与指示器相同）
+        function updateIndependenceMarker() {
+            // 这个函数已废弃，改用 updateDeltaDisplay
+        }
+
+        // 更新小三角颜色和偏移量显示
+        function updateDeltaDisplay() {
+            const indicator = axisElements.indicatorPAB;
+            const deltaEl = document.getElementById('independence-delta');
+            const independentValue = state.pa * state.pb;
+            const delta = state.pab - independentValue;
+
+            // 更新小三角颜色
+            if (state.isSnapped || Math.abs(delta) < 0.001) {
+                indicator.classList.add('snapped');
+            } else {
+                indicator.classList.remove('snapped');
+            }
+
+            // 更新偏移量显示
+            deltaEl.classList.remove('positive', 'negative', 'zero', 'show');
+
+            if (Math.abs(delta) < 0.001) {
+                // 简化显示，只显示 Δ = 0，配合绿色背景表示独立
+                deltaEl.textContent = 'Δ = 0';
+                deltaEl.classList.add('zero', 'show');
+            } else if (delta > 0) {
+                deltaEl.textContent = `Δ = +${delta.toFixed(3)}`;
+                deltaEl.classList.add('positive', 'show');
+            } else {
+                deltaEl.textContent = `Δ = ${delta.toFixed(3)}`;
+                deltaEl.classList.add('negative', 'show');
+            }
+        }
+
+        function update() {
+            // 约束 P(AB)
+            const maxPAB = Math.min(state.pa, state.pb);
+            const minPAB = Math.max(0, state.pa + state.pb - 1);
+
+            if (state.mode === 'free') {
+                elements.rangePAB.max = maxPAB;
+                elements.rangePAB.min = minPAB;
+                if (state.pab > maxPAB) state.pab = maxPAB;
+                if (state.pab < minPAB) state.pab = minPAB;
+
+                // 更新独立性标记位置
+                updateIndependenceMarker();
+
+                // 更新 P(AB) 刻度轴
+                updatePABAxis();
+            }
+
+            // 更新指示器位置
+            updateValueIndicator(elements.rangePA, axisElements.indicatorPA, state.pa);
+            updateValueIndicator(elements.rangePB, axisElements.indicatorPB, state.pb);
+            if (state.mode === 'free') {
+                updateValueIndicator(elements.rangePAB, axisElements.indicatorPAB, state.pab);
+            }
+
+            // 更新偏移量显示（所有模式下都显示）
+            updateDeltaDisplay();
+
+            // 更新圆环
+            const offsetA = circumference * (1 - state.pa);
+            const offsetB = circumference * (1 - state.pb);
+            const offsetAB = circumference * (1 - state.pab);
+
+            elements.progressA.style.strokeDashoffset = offsetA;
+            elements.progressB.style.strokeDashoffset = offsetB;
+            elements.progressAB.style.strokeDashoffset = offsetAB;
+
+            // 更新数值显示
+            elements.valPA.textContent = state.pa.toFixed(2);
+            elements.valPB.textContent = state.pb.toFixed(2);
+            elements.valPAB.textContent = state.pab.toFixed(2);
+
+            elements.rangePA.value = state.pa;
+            elements.rangePB.value = state.pb;
+            elements.rangePAB.value = state.pab;
+
+            // 同步数值输入框（仅当输入框没有焦点时更新）
+            if (document.activeElement !== elements.inputPA) {
+                elements.inputPA.value = state.pa.toFixed(4);
+            }
+            if (document.activeElement !== elements.inputPB) {
+                elements.inputPB.value = state.pb.toFixed(4);
+            }
+            if (document.activeElement !== elements.inputPAB) {
+                elements.inputPAB.value = state.pab.toFixed(4);
+            }
+
+            // 更新 P(AB) 输入框的范围
+            elements.inputPAB.max = maxPAB;
+            elements.inputPAB.min = minPAB;
+
+            // 独立性检验
+            const product = state.pa * state.pb;
+            elements.dispPAB.textContent = state.pab.toFixed(4);
+            elements.dispPAPB.textContent = product.toFixed(4);
+
+            // 判断关系
+            const isIndep = Math.abs(state.pab - product) < 0.001;
+            const statusEl = elements.relationStatus;
+
+            statusEl.className = 'status-badge';
+            if (state.pab === 0 && state.pa > 0 && state.pb > 0) {
+                statusEl.textContent = '互不相容';
+                statusEl.classList.add('disjoint');
+            } else if (isIndep) {
+                statusEl.textContent = '相互独立';
+                statusEl.classList.add('independent');
+            } else if (state.pab > product) {
+                statusEl.textContent = '正相关';
+                statusEl.classList.add('positive');
+            } else {
+                statusEl.textContent = '负相关';
+                statusEl.classList.add('negative');
+            }
+
+            // 计算衍生公式
+            const union = state.pa + state.pb - state.pab;
+            const diff = state.pa - state.pab;
+            const cond = state.pa > 0 ? state.pab / state.pa : 0;
+
+            elements.calcUnion.textContent = union.toFixed(2);
+            elements.calcDiff.textContent = diff.toFixed(2);
+            elements.calcCond.textContent = cond.toFixed(2);
+
+            // 绘制韦恩图
+            drawVenn();
+        }
+
+        function drawVenn() {
+            const centerY = canvas.height / 2;
+            const baseRadius = 100;
+            const minRadius = 30;
+
+            // 动态计算圆的半径（面积与概率成正比）
+            let radiusA = baseRadius * Math.sqrt(state.pa / 0.5);
+            let radiusB = baseRadius * Math.sqrt(state.pb / 0.5);
+            radiusA = Math.max(radiusA, minRadius);
+            radiusB = Math.max(radiusB, minRadius);
+
+            // 根据交集大小计算两圆距离
+            let distance;
+            if (state.pab === 0) {
+                distance = radiusA + radiusB + 30;
+            } else if (state.pab >= Math.min(state.pa, state.pb) - 0.001) {
+                distance = Math.abs(radiusA - radiusB) * 0.3;
+            } else {
+                const overlapRatio = state.pab / Math.min(state.pa, state.pb);
+                distance = (radiusA + radiusB) * (1 - overlapRatio * 0.75);
+            }
+
+            const centerAx = canvas.width / 2 - distance / 2;
+            const centerBx = canvas.width / 2 + distance / 2;
+
+            // ========== 第一步：底层纯白 ==========
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // ========== 第二步：画样本空间背景（浅灰色） ==========
+            ctx.fillStyle = '#f1f5f9';
+            ctx.fillRect(24, 24, canvas.width - 48, canvas.height - 48);
+
+            // ========== 第三步：用 destination-out 擦除圆的区域 ==========
+            ctx.globalCompositeOperation = 'destination-out';
+
+            // 擦除圆 A（露出底部白色）
+            ctx.beginPath();
+            ctx.arc(centerAx, centerY, radiusA, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 擦除圆 B（露出底部白色）
+            ctx.beginPath();
+            ctx.arc(centerBx, centerY, radiusB, 0, Math.PI * 2);
+            ctx.fill();
+
+            // ========== 第四步：恢复正常绘制模式 ==========
+            ctx.globalCompositeOperation = 'source-over';
+
+            // ========== 第五步：绘制样本空间虚线边框 ==========
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([6, 4]);
+            ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
+            ctx.setLineDash([]);
+
+            // ========== 第六步：绘制彩色圆 A ==========
+            ctx.beginPath();
+            ctx.arc(centerAx, centerY, radiusA, 0, Math.PI * 2);
+            // 添加羽化效果（外发光阴影）
+            ctx.shadowColor = 'rgba(249, 115, 22, 0.4)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            // 使用更柔和、高级的橙色
+            ctx.fillStyle = 'rgba(251, 146, 60, 0.55)';
+            ctx.fill();
+            // 清除阴影以绘制描边
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            // 细腻的深色描边
+            ctx.strokeStyle = 'rgba(234, 88, 12, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // ========== 第七步：绘制彩色圆 B ==========
+            ctx.beginPath();
+            ctx.arc(centerBx, centerY, radiusB, 0, Math.PI * 2);
+            // 添加羽化效果（外发光阴影）
+            ctx.shadowColor = 'rgba(59, 130, 246, 0.4)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            // 使用更柔和、高级的蓝色
+            ctx.fillStyle = 'rgba(96, 165, 250, 0.55)';
+            ctx.fill();
+            // 清除阴影以绘制描边
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            // 细腻的深色描边
+            ctx.strokeStyle = 'rgba(37, 99, 235, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // ========== 第八步：高亮交集区域 ==========
+            if (state.pab > 0.001) {
+                ctx.save();
+                // 裁剪出交集区域
+                ctx.beginPath();
+                ctx.arc(centerAx, centerY, radiusA, 0, Math.PI * 2);
+                ctx.clip();
+
+                ctx.beginPath();
+                ctx.arc(centerBx, centerY, radiusB, 0, Math.PI * 2);
+                // 使用优雅的紫色高亮交集
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.4)';
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // ========== 第九步：绘制标签 ==========
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // 样本空间标签 - 更低调优雅
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '500 12px Inter';
+            ctx.textAlign = 'left';
+            ctx.fillText('Ω', 32, 42);
+
+            // 事件 A 标签 - 使用深橙色，更加醒目
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#c2410c';
+            ctx.font = '700 32px Inter';
+            ctx.fillText('A', centerAx, centerY);
+
+            // 事件 B 标签 - 使用深蓝色，更加醒目
+            ctx.fillStyle = '#1d4ed8';
+            ctx.font = '700 32px Inter';
+            ctx.fillText('B', centerBx, centerY);
+
+            // 交集标签 - 优雅的紫色
+            if (state.pab > 0.03 && distance < radiusA + radiusB - 20) {
+                ctx.fillStyle = '#7c3aed';
+                ctx.font = '600 13px Inter';
+                ctx.fillText('A∩B', (centerAx + centerBx) / 2, centerY + 48);
+            }
+
+            // 概率数值（圆的下方）- 更精致的样式
+            ctx.font = '500 11px "JetBrains Mono"';
+            ctx.fillStyle = '#64748b';
+            ctx.fillText(`P(A)=${state.pa.toFixed(2)}`, centerAx, centerY + radiusA + 22);
+            ctx.fillText(`P(B)=${state.pb.toFixed(2)}`, centerBx, centerY + radiusB + 22);
+
+            // P(AB) 数值 - 紫色高亮
+            if (state.pab > 0.01) {
+                ctx.fillStyle = '#7c3aed';
+                ctx.font = '500 11px "JetBrains Mono"';
+                ctx.fillText(`P(A∩B)=${state.pab.toFixed(2)}`, (centerAx + centerBx) / 2, centerY + 68);
+            }
+
+            // "都不发生"概率 - 右下角低调显示
+            const pNeither = 1 - (state.pa + state.pb - state.pab);
+            if (pNeither > 0.01) {
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '400 10px "JetBrains Mono"';
+                ctx.textAlign = 'right';
+                ctx.fillText(`P(Ω∖(A∪B))=${pNeither.toFixed(2)}`, canvas.width - 32, canvas.height - 32);
+            }
+        }
+
+        // 创建冲突提示元素
+        function createConflictHint() {
+            let hint = document.getElementById('conflict-hint');
+            if (!hint) {
+                hint = document.createElement('div');
+                hint.id = 'conflict-hint';
+                hint.className = 'conflict-hint';
+                const sliderContainer = document.getElementById('pab-slider-container');
+                sliderContainer.style.position = 'relative';
+                sliderContainer.appendChild(hint);
+            }
+            return hint;
+        }
+
+        // 显示/隐藏冲突提示
+        function showConflictHint(message) {
+            const hint = createConflictHint();
+            hint.textContent = message;
+            hint.classList.add('show');
+
+            // 3秒后自动隐藏
+            clearTimeout(window.conflictHintTimeout);
+            window.conflictHintTimeout = setTimeout(() => {
+                hint.classList.remove('show');
+            }, 3000);
+        }
+
+        function hideConflictHint() {
+            const hint = document.getElementById('conflict-hint');
+            if (hint) {
+                hint.classList.remove('show');
+            }
+        }
+
+        // 检查并显示冲突提示
+        function checkAndShowConflict(attemptedValue, actualValue, minPAB, maxPAB) {
+            if (attemptedValue < minPAB) {
+                showConflictHint(`全概率限制：P(AB) ≥ ${minPAB.toFixed(4)}`);
+            } else if (attemptedValue > maxPAB) {
+                showConflictHint(`上界限制：P(AB) ≤ ${maxPAB.toFixed(4)}`);
+            } else {
+                hideConflictHint();
+            }
+        }
+
+        init();
+
+        // Render Math
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false }
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

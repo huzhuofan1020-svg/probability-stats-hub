@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第2章 随机变量及其分布 | Neo Learning Hub</title>
+    <!-- Neo-Pop CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        body {
+            background-color: var(--color-bg);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="container navbar-container">
+        <nav class="navbar">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back</span>
+            </a>
+            <div class="nav-menu"><span style="font-weight: 700;">第2章：随机变量及其分布</span></div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div class="badge" style="margin-bottom: 0;">进度: 14%</div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container chapter-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="toc-card">
+                <h4 style="margin-bottom: 1rem; font-size: 1.1rem;">本章目录</h4>
+                <nav>
+                    <a href="#s2-1" class="toc-link active">2.1 随机变量及其独立性</a>
+                    <a href="#s2-2" class="toc-link">2.2 离散型随机变量</a>
+                    <a href="#s2-3" class="toc-link">2.3 连续型随机变量</a>
+                    <a href="#s2-4" class="toc-link">2.4 概率分布函数</a>
+                    <a href="#s2-5" class="toc-link">2.5 随机变量函数的分布</a>
+                    <a href="#s2-6" class="toc-link">2.6 随机变量的 p 分位数</a>
+                </nav>
+                <hr style="border: 1px solid var(--color-text); margin: 1.5rem 0; opacity: 0.2;">
+                <h4 style="margin-bottom: 1rem; font-size: 1.1rem;">交互演示</h4>
+                <a href="chapter2/poisson/index.html" class="btn btn-secondary"
+                    style="width: 100%; font-size: 0.9rem; padding: 8px;">
+                    <i class="ph-bold ph-chart-bar"></i> 泊松分布
+                </a>
+                <a href="chapter2/binomial/index.html" class="btn btn-secondary"
+                    style="width: 100%; font-size: 0.9rem; padding: 8px; margin-top: 0.5rem;">
+                    <i class="ph-bold ph-chart-line"></i> 二项分布
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content-area">
+
+            <div class="chapter-hero">
+                <div class="chapter-badge">Chapter 02</div>
+                <h1>随机变量及其分布</h1>
+                <p style="font-size: 1.1rem; color: #4B5563; margin-top: 1rem;">
+                    本章引入随机变量的概念，它是连接随机现象与数学分析的桥梁。我们将学习离散型与连续型随机变量及其分布规律，这是后续统计推断的基础。
+                </p>
+            </div>
+
+            <!-- §2.1 随机变量及其独立性 -->
+            <section id="s2-1" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§2.1</span>
+                    <h2>随机变量及其独立性</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-book-bookmark"></i> 定义 — 随机变量
+                    </div>
+                    <div class="card-body">
+                        <p>设 $(\Omega, \mathcal{F}, P)$ 是概率空间。如果 $X: \Omega \to \mathbf{R}$ 是一个实值函数，且对任意实数 $a$，有</p>
+                        <div style="padding: 1rem 0; overflow-x: auto;">
+                            $$\{X \le a\} = \{\omega \in \Omega : X(\omega) \le a\} \in \mathcal{F}$$
+                        </div>
+                        <p>则称 $X$ 为 $(\Omega, \mathcal{F}, P)$ 上的<strong>随机变量</strong>。</p>
+                        <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">直观理解：随机变量是将随机试验的结果数值化的函数。</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-brackets-curly"></i> 定义 — 随机变量的独立性
+                    </div>
+                    <div class="card-body">
+                        <p>设 $X, Y$ 是两个随机变量。如果对任意实数 $a, b$，有</p>
+                        <div style="padding: 1rem 0; overflow-x: auto;">
+                            $$P(X \le a, Y \le b) = P(X \le a) \cdot P(Y \le b)$$
+                        </div>
+                        <p>则称随机变量 $X$ 与 $Y$ <strong>相互独立</strong>。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- §2.2 离散型随机变量 -->
+            <section id="s2-2" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§2.2</span>
+                    <h2>离散型随机变量</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-function"></i> 常见离散型分布
+                    </div>
+                    <div class="card-body">
+                        <p><strong>A. 两点分布 $B(1, p)$</strong></p>
+                        <p>$$P(X = k) = p^k (1-p)^{1-k}, \quad k = 0, 1$$</p>
+
+                        <p style="margin-top: 1.5rem;"><strong>B. 二项分布 $B(n, p)$</strong></p>
+                        <p>$$P(X = k) = C_n^k p^k (1-p)^{n-k}, \quad k = 0, 1, \cdots, n$$</p>
+
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #DDD;">
+                            <a href="chapter2/binomial/index.html" class="btn btn-secondary"
+                                style="font-size: 0.85rem; padding: 8px 16px;">
+                                <i class="ph-bold ph-presentation"></i> 二项分布交互探索
+                            </a>
+                        </div>
+
+                        <p style="margin-top: 1.5rem;"><strong>C. 泊松分布 $\pi(\lambda)$</strong></p>
+                        <p>$$P\{X = k\} = \frac{\lambda^k}{k!} e^{-\lambda}, \quad k = 0, 1, 2, \cdots$$</p>
+
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #DDD;">
+                            <a href="chapter2/poisson/index.html" class="btn btn-secondary"
+                                style="font-size: 0.85rem; padding: 8px 16px;">
+                                <i class="ph-bold ph-lightning"></i> 泊松光子探测实验
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- §2.3 连续型随机变量 -->
+            <section id="s2-3" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§2.3</span>
+                    <h2>连续型随机变量</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-wave-sine"></i> 定义 — 概率密度函数 (PDF)
+                    </div>
+                    <div class="card-body">
+                        <p>如果存在<strong>非负可积</strong>函数 $f(x)$，使得随机变量 $X$ 的分布函数可以表示为</p>
+                        <p>$$F(x) = P\{X \le x\} = \int_{-\infty}^{x} f(t) \, dt$$</p>
+                        <p>则称 $X$ 为<strong>连续型随机变量</strong>，$f(x)$ 称为 $X$ 的<strong>概率密度函数</strong>。</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-chart-line-up"></i> 常见连续型分布
+                    </div>
+                    <div class="card-body">
+                        <p><strong>A. 均匀分布 $U(a, b)$</strong></p>
+                        <p>$$f(x) = \begin{cases} \dfrac{1}{b-a}, & a \le x \le b \\ 0, & \text{其他} \end{cases}$$</p>
+
+                        <p style="margin-top: 1.5rem;"><strong>B. 指数分布 $E(\theta)$</strong></p>
+                        <p>$$f(x) = \begin{cases} \theta e^{-\theta x}, & x \ge 0 \\ 0, & x < 0 \end{cases}$$</p>
+
+                                <p style="margin-top: 1.5rem;"><strong>C. 正态分布 $N(\mu, \sigma^2)$</strong></p>
+                                <p>$$f(x) = \frac{1}{\sqrt{2\pi}\sigma} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)$$
+                                </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- §2.4 概率分布函数 -->
+            <section id="s2-4" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§2.4</span>
+                    <h2>概率分布函数</h2>
+                </div>
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-function"></i> 定义
+                    </div>
+                    <div class="card-body">
+                        <p>设 $X$ 是一个随机变量，$x$ 是任意实数，函数</p>
+                        <p>$$F(x) = P\{X \le x\}, \quad -\infty < x < +\infty$$</p>
+                                <p>称为 $X$ 的<strong>分布函数</strong>。</p>
+                                <p style="margin-top: 1rem; font-weight: 700;">性质：</p>
+                                <ul style="margin-left: 1.5rem; line-height: 1.8;">
+                                    <li>单调不减：若 $x_1 < x_2$，则 $F(x_1) \le F(x_2)$</li>
+                                    <li>有界性：$0 \le F(x) \le 1$，且 $F(-\infty)=0, F(+\infty)=1$</li>
+                                    <li>右连续性：$F(x+0) = F(x)$</li>
+                                </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- §2.5 随机变量函数的分布 -->
+            <section id="s2-5" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§2.5</span>
+                    <h2>随机变量函数的分布</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-function"></i> 离散型情形
+                    </div>
+                    <div class="card-body">
+                        <p>设 $X$ 有分布律 $P(X=x_i) = p_i$。若 $Y = g(X)$，则 $Y$ 的分布律为：</p>
+                        <p>$$P(Y=y_j) = \sum_{g(x_i)=y_j} P(X=x_i)$$</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- §2.6 随机变量的 p 分位数 -->
+            <section id="s2-6" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§2.6</span>
+                    <h2>随机变量的 p 分位数</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-chart-bar"></i> 定义 — p 分位数
+                    </div>
+                    <div class="card-body">
+                        <p>设 $X$ 为连续型随机变量，其分布函数为 $F(x)$。对于给定的 $p \in (0, 1)$，若存在 $x_p$ 满足：</p>
+                        <p style="margin: 1rem 0; font-size: 1.2rem; text-align: center;">$F(x_p) = p$</p>
+                        <p>则称 $x_p$ 为该分布的 <strong>$p$ 分位数</strong>。</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer" style="background: white; border-top: 3px solid #1E1B4B; padding: 3rem 0;">
+        <div class="container" style="text-align: center;">
+            <p style="color: #6B7280;">© 2026 Probability Hub. Designed for BUECEA Students.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }] });
+        });
+    </script>
+</body>
+
+</html>

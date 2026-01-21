@@ -1,0 +1,776 @@
+/* Probability Hub Design System - Version Neo-Pop / Neo-Brutalism */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@400;500;700;900&display=swap');
+
+:root {
+  /* Color Palette - Neo-Pop */
+  --color-bg: #FFFBF0;
+  /* Cream background */
+  --color-text: #1E1B4B;
+  /* Dark Navy/Black for borders & text */
+  --color-primary: #22C55E;
+  /* Vibrant Green */
+  --color-primary-hover: #16A34A;
+  --color-secondary: #FF8BA7;
+  /* Pop Pink */
+  --color-accent: #FFC107;
+  /* Yellow Star */
+
+  /* Pastel Icon Backgrounds */
+  --bg-pink: #FFC0CB;
+  --bg-blue: #BAE6FD;
+  --bg-purple: #E9D5FF;
+  --bg-green: #BBF7D0;
+
+  --color-card-bg: #FFFFFF;
+  --color-card-bg: #FFFFFF;
+  --color-surface: #F3F4F6;
+  /* Light Gray details */
+
+  /* Borders & Shadows (The Soul of Neo-Brutalism) */
+  --border-width: 3px;
+  --border-color: #1E1B4B;
+  --shadow-hard: 4px 4px 0px var(--color-text);
+  --shadow-hard-hover: 6px 6px 0px var(--color-text);
+  --shadow-hard-active: 2px 2px 0px var(--color-text);
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+  /* For buttons and labels */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  /* Clean, modern geometric sans */
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Fredoka', sans-serif;
+  /* Friendly & Rounded */
+  line-height: 1.1;
+  color: var(--color-text);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+}
+
+/* --- Components --- */
+
+/* Navbar Container */
+.navbar-container {
+  padding: var(--space-lg) 0;
+}
+
+/* Neo Navbar - The Capsule Look */
+.navbar {
+  background: var(--color-card-bg);
+  border: var(--border-width) solid var(--color-text);
+  border-radius: var(--radius-lg);
+  /* Slightly reduced radius for container feel */
+  padding: var(--space-md) var(--space-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-hard);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--color-text);
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--color-secondary);
+  border: 2px solid var(--color-text);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.nav-menu {
+  display: flex;
+  gap: var(--space-xl);
+  font-weight: 600;
+}
+
+.nav-menu a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--color-primary);
+}
+
+/* Neo Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 12px 28px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  border: var(--border-width) solid var(--color-text);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  /* Or dark text depending on contrast preferences, white pops on green */
+  box-shadow: var(--shadow-hard);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+  /* Subtle depth text */
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-hover);
+}
+
+.btn-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-hard-active);
+}
+
+.btn-secondary {
+  background: #A5F3FC;
+  /* Light Blue */
+  color: var(--color-text);
+  box-shadow: var(--shadow-hard);
+}
+
+.btn-secondary:hover {
+  background: #67E8F9;
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-hover);
+}
+
+/* Badge / Label */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 8px 16px;
+  background: #BBF7D0;
+  /* Light Green */
+  border-radius: var(--radius-pill);
+  /* Very rounded */
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin-bottom: var(--space-lg);
+  /* Optional: border for badge too? Reference image doesn't strictly show, but style fits */
+  /* border: 2px solid var(--color-text); */
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+/* --- Hero Section --- */
+.hero {
+  padding: var(--space-2xl) 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  line-height: 1.1;
+  margin-bottom: var(--space-lg);
+  color: var(--color-text);
+}
+
+.hero h1 span {
+  color: var(--color-primary);
+}
+
+.hero-buttons {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.hero-stats {
+  margin-top: var(--space-2xl);
+  display: flex;
+  gap: var(--space-2xl);
+}
+
+.stat-item h4 {
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.stat-item p {
+  font-size: 0.875rem;
+  color: #4B5563;
+  /* Gray-600 */
+}
+
+/* Neo Card (Right Side Visual) */
+.visual-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.neo-card {
+  background: white;
+  border: var(--border-width) solid var(--color-text);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: 8px 8px 0px var(--color-text);
+  /* Deeper shadow for main card */
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+  z-index: 10;
+}
+
+.progress-row-container {
+  margin-top: var(--space-lg);
+}
+
+.progress-track {
+  height: 16px;
+  background: white;
+  border: 2px solid var(--color-text);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-right: 2px solid var(--color-text);
+  width: 65%;
+}
+
+.main-btn-large {
+  width: 100%;
+  margin-top: var(--space-lg);
+  padding: 16px;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  border: var(--border-width) solid var(--color-text);
+  border-radius: var(--radius-sm);
+  /* Slightly squarer radius for this specific button */
+  box-shadow: 2px 2px 0px var(--color-text);
+  cursor: pointer;
+}
+
+/* Floating Decorations */
+.deco-icon {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border: var(--border-width) solid var(--color-text);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: var(--color-secondary);
+  box-shadow: 4px 4px 0px var(--color-text);
+  z-index: 20;
+}
+
+.deco-1 {
+  top: -20px;
+  right: -20px;
+  background: var(--color-secondary);
+  transform: rotate(10deg);
+}
+
+.deco-2 {
+  bottom: -20px;
+  left: -20px;
+  background: #E9D5FF;
+  transform: rotate(-10deg);
+}
+
+/* Purple-ish */
+.deco-3 {
+  bottom: 30px;
+  right: -30px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+/* --- Course Grid (Neo Style) --- */
+.course-card {
+  background: white;
+  border: var(--border-width) solid var(--color-text);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-hard);
+  transition: all 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 8px 8px 0px var(--color-text);
+}
+
+.course-icon-box {
+  width: 50px;
+  height: 50px;
+  background: #FEF3C7;
+  /* Yellow */
+  border: 2px solid var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin-bottom: var(--space-md);
+  font-size: 1.5rem;
+  color: var(--color-text);
+}
+
+/* --- Features / Why Choose Us --- */
+.features-section {
+  padding: var(--space-2xl) 0;
+  text-align: center;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+.feature-item {
+  background: white;
+  border-radius: 32px;
+  /* Super rounded per ref image */
+  padding: var(--space-xl);
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+  /* Soft shadow per Ref 3 */
+  transition: transform 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin: 0 auto var(--space-md);
+  color: var(--color-text);
+}
+
+/* Pastel variants (Ref 3) */
+.icon-pink {
+  background: var(--bg-pink);
+}
+
+.icon-blue {
+  background: var(--bg-blue);
+}
+
+.icon-purple {
+  background: var(--bg-purple);
+}
+
+.icon-green {
+  background: var(--bg-green);
+}
+
+.feature-item h3 {
+  font-size: 1.125rem;
+  margin-bottom: var(--space-sm);
+}
+
+.feature-item p {
+  color: #6B7280;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* --- Testimonials --- */
+.testimonials-section {
+  padding: var(--space-2xl) 0;
+  text-align: center;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.testimonial-card-neo {
+  background: white;
+  border: 2px solid var(--color-text);
+  /* Matches Ref 2 */
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  text-align: left;
+  box-shadow: 4px 4px 0px var(--color-text);
+  display: flex;
+  flex-direction: column;
+}
+
+.stars {
+  color: var(--color-accent);
+  margin-bottom: var(--space-md);
+  font-size: 1.25rem;
+}
+
+.testimonial-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #4B5563;
+  margin-bottom: var(--space-lg);
+  font-style: italic;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: auto;
+  padding-top: var(--space-md);
+}
+
+.avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-text);
+  border: 2px solid var(--color-text);
+  /* Consistent border */
+}
+
+.bg-orange-soft {
+  background: #FFEDD5;
+}
+
+.bg-blue-soft {
+  background: #E0F2FE;
+}
+
+.bg-purple-soft {
+  background: #F3E8FF;
+}
+
+/* --- Footer (Ref 1) --- */
+.footer-neo {
+  padding: var(--space-3xl) 0 var(--space-lg);
+  background: var(--color-bg);
+  /* Matches page bg */
+  border-top: none;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-3xl);
+}
+
+.footer-brand p {
+  color: #6B7280;
+  margin-top: var(--space-md);
+  max-width: 300px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.footer-col h5 {
+  font-size: 1.125rem;
+  margin-bottom: var(--space-lg);
+  font-weight: 800;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col li {
+  margin-bottom: var(--space-sm);
+}
+
+.footer-col a {
+  color: #6B7280;
+  font-weight: 500;
+  transition: color 0.1s;
+}
+
+.footer-col a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.copyright-row {
+  border-top: 2px solid rgba(30, 27, 75, 0.1);
+  padding-top: var(--space-lg);
+  color: #9CA3AF;
+  font-size: 0.875rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-stats {
+    justify-content: center;
+  }
+
+  .nav-menu {
+    display: none;
+    /* Mobile menu hidden for simplicity in this iteration */
+  }
+}
+
+/* --- Inner Page Specifics --- */
+
+.chapter-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-xl);
+  padding-top: var(--space-xl);
+  margin-bottom: var(--space-3xl);
+}
+
+.sidebar {
+  position: sticky;
+  top: 100px;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.toc-card {
+  background: white;
+  border: var(--border-width) solid var(--color-text);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-hard);
+}
+
+.toc-link {
+  display: block;
+  padding: 8px 12px;
+  color: #6B7280;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.toc-link:hover,
+.toc-link.active {
+  background: #E0F2FE;
+  color: var(--color-text);
+  font-weight: 600;
+  border: 2px solid var(--color-text);
+}
+
+.content-area {
+  min-width: 0;
+}
+
+.chapter-hero {
+  background: white;
+  border: var(--border-width) solid var(--color-text);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  margin-bottom: var(--space-xl);
+  box-shadow: var(--shadow-hard);
+  position: relative;
+  overflow: hidden;
+}
+
+.chapter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px 16px;
+  background: var(--color-secondary);
+  border: 2px solid var(--color-text);
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: var(--space-lg);
+  box-shadow: 2px 2px 0 var(--color-text);
+}
+
+.neo-knowledge-card {
+  background: white;
+  border: var(--border-width) solid var(--color-text);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  overflow: hidden;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding: var(--space-md) var(--space-lg);
+  font-weight: 700;
+  border-bottom: var(--border-width) solid var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-body {
+  padding: var(--space-lg);
+}
+
+.def-header {
+  background: #E0E7FF !important;
+}
+
+.thm-header {
+  background: #F3E8FF !important;
+}
+
+.ex-header {
+  background: #FEF3C7 !important;
+}
+
+@media (max-width: 960px) {
+  .chapter-container {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+}
+
+/* --- Tables & Data --- */
+table.neo-table,
+.content-area table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  border: var(--border-width) solid var(--color-text);
+  background: white;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 4px 4px 0px var(--color-text);
+}
+
+.content-area th,
+.content-area td {
+  padding: 1rem;
+  border: 1px solid var(--color-text);
+  text-align: center;
+}
+
+.content-area th {
+  background: #F3F4F6;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+/* --- Footer --- */
+.main-footer {
+  margin-top: auto;
+  padding: var(--space-3xl) 0;
+  border-top: var(--border-width) solid var(--color-text);
+  background: white;
+  text-align: center;
+  color: #6B7280;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.main-footer p {
+  font-size: 0.95rem;
+  font-weight: 500;
+}

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泊松分布：光子探测实验 | Probability Hub</title>
+    <!-- Neo-Pop Design System -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        body {
+            background-color: var(--color-bg);
+            min-height: 100vh;
+            padding-bottom: var(--space-3xl);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: var(--space-xl);
+            margin-top: var(--space-xl);
+        }
+
+        .viz-card {
+            background: white;
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-hard);
+            position: relative;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 2px 2px, #E2E8F0 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        #particleCanvas {
+            width: 100%;
+            height: 400px;
+            display: block;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-md);
+        }
+
+        .stat-card-mini {
+            background: white;
+            border: 2px solid var(--color-text);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            text-align: center;
+            box-shadow: 4px 4px 0 var(--color-text);
+        }
+
+        .stat-val-large {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+        }
+
+        .btn-action {
+            padding: 12px 20px;
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--color-text);
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-action:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--color-text);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--color-accent);
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #ef4444;
+            border-color: #ef4444;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 10px;
+            background: #E2E8F0;
+            border-radius: 5px;
+            appearance: none;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--color-primary);
+            border: 2px solid var(--color-text);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 var(--color-text);
+        }
+
+        @media (max-width: 1024px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" style="margin-top: var(--space-md);">
+        <nav class="navbar">
+            <a href="../../chapter2.html" class="logo">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back</span>
+            </a>
+            <div class="nav-menu">
+                <span style="font-weight: 800; font-size: 1.1rem;">泊松分布与光子计数模拟</span>
+            </div>
+            <div class="badge" style="margin-bottom: 0; background: var(--color-primary);">Chapter 02</div>
+        </nav>
+    </div>
+
+    <main class="container">
+        <div class="chapter-hero" style="padding: var(--space-lg); margin-top: var(--space-xl);">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div>
+                    <h1>光子探测实验室</h1>
+                    <p>调节光源强度 $\lambda$，观察单位时间内探测到的光子数波动。</p>
+                </div>
+                <div class="stat-card-mini" style="min-width: 180px;">
+                    <span
+                        style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">当前频率强度</span>
+                    <span id="lambdaValue" class="stat-val-large">5.0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-grid">
+            <!-- Left: Visualization -->
+            <div class="viz-container">
+                <div class="viz-card">
+                    <div
+                        style="position: absolute; top: 12px; left: 12px; font-size: 0.7rem; font-weight: 900; background: var(--color-text); color: white; padding: 4px 8px; border-radius: 4px; z-index: 5;">
+                        REAL-TIME SENSOR FEED
+                    </div>
+                    <canvas id="particleCanvas"></canvas>
+                    <div id="flashOverlay"
+                        style="position: absolute; inset: 0; background: white; pointer-events: none; opacity: 0; transition: opacity 0.1s;">
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card" style="margin-top: var(--space-lg);">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-chart-bar"></i> 实验统计分布
+                    </div>
+                    <div class="card-body" style="height: 250px;">
+                        <canvas id="chartCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Controls & Stats -->
+            <div class="control-panel">
+                <div class="neo-math-card" style="box-shadow: var(--shadow-hard);">
+                    <h4 style="margin-bottom: 1rem;"><i class="ph-bold ph-gear"></i> 参数控制</h4>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="font-weight: 800; font-size: 0.9rem; display: block; margin-bottom: 10px;">光源强度
+                            (平均值 $\lambda$)</label>
+                        <input type="range" id="lambdaSlider" min="1" max="15" step="0.1" value="5">
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #94A3B8; margin-top: 5px; font-weight: 700;">
+                            <span>WEAK (1.0)</span>
+                            <span>STRONG (15.0)</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem;">
+                        <button id="btnSingle" class="btn-action btn-primary"><i class="ph-bold ph-lightning"></i>
+                            单次脉冲</button>
+                        <button id="btnAuto" class="btn-action btn-secondary"><i class="ph-bold ph-play"></i>
+                            连续实验</button>
+                    </div>
+                    <button id="btnReset" class="btn-action btn-danger" style="width: 100%;"><i
+                            class="ph-bold ph-trash"></i> 重置所有数据</button>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card-mini">
+                        <span style="font-size: 0.7rem; font-weight: 700;">观测次数</span>
+                        <span id="totalExperiments" style="font-size: 1.5rem; font-weight: 900;">0</span>
+                    </div>
+                    <div class="stat-card-mini">
+                        <span style="font-size: 0.7rem; font-weight: 700;">本次探测</span>
+                        <span id="currentCount"
+                            style="font-size: 1.5rem; font-weight: 900; color: var(--color-primary);">--</span>
+                    </div>
+                </div>
+
+                <div class="neo-math-card" style="box-shadow: var(--shadow-hard);">
+                    <h4 style="margin-bottom: 1rem;"><i class="ph-bold ph-equals"></i> 数据校准 (理论 vs 实验)</h4>
+                    <div
+                        style="display: flex; justify-content: space-between; border-bottom: 1px solid #EEE; padding-bottom: 8px; margin-bottom: 8px;">
+                        <span style="font-size: 0.85rem;">均值 $\bar{x}$:</span>
+                        <span style="font-weight: 800;"><span id="theoreticalMean" style="color: #64748B;">5.00</span> |
+                            <span id="experimentalMean" style="color: var(--color-primary);">0.00</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-size: 0.85rem;">标准差 $\sigma$:</span>
+                        <span style="font-weight: 800;"><span id="theoreticalSD" style="color: #64748B;">2.24</span> |
+                            <span id="experimentalSD" style="color: var(--color-primary);">0.00</span></span>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card" style="margin-bottom: 0;">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-info"></i> 核心机理
+                    </div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        对于泊松分布，方差等于期望。当你增加 $\lambda$ 时，波动范围（标准差 $\sqrt{\lambda}$）也会随之扩大。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>© 2026 Probability Hub. Quantum Simulation Lab.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // --- State ---
+        const state = {
+            lambda: 5.0,
+            experiments: [],
+            isAutoRunning: false,
+            autoRunInterval: null
+        };
+
+        const els = {
+            pCanvas: document.getElementById('particleCanvas'),
+            cCanvas: document.getElementById('chartCanvas'),
+            lambdaSlider: document.getElementById('lambdaSlider'),
+            lambdaValue: document.getElementById('lambdaValue'),
+            btnSingle: document.getElementById('btnSingle'),
+            btnAuto: document.getElementById('btnAuto'),
+            btnReset: document.getElementById('btnReset'),
+            currentCount: document.getElementById('currentCount'),
+            totalExperiments: document.getElementById('totalExperiments'),
+            theoreticalMean: document.getElementById('theoreticalMean'),
+            experimentalMean: document.getElementById('experimentalMean'),
+            theoSD: document.getElementById('theoreticalSD'),
+            exSD: document.getElementById('experimentalSD')
+        };
+
+        const pCtx = els.pCanvas.getContext('2d');
+        let chart = null;
+
+        function resize() {
+            const r = els.pCanvas.parentElement.getBoundingClientRect();
+            els.pCanvas.width = r.width;
+            els.pCanvas.height = 400;
+        }
+        window.onresize = resize;
+        resize();
+
+        function getPoisson(lambda) {
+            const L = Math.exp(-lambda);
+            let k = 0, p = 1;
+            do { k++; p *= Math.random(); } while (p > L);
+            return k - 1;
+        }
+
+        function run() {
+            const count = getPoisson(state.lambda);
+            state.experiments.push(count);
+            els.currentCount.innerText = count;
+            updateUI();
+            spawnParticles(count);
+        }
+
+        function updateUI() {
+            const N = state.experiments.length;
+            els.totalExperiments.innerText = N;
+            els.theoreticalMean.innerText = state.lambda.toFixed(2);
+            els.theoSD.innerText = Math.sqrt(state.lambda).toFixed(2);
+
+            if (N > 0) {
+                const sum = state.experiments.reduce((a, b) => a + b, 0);
+                const avg = sum / N;
+                els.experimentalMean.innerText = avg.toFixed(2);
+                const variance = state.experiments.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / N;
+                els.exSD.innerText = Math.sqrt(variance).toFixed(2);
+            }
+            updateChart();
+        }
+
+        function spawnParticles(n) {
+            pCtx.clearRect(0, 0, els.pCanvas.width, els.pCanvas.height);
+            const cx = els.pCanvas.width / 2;
+            const cy = els.pCanvas.height / 2;
+            for (let i = 0; i < n; i++) {
+                const r = Math.random() * 120;
+                const a = Math.random() * Math.PI * 2;
+                pCtx.fillStyle = 'var(--color-primary)';
+                pCtx.beginPath();
+                pCtx.arc(cx + r * Math.cos(a), cy + r * Math.sin(a), 4, 0, 7);
+                pCtx.fill();
+            }
+        }
+
+        function initChart() {
+            chart = new Chart(els.cCanvas, {
+                type: 'bar',
+                data: { labels: Array.from({ length: 21 }, (_, i) => i), datasets: [{ label: '观测频率', data: Array(21).fill(0), backgroundColor: '#22C55E' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        function updateChart() {
+            const counts = Array(21).fill(0);
+            state.experiments.forEach(v => { if (v < 21) counts[v]++; });
+            const total = state.experiments.length || 1;
+            chart.data.datasets[0].data = counts.map(v => (v / total) * 100);
+            chart.update();
+        }
+
+        els.lambdaSlider.oninput = (e) => {
+            state.lambda = parseFloat(e.target.value);
+            els.lambdaValue.innerText = state.lambda.toFixed(1);
+            updateUI();
+        };
+
+        els.btnSingle.onclick = run;
+        els.btnAuto.onclick = () => {
+            state.isAutoRunning = !state.isAutoRunning;
+            els.btnAuto.innerHTML = state.isAutoRunning ? '<i class="ph-bold ph-pause"></i> 停止实验' : '<i class="ph-bold ph-play"></i> 连续实验';
+            if (state.isAutoRunning) state.autoRunInterval = setInterval(run, 200);
+            else clearInterval(state.autoRunInterval);
+        };
+        els.btnReset.onclick = () => {
+            state.experiments = [];
+            els.currentCount.innerText = '--';
+            updateUI();
+        };
+
+        initChart();
+        updateUI();
+
+        // Render Math
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false }
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

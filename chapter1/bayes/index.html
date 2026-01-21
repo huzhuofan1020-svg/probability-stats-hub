@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贝叶斯公式机理演示 | Probability Hub</title>
+    <!-- Neo-Pop Design System -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        body {
+            background-color: var(--color-bg);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .demo-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: var(--space-lg);
+            padding: var(--space-lg);
+            overflow: hidden;
+        }
+
+        /* 可视化面板 */
+        .viz-panel {
+            background: white;
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-hard);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #particle-canvas {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        /* 侧边信息与控制 */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .side-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .side-panel::-webkit-scrollbar-thumb {
+            background: var(--color-text);
+            border-radius: 10px;
+        }
+
+        /* 控件样式重定义 */
+        .control-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: #E2E8F0;
+            border-radius: 4px;
+            appearance: none;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--color-primary);
+            border: 2px solid var(--color-text);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 var(--color-text);
+        }
+
+        /* 公式与数据卡片 */
+        .neo-math-card {
+            background: white;
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            box-shadow: 4px 4px 0 var(--color-text);
+        }
+
+        .math-expr {
+            font-family: "Times New Roman", serif;
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #F8FAFC;
+            border: 2px dashed #CBD5E0;
+            border-radius: 8px;
+        }
+
+        .legend-card {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border: 2px solid var(--color-text);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            box-shadow: 4px 4px 0 var(--color-text);
+            z-index: 10;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid var(--color-text);
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            background: var(--color-accent);
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--color-text);
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-action:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--color-text);
+        }
+
+        @media (max-width: 1024px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+
+            .viz-panel {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Capsule Navbar -->
+    <div class="container" style="margin-top: var(--space-md); margin-bottom: 0;">
+        <nav class="navbar">
+            <a href="../../chapter1.html" class="logo">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back to Chapter 1</span>
+            </a>
+            <div class="nav-menu">
+                <span style="font-weight: 800; font-size: 1.1rem;">贝叶斯公式机理动态演示</span>
+            </div>
+            <div class="badge" style="margin-bottom: 0; background: var(--color-accent);">实验模式</div>
+        </nav>
+    </div>
+
+    <main class="demo-container container">
+        <!-- 粒子可视化区域 -->
+        <div class="viz-panel">
+            <div class="legend-card">
+                <div class="legend-item"><span class="legend-dot" style="background:#f56565"></span> TP (真阳性): <span
+                        id="val-tp">0</span></div>
+                <div class="legend-item"><span class="legend-dot" style="background:#38b2ac"></span> FP (假阳性): <span
+                        id="val-fp">0</span></div>
+                <div class="legend-item"><span class="legend-dot" style="background:#2d3748"></span> FN (漏诊): <span
+                        id="val-fn">0</span></div>
+                <div class="legend-item"><span class="legend-dot" style="background:#cbd5e0"></span> TN (真阴性)</div>
+            </div>
+
+            <div style="position: absolute; top: 20px; right: 20px; z-index: 10; display: flex; gap: 10px;">
+                <button id="btn-sort" class="btn-action"
+                    style="padding: 6px 12px; font-size: 0.8rem; background: white;">
+                    <i class="ph-bold ph-squares-four"></i> 散乱/排序
+                </button>
+            </div>
+
+            <canvas id="particle-canvas"></canvas>
+
+            <div
+                style="padding: 12px; border-top: 2px solid var(--color-text); background: #F8FAFC; font-size: 0.85rem; font-weight: 600;">
+                <i class="ph-bold ph-info"></i> 当前场景：<span id="scene-title"
+                    style="color: var(--color-primary)">加载中...</span> | <span id="scene-desc"
+                    style="color: #64748B">...</span>
+            </div>
+        </div>
+
+        <!-- 侧边控制面板 -->
+        <aside class="side-panel">
+            <!-- 场景控制 -->
+            <div class="neo-math-card">
+                <h4 style="margin-bottom: 12px;"><i class="ph-bold ph-sliders"></i> 参数调节</h4>
+
+                <div class="control-group">
+                    <div class="control-label"><span>先验 P(C)</span><span id="txt-pC">0.5%</span></div>
+                    <input type="range" id="sl-pC" min="0.1" max="50" step="0.1" value="0.5">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label"><span>灵敏度 P(A|C)</span><span id="txt-sens">95.0%</span></div>
+                    <input type="range" id="sl-sens" min="50" max="99.9" step="0.1" value="95">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label"><span>误诊率 P(A|C̅)</span><span id="txt-fpr">4.0%</span></div>
+                    <input type="range" id="sl-fpr" min="0.1" max="20" step="0.1" value="4">
+                </div>
+
+                <button id="btn-rand" class="btn-action" style="margin-top: 10px;">
+                    <i class="ph-bold ph-dice-five"></i> 随机场景案例
+                </button>
+            </div>
+
+            <!-- 公式推导 -->
+            <div class="neo-math-card">
+                <h4 style="margin-bottom: 12px;"><i class="ph-bold ph-function"></i> 贝叶斯推断结论</h4>
+                <div class="math-expr" id="val-final">--%</div>
+                <p style="font-size: 0.8rem; color: #64748B; line-height: 1.4;">
+                    在阳性条件下，真正患病的概率 P(C|A) = (真阳性) / (总阳性)。
+                </p>
+                <div style="margin-top: 12px; border-top: 1px solid #EEE; padding-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+                        <span>理论 P(C|A):</span> <span id="th-pca" style="font-weight: 700;">--</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                        <span>模拟 P(C|A):</span> <span id="ex-pca"
+                            style="font-weight: 700; color: var(--color-primary);">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 解释说明 -->
+            <div class="neo-knowledge-card" style="margin-bottom: 0;">
+                <div class="card-header def-header" style="font-size: 0.9rem;">
+                    <i class="ph-bold ph-lightbulb"></i> 直观理解
+                </div>
+                <div class="card-body" style="font-size: 0.85rem; line-height: 1.5;">
+                    当基础患病率（先验）极低时，即使检测非常准，阳性结果中的大部分依然可能是“假阳性”。这就是著名的<strong>贝叶斯悖论</strong>。
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const app = {
+            totalN: 10000,
+            particles: [],
+            isSorted: false,
+            scenes: [
+                { name: "罕见病筛查", desc: "发病率极低，误诊造成极大干扰", p: [0.1, 0.8], s: [95, 99], f: [2, 5] },
+                { name: "精密仪器检测", desc: "误诊率极低(<0.5%)，结果高度可信", p: [0.2, 1.0], s: [99, 99.9], f: [0.1, 0.5] },
+                { name: "流行病爆发", desc: "发病率升高，检测结果更加可信", p: [10, 15], s: [90, 95], f: [3, 8] },
+                { name: "粗略试纸", desc: "高误诊率，仅供参考，不可确诊", p: [1, 3], s: [70, 80], f: [10, 15] }
+            ],
+            dom: {},
+
+            init() {
+                this.dom = {
+                    pC: document.getElementById('sl-pC'),
+                    sens: document.getElementById('sl-sens'),
+                    fpr: document.getElementById('sl-fpr'),
+                    pCanvas: document.getElementById('particle-canvas'),
+                    sTitle: document.getElementById('scene-title'),
+                    sDesc: document.getElementById('scene-desc')
+                };
+
+                [this.dom.pC, this.dom.sens, this.dom.fpr].forEach(el =>
+                    el.addEventListener('input', () => this.handleManualUpdate())
+                );
+
+                document.getElementById('btn-rand').addEventListener('click', () => this.randomScenario());
+                document.getElementById('btn-sort').addEventListener('click', () => this.toggleSort());
+
+                this.resize();
+                this.initParticles();
+                window.addEventListener('resize', () => { this.resize(); this.recalcTargets(); });
+
+                this.randomScenario();
+                this.loop();
+            },
+
+            resize() {
+                const c = this.dom.pCanvas;
+                const r = c.parentElement.getBoundingClientRect();
+                if (r.width > 0) {
+                    c.width = r.width;
+                    c.height = r.height;
+                    this.width = r.width;
+                    this.height = r.height;
+                }
+            },
+
+            randomScenario() {
+                const s = this.scenes[Math.floor(Math.random() * this.scenes.length)];
+                const rnd = (range) => (Math.random() * (range[1] - range[0]) + range[0]).toFixed(1);
+                this.dom.pC.value = rnd(s.p);
+                this.dom.sens.value = rnd(s.s);
+                this.dom.fpr.value = rnd(s.f);
+                this.dom.sTitle.innerText = s.name;
+                this.dom.sDesc.innerText = s.desc;
+                this.dom.sTitle.style.color = "var(--color-primary)";
+                this.update(true);
+            },
+
+            handleManualUpdate() {
+                this.dom.sTitle.innerText = "自定义探究";
+                this.dom.sDesc.innerText = "当前为手动设定参数";
+                this.dom.sTitle.style.color = "var(--color-accent)";
+                this.update(true);
+            },
+
+            initParticles() {
+                this.particles = new Float32Array(this.totalN * 5);
+                for (let i = 0; i < this.totalN; i++) {
+                    const off = i * 5;
+                    this.particles[off] = Math.random() * (this.width || 800);
+                    this.particles[off + 1] = Math.random() * (this.height || 600);
+                    this.particles[off + 4] = 2; // Type
+                }
+            },
+
+            update() {
+                const pC = parseFloat(this.dom.pC.value) / 100;
+                const sens = parseFloat(this.dom.sens.value) / 100;
+                const fpr = parseFloat(this.dom.fpr.value) / 100;
+
+                document.getElementById('txt-pC').innerText = (pC * 100).toFixed(1) + "%";
+                document.getElementById('txt-sens').innerText = (sens * 100).toFixed(1) + "%";
+                document.getElementById('txt-fpr').innerText = (fpr * 100).toFixed(1) + "%";
+
+                const t_pa = (pC * sens) + ((1 - pC) * fpr);
+                const t_pca = t_pa > 0 ? (pC * sens) / t_pa : 0;
+
+                document.getElementById('th-pca').innerText = t_pca.toFixed(4);
+
+                const nSick = Math.round(this.totalN * pC);
+                const nHealthy = this.totalN - nSick;
+                const nTP = Math.round(nSick * sens);
+                const nFN = nSick - nTP;
+                const nFP = Math.round(nHealthy * fpr);
+                const nTN = nHealthy - nFP;
+
+                const e_pca = (nTP + nFP) > 0 ? nTP / (nTP + nFP) : 0;
+
+                document.getElementById('ex-pca').innerText = e_pca.toFixed(4);
+                document.getElementById('val-final').innerText = (e_pca * 100).toFixed(2) + "%";
+                document.getElementById('val-tp').innerText = nTP;
+                document.getElementById('val-fp').innerText = nFP;
+                document.getElementById('val-fn').innerText = nFN;
+
+                let idx = 0;
+                const setType = (n, t) => { for (let i = 0; i < n; i++) if (idx < this.totalN) this.particles[idx++ * 5 + 4] = t; };
+                setType(nTP, 0); setType(nFP, 1); setType(nFN, 3); setType(nTN, 2);
+                while (idx < this.totalN) this.particles[idx++ * 5 + 4] = 2;
+
+                this.recalcTargets();
+            },
+
+            recalcTargets() {
+                const w = this.width; const h = this.height;
+                if (!w) return;
+                const cx = w / 2; const cy = h / 2;
+
+                if (!this.isSorted) {
+                    for (let i = 0; i < this.totalN; i++) {
+                        const off = i * 5;
+                        this.particles[off + 2] = Math.random() * w;
+                        this.particles[off + 3] = Math.random() * h;
+                    }
+                } else {
+                    let iTP = 0, iFP = 0;
+                    for (let i = 0; i < this.totalN; i++) {
+                        const off = i * 5;
+                        const type = this.particles[off + 4];
+                        if (type === 0) {
+                            const c = iTP % 25; const r = Math.floor(iTP / 25);
+                            this.particles[off + 2] = cx - 100 + (c * 3.5);
+                            this.particles[off + 3] = cy - 100 + (r * 3.5); iTP++;
+                        } else if (type === 1) {
+                            const c = iFP % 25; const r = Math.floor(iFP / 25);
+                            this.particles[off + 2] = cx + 20 + (c * 3.5);
+                            this.particles[off + 3] = cy - 100 + (r * 3.5); iFP++;
+                        } else {
+                            const cols = Math.floor(w / 3);
+                            this.particles[off + 2] = (i % cols) * 3;
+                            this.particles[off + 3] = h - 5 - (Math.floor(i / cols) * 3);
+                        }
+                    }
+                }
+            },
+
+            toggleSort() { this.isSorted = !this.isSorted; this.recalcTargets(); },
+
+            loop() {
+                const ctx = this.dom.pCanvas.getContext('2d');
+                const colors = ['#f56565', '#38b2ac', '#cbd5e0', '#2d3748'];
+                ctx.clearRect(0, 0, this.width, this.height);
+
+                for (let i = 0; i < this.totalN; i++) {
+                    const off = i * 5;
+                    let x = this.particles[off];
+                    let y = this.particles[off + 1];
+                    const tx = this.particles[off + 2];
+                    const ty = this.particles[off + 3];
+                    const type = this.particles[off + 4];
+
+                    if (Math.abs(tx - x) > 0.1 || Math.abs(ty - y) > 0.1) {
+                        x += (tx - x) * 0.15; y += (ty - y) * 0.15;
+                        this.particles[off] = x; this.particles[off + 1] = y;
+                    }
+
+                    ctx.fillStyle = colors[type];
+                    ctx.beginPath();
+                    ctx.arc(x, y, (type < 2 ? 2.5 : 1.5), 0, 6.28);
+                    ctx.fill();
+                }
+                requestAnimationFrame(() => this.loop());
+            }
+        };
+
+        window.onload = () => app.init();
+
+        // Render Math
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false }
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

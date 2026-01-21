@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第5章 大数定律及中心极限定理 | Neo Learning Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        body {
+            background-color: var(--color-bg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container navbar-container">
+        <nav class="navbar">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back</span>
+            </a>
+            <div class="nav-menu"><span style="font-weight: 700;">第5章：大数定律及中心极限定理</span></div>
+            <div class="badge" style="margin-bottom: 0;">进度: 20%</div>
+        </nav>
+    </div>
+
+    <div class="container chapter-container">
+        <aside class="sidebar">
+            <div class="toc-card">
+                <h4 style="margin-bottom: 1rem;">本章目录</h4>
+                <nav>
+                    <a href="#s5-1" class="toc-link active">5.1 依概率收敛</a>
+                    <a href="#s5-2" class="toc-link">5.2 大数定律</a>
+                    <a href="#s5-3" class="toc-link">5.3 中心极限定理</a>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div class="chapter-hero">
+                <div class="chapter-badge">Chapter 05</div>
+                <h1>大数定律及中心极限定理</h1>
+                <p style="font-size: 1.1rem; color: #4B5563; margin-top: 1rem;">
+                    本章讨论极限定理，包括大数定律（频率稳定性的理论基础）和中心极限定理（正态分布普遍性的理论解释）。
+                </p>
+            </div>
+
+            <section id="s5-1" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§5.1</span>
+                    <h2>依概率收敛</h2>
+                </div>
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header"><i class="ph-bold ph-target"></i> 定义</div>
+                    <div class="card-body">
+                        <p>对任意 $\varepsilon > 0$，若 $\lim_{n \to \infty} P\{|X_n - a| < \varepsilon\}=1$，</p>
+                                <p>则称 $\{X_n\}$ <strong>依概率收敛于</strong> $a$，记作 $X_n \xrightarrow{P} a$。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="s5-2" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§5.2</span>
+                    <h2>大数定律</h2>
+                </div>
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header"><i class="ph-bold ph-chart-line"></i> 辛钦大数律</div>
+                    <div class="card-body">
+                        <p>设 $X_1, X_2, \cdots$ 独立同分布，$E(X_i) = \mu$，则</p>
+                        <p>$$\bar{X}_n = \frac{1}{n} \sum_{i=1}^{n} X_i \xrightarrow{P} \mu$$</p>
+                    </div>
+                </div>
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header"><i class="ph-bold ph-coins"></i> 伯努利大数律</div>
+                    <div class="card-body">
+                        <p>设 $n_A$ 是 $n$ 次独立重复试验中 $A$ 发生的次数，$p = P(A)$，则</p>
+                        <p>$$\frac{n_A}{n} \xrightarrow{P} p$$</p>
+                        <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">（频率收敛于概率）</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="s5-3" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§5.3</span>
+                    <h2>中心极限定理</h2>
+                </div>
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header"><i class="ph-bold ph-bell-simple"></i> 林德伯格-列维 CLT</div>
+                    <div class="card-body">
+                        <p>设 $X_1, X_2, \cdots$ 独立同分布，$E(X_i)=\mu$，$D(X_i)=\sigma^2>0$，则</p>
+                        <p>$$\frac{\sum_{i=1}^{n} X_i - n\mu}{\sqrt{n}\sigma} \xrightarrow{d} N(0, 1)$$</p>
+                        <p style="margin-top: 1rem; font-weight: 700;">意义：</p>
+                        <p>无论总体服从什么分布，只要方差有限，大量独立同分布随机变量的和近似服从正态分布。</p>
+                    </div>
+                </div>
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header"><i class="ph-bold ph-chart-bar"></i> 棣莫弗-拉普拉斯定理</div>
+                    <div class="card-body">
+                        <p>设 $S_n \sim B(n, p)$，则</p>
+                        <p>$$\frac{S_n - np}{\sqrt{np(1-p)}} \xrightarrow{d} N(0, 1)$$</p>
+                        <p style="margin-top: 0.5rem;">应用：当 $n$ 较大时，$B(n, p) \approx N(np, np(1-p))$</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="main-footer" style="background: white; border-top: 3px solid #1E1B4B; padding: 3rem 0;">
+        <div class="container" style="text-align: center;">
+            <p style="color: #6B7280;">© 2026 Probability Hub. Designed for BUECEA Students.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }] });
+        });
+    </script>
+</body>
+
+</html>

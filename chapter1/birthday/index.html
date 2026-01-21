@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日悖论实验演示 | Probability Hub</title>
+    <!-- Neo-Pop Design System -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: var(--color-bg);
+            min-height: 100vh;
+            padding-bottom: var(--space-3xl);
+        }
+
+        .demo-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: var(--space-xl);
+            margin-top: var(--space-xl);
+        }
+
+        .main-viz {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        /* Chart Canvas Containers */
+        .chart-box {
+            background: white;
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            box-shadow: var(--shadow-hard);
+            position: relative;
+        }
+
+        .matrix-canvas-container {
+            height: 500px;
+            overflow: hidden;
+            background: #F8FAFC;
+        }
+
+        .convergence-container {
+            height: 250px;
+        }
+
+        .stat-badge {
+            padding: var(--space-sm) var(--space-md);
+            background: var(--color-secondary);
+            border: 2px solid var(--color-text);
+            border-radius: var(--radius-sm);
+            font-weight: 800;
+            font-size: 1.2rem;
+            box-shadow: 2px 2px 0 var(--color-text);
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: var(--space-md);
+            background: var(--color-primary);
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-md);
+            font-weight: 900;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-hard);
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+        }
+
+        .btn-main:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--color-text);
+        }
+
+        .btn-main:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--color-text);
+        }
+
+        /* Matrix Legend */
+        .matrix-legend {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            border: 2px solid var(--color-text);
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 5;
+        }
+
+        @media (max-width: 1024px) {
+            .demo-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Capsule Navbar -->
+    <div class="container" style="margin-top: var(--space-md);">
+        <nav class="navbar">
+            <a href="../../chapter1.html" class="logo">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back</span>
+            </a>
+            <div class="nav-menu">
+                <span style="font-weight: 800; font-size: 1.1rem;">生日悖论：大样本模拟实验</span>
+            </div>
+            <div class="badge" style="margin-bottom: 0; background: var(--color-secondary);">Chapter 01</div>
+        </nav>
+    </div>
+
+    <main class="container">
+        <!-- Hero Summary -->
+        <div class="chapter-hero" style="padding: var(--space-xl); margin-top: var(--space-xl);">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div>
+                    <h1>计算机模拟实验</h1>
+                    <p style="margin-top: 8px;">设定：每班 30 人，连续模拟 100 次试验，观察频率收敛情况。</p>
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <div class="stat-badge" style="background: white;">试验: <span id="disp-trials">0</span></div>
+                    <div class="stat-badge" style="background: var(--color-accent);">频率: <span id="disp-freq">0%</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-main" onclick="startSimulation()" style="margin-top: var(--space-lg); max-width: 300px;">
+                <i class="ph-bold ph-play"></i> 开始动态模拟
+            </button>
+        </div>
+
+        <div class="demo-layout">
+            <!-- Left: Visualization -->
+            <div class="main-viz">
+                <div class="chart-box matrix-canvas-container">
+                    <div class="matrix-legend">
+                        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 4px;">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #e74c3c;"></span>
+                            相同生日
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #bdc3c7;"></span>
+                            独立生日
+                        </div>
+                    </div>
+                    <canvas id="matrixCanvas"></canvas>
+                </div>
+                <p style="font-size: 0.85rem; color: #64748B; font-weight: 600; text-align: center;">
+                    ▲ 模拟全景图：每一竖列代表一个班级，探测碰撞机理。
+                </p>
+            </div>
+
+            <!-- Right: Analysis -->
+            <div class="control-panel">
+                <div class="chart-box convergence-container">
+                    <canvas id="chartJSConvergence"></canvas>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-chart-line"></i> 连线可视化 (最近一次)
+                    </div>
+                    <div class="card-body" style="height: 200px; padding: 0;">
+                        <canvas id="singleVizCanvas"></canvas>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-lightbulb"></i> 直观结论
+                    </div>
+                    <div class="card-body" style="font-size: 0.9rem; line-height: 1.5;">
+                        随着实验次数增加，频率会稳定在 <strong>70.6%</strong> 左右。虽然直觉上觉得几率很小，但 30 人的班级中，两两配对的组合数非常多，导致了悖论的产生。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real Data Section -->
+        <section style="margin-top: var(--space-2xl);">
+            <div
+                style="padding: 1rem; background: var(--color-text); color: white; border-radius: 8px 8px 0 0; font-weight: 800;">
+                <i class="ph-bold ph-database"></i> 真实数据验证 (某校 2005-2012 级本科生统计)
+            </div>
+            <div class="neo-knowledge-card" style="border-radius: 0 0 8px 8px; border-top: none;">
+                <div class="card-body" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--space-xl);">
+                    <div style="height: 400px;">
+                        <canvas id="realDataChart"></canvas>
+                    </div>
+                    <div class="data-table-wrapper">
+                        <table class="neo-table">
+                            <thead>
+                                <tr>
+                                    <th>年份</th>
+                                    <th>总班数</th>
+                                    <th>碰撞班</th>
+                                    <th>比例</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Generated JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>© 2026 Probability Hub. Interactive Simulation Lab.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data for the table
+        const realData = [
+            { yr: '2005', tot: 114, hit: 75, pr: '65.8%' },
+            { yr: '2006', tot: 112, hit: 79, pr: '70.5%' },
+            { yr: '2007', tot: 111, hit: 83, pr: '74.8%' },
+            { yr: '2008', tot: 112, hit: 88, pr: '78.6%' },
+            { yr: '2009', tot: 121, hit: 83, pr: '68.6%' },
+            { yr: '2010', tot: 119, hit: 77, pr: '64.7%' },
+            { yr: '2011', tot: 120, hit: 87, pr: '72.5%' },
+            { yr: '2012', tot: 121, hit: 82, pr: '67.8%' },
+            { yr: '合计', tot: 930, hit: 654, pr: '70.32%', bold: true }
+        ];
+
+        const tbody = document.getElementById('table-body');
+        realData.forEach(d => {
+            const tr = document.createElement('tr');
+            if (d.bold) tr.style.fontWeight = '800';
+            tr.innerHTML = `<td>${d.yr}</td><td>${d.tot}</td><td>${d.hit}</td><td style="${d.bold ? 'color:var(--color-secondary)' : ''}">${d.pr}</td>`;
+            tbody.appendChild(tr);
+        });
+
+        // Simulation Logic
+        const N_CLASS_SIZE = 30;
+        const MAX_TRIALS = 100;
+        let currentTrial = 0;
+        let matchesCount = 0;
+        let isRunning = false;
+        let animationFrameId;
+
+        const canvasM = document.getElementById('matrixCanvas');
+        const ctxM = canvasM.getContext('2d');
+        const canvasS = document.getElementById('singleVizCanvas');
+        const ctxS = canvasS.getContext('2d');
+        let convChart = null;
+
+        function initConvChart() {
+            const ctx = document.getElementById('chartJSConvergence').getContext('2d');
+            convChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '模拟频率',
+                        data: [],
+                        borderColor: '#22C55E',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0.1
+                    }, {
+                        label: '理论值 (70.6%)',
+                        data: [],
+                        borderColor: '#FF8BA7',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    plugins: { legend: { position: 'top' } },
+                    scales: { y: { min: 0, max: 100 }, x: { display: false } }
+                }
+            });
+        }
+
+        function resizeCanvas(canvas) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            return { w: rect.width, h: rect.height };
+        }
+
+        function drawMatrixColumn(trialIndex, width, height, data, duplicates) {
+            const colW = width / MAX_TRIALS;
+            const rowH = height / N_CLASS_SIZE;
+            const x = trialIndex * colW;
+            data.forEach((day, idx) => {
+                const y = idx * rowH + rowH / 2;
+                const cx = x + colW / 2;
+                const isMatch = duplicates.includes(day);
+                ctxM.beginPath();
+                if (isMatch) {
+                    ctxM.fillStyle = '#FF8BA7';
+                    ctxM.arc(cx, y, Math.min(colW, rowH) / 2.2, 0, Math.PI * 2);
+                } else {
+                    ctxM.fillStyle = '#CBD5E1';
+                    ctxM.arc(cx, y, Math.min(colW, rowH) / 4, 0, Math.PI * 2);
+                }
+                ctxM.fill();
+            });
+        }
+
+        function drawSingleVisualization(width, height, data, duplicates) {
+            ctxS.clearRect(0, 0, width, height);
+            const padding = 20;
+            const effW = width - padding * 2;
+            const effH = height - padding * 2;
+            const points = data.map((d, i) => ({
+                x: padding + (i / (N_CLASS_SIZE - 1)) * effW,
+                y: (height - padding) - (d / 365) * effH,
+                day: d
+            }));
+
+            const groups = {};
+            duplicates.forEach(d => groups[d] = []);
+            points.forEach(p => { if (duplicates.includes(p.day)) groups[p.day].push(p); });
+
+            ctxS.lineWidth = 2;
+            ctxS.strokeStyle = 'rgba(124, 58, 237, 0.4)';
+            for (let day in groups) {
+                const grp = groups[day];
+                if (grp.length > 1) {
+                    ctxS.beginPath();
+                    ctxS.moveTo(grp[0].x, grp[0].y);
+                    for (let k = 1; k < grp.length; k++) ctxS.lineTo(grp[k].x, grp[k].y);
+                    ctxS.stroke();
+                }
+            }
+
+            points.forEach(p => {
+                ctxS.beginPath();
+                if (duplicates.includes(p.day)) {
+                    ctxS.fillStyle = '#FF8BA7';
+                    ctxS.arc(p.x, p.y, 5, 0, Math.PI * 2);
+                } else {
+                    ctxS.fillStyle = '#22C55E';
+                    ctxS.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+                }
+                ctxS.fill();
+            });
+        }
+
+        function startSimulation() {
+            if (isRunning) return;
+            isRunning = true;
+            currentTrial = 0; matchesCount = 0;
+            convChart.data.labels = [];
+            convChart.data.datasets[0].data = [];
+            convChart.data.datasets[1].data = [];
+            const dimM = resizeCanvas(canvasM);
+            const dimS = resizeCanvas(canvasS);
+            ctxM.clearRect(0, 0, dimM.w, dimM.h);
+
+            function step() {
+                if (currentTrial >= MAX_TRIALS) { isRunning = false; return; }
+                const data = Array.from({ length: N_CLASS_SIZE }, () => Math.floor(Math.random() * 365) + 1);
+                const counts = {}; const duplicates = []; let hasMatch = false;
+                data.forEach(x => { counts[x] = (counts[x] || 0) + 1; });
+                for (let k in counts) { if (counts[k] > 1) { hasMatch = true; duplicates.push(parseInt(k)); } }
+                if (hasMatch) matchesCount++;
+                currentTrial++;
+
+                document.getElementById('disp-trials').innerText = currentTrial;
+                const freq = (matchesCount / currentTrial * 100).toFixed(1);
+                document.getElementById('disp-freq').innerText = freq + "%";
+
+                drawMatrixColumn(currentTrial - 1, dimM.w, dimM.h, data, duplicates);
+                drawSingleVisualization(dimS.w, dimS.h, data, duplicates);
+
+                convChart.data.labels.push(currentTrial);
+                convChart.data.datasets[0].data.push(freq);
+                convChart.data.datasets[1].data.push(70.6);
+                if (currentTrial % 2 === 0 || currentTrial === MAX_TRIALS) convChart.update('none');
+
+                animationFrameId = requestAnimationFrame(step);
+            }
+            step();
+        }
+
+        function renderRealDataChart() {
+            const ctx = document.getElementById('realDataChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012'],
+                    datasets: [
+                        { label: '碰撞比例 (%)', data: [65.79, 70.54, 74.77, 78.57, 68.60, 64.71, 72.50, 67.77], borderColor: '#1E1B4B', borderWidth: 4, pointBackgroundColor: '#FFC107', pointRadius: 6, fill: false, tension: 0.2 },
+                        { label: '理论期望 (70.6%)', data: [70.6, 70.6, 70.6, 70.6, 70.6, 70.6, 70.6, 70.6], borderColor: '#FF8BA7', borderDash: [10, 5], borderWidth: 2, pointRadius: 0 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 50, max: 100 } } }
+            });
+        }
+
+        window.onload = () => {
+            initConvChart();
+            renderRealDataChart();
+            resizeCanvas(canvasM);
+            resizeCanvas(canvasS);
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false }
+                ]
+            });
+        };
+        window.onresize = () => { if (!isRunning) { resizeCanvas(canvasM); resizeCanvas(canvasS); } };
+    </script>
+</body>
+
+</html>

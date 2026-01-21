@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第8章 假设检验 | Neo Learning Hub</title>
+    <!-- Neo-Pop CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        body {
+            background-color: var(--color-bg);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="container navbar-container">
+        <nav class="navbar">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back</span>
+            </a>
+            <div class="nav-menu"><span style="font-weight: 700;">第8章：假设检验</span></div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div class="badge" style="margin-bottom: 0;">显著性检验</div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container chapter-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="toc-card">
+                <h4 style="margin-bottom: 1rem; font-size: 1.1rem;">本章目录</h4>
+                <nav>
+                    <a href="#s8-1" class="toc-link active">8.1 基本概念</a>
+                    <a href="#s8-2" class="toc-link">8.2 正态总体检验</a>
+                    <a href="#s8-3" class="toc-link">8.3 P 值</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content-area">
+
+            <div class="chapter-hero">
+                <div class="chapter-badge">Chapter 08</div>
+                <h1>假设检验</h1>
+                <p style="font-size: 1.1rem; color: #4B5563; margin-top: 1rem;">
+                    本章研究如何利用样本判断一个关于总体的假设是否成立。我们将学习两类错误、显著性水平以及常见的检验方法（U 检验、t 检验等）。
+                </p>
+            </div>
+
+            <!-- §8.1 -->
+            <section id="s8-1" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§8.1</span>
+                    <h2>基本概念</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-question"></i> 原假设与备择假设
+                    </div>
+                    <div class="card-body">
+                        <p><strong>原假设 ($H_0$)：</strong> 零假设，通常是希望通过检验来推翻。 (如 $\mu = \mu_0$)</p>
+                        <p style="margin-top: 0.5rem;"><strong>备择假设 ($H_1$)：</strong> 原假设的对立面。</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-warning-circle"></i> 两类错误
+                    </div>
+                    <div class="card-body">
+                        <table>
+                            <tr>
+                                <th>决策 \ 真相</th>
+                                <th>$H_0$ 为真</th>
+                                <th>$H_0$ 为假</th>
+                            </tr>
+                            <tr>
+                                <td><strong>拒绝 $H_0$</strong></td>
+                                <td style="background: #FEE2E2;">第 I 类错误 (弃真)</td>
+                                <td>正确</td>
+                            </tr>
+                            <tr>
+                                <td><strong>接受 $H_0$</strong></td>
+                                <td>正确</td>
+                                <td style="background: #FEF3C7;">第 II 类错误 (取伪)</td>
+                            </tr>
+                        </table>
+                        <p style="margin-top: 1rem;"><strong>显著性水平 ($\alpha$)：</strong> 犯第 I 类错误的最大允许概率。常用 $0.05$ 或
+                            $0.01$。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- §8.2 -->
+            <section id="s8-2" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§8.2</span>
+                    <h2>正态总体单参数检验</h2>
+                </div>
+
+                <div class="neo-knowledge-card">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-list-checks"></i> 常见的检验统计量
+                    </div>
+                    <div class="card-body">
+                        <ul style="margin-left: 1.5rem; line-height: 2;">
+                            <li><strong>U 检验：</strong> $\sigma^2$ 已知，检验 $\mu$。 $U = \frac{\bar{X} -
+                                \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)$</li>
+                            <li><strong>t 检验：</strong> $\sigma^2$ 未知，检验 $\mu$。 $T = \frac{\bar{X} - \mu_0}{S/\sqrt{n}}
+                                \sim t(n-1)$</li>
+                            <li><strong>χ² 检验：</strong> 检验方差 $\sigma^2$。 $\chi^2 = \frac{(n-1)S^2}{\sigma_0^2} \sim
+                                \chi^2(n-1)$</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer" style="background: white; border-top: 3px solid #1E1B4B; padding: 3rem 0;">
+        <div class="container" style="text-align: center;">
+            <p style="color: #6B7280;">© 2026 Probability Hub. Designed for BUECEA Students.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }] });
+        });
+    </script>
+</body>
+
+</html>
