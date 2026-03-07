@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第8章 假设检验 | Neo Learning Hub</title>
+    <!-- Neo-Pop CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        body {
+            background-color: var(--color-bg);
+        }
+
+        /* Ideology Section Styling */
+        .ideology-header {
+            background: #EF4444 !important;
+            /* High-energy red */
+            color: white !important;
+        }
+
+        .ideology-card {
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            gap: 0;
+            background: white;
+            border: var(--border-width) solid var(--color-text);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 6px 6px 0 var(--color-text);
+            margin-bottom: 2rem;
+            transition: all 0.2s;
+        }
+
+        .ideology-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 10px 10px 0 var(--color-text);
+        }
+
+        .ideology-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-right: var(--border-width) solid var(--color-text);
+        }
+
+        .ideology-content {
+            padding: var(--space-lg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .ideology-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            background: #FEF3C7;
+            border: 1px solid var(--color-text);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            width: fit-content;
+        }
+
+        @media (max-width: 768px) {
+            .ideology-card {
+                grid-template-columns: 1fr;
+            }
+
+            .ideology-img {
+                height: 200px;
+                border-right: none;
+                border-bottom: var(--border-width) solid var(--color-text);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="container navbar-container">
+        <nav class="navbar">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <div class="logo-icon"><i class="ph-bold ph-arrow-left"></i></div>
+                <span>Back</span>
+            </a>
+            <div class="nav-menu">
+                <a href="formulas.html" style="color: #DC2626; font-weight: 800; margin-right: 1.5rem;"><i
+                        class="ph-bold ph-lightning"></i> 公式速查</a>
+                <span style="font-weight: 700;">第8章：假设检验</span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div class="badge" style="margin-bottom: 0;">显著性检验</div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container chapter-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="toc-card">
+                <h4 style="margin-bottom: 1rem; font-size: 1.1rem;">本章目录</h4>
+                <nav>
+                    <a href="#s8-1" class="toc-link active hover-lift">8.1 基本概念</a>
+                    <a href="#s8-2" class="toc-link hover-lift">8.2 正态总体检验</a>
+                    <a href="#s8-3" class="toc-link hover-lift">8.3 P 值</a>
+                    <a href="#s8-ideology" class="toc-link hover-lift" style="color: #DC2626; font-weight: 700;">
+                        <i class="ph-bold ph-heart"></i> 课程思政案例
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content-area">
+
+            <div class="chapter-hero animate-fadeInUp">
+                <div class="chapter-badge">Chapter 08</div>
+                <h1>假设检验</h1>
+                <p style="font-size: 1.1rem; color: #4B5563; margin-top: 1rem;">
+                    本章研究如何利用样本判断一个关于总体的假设是否成立。我们将学习两类错误、显著性水平以及常见的检验方法（U 检验、t 检验等）。
+                </p>
+            </div>
+
+            <!-- §8.1 -->
+            <section id="s8-1" class="animate-fadeInUp" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§8.1</span>
+                    <h2>基本概念</h2>
+                </div>
+
+                <div class="neo-knowledge-card hover-lift">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-question"></i> 原假设与备择假设
+                    </div>
+                    <div class="card-body">
+                        <p><strong>原假设 ($H_0$)：</strong> 零假设，通常是希望通过检验来推翻。 (如 $\mu = \mu_0$)</p>
+                        <p style="margin-top: 0.5rem;"><strong>备择假设 ($H_1$)：</strong> 原假设的对立面。</p>
+                    </div>
+                </div>
+
+                <div class="neo-knowledge-card hover-lift">
+                    <div class="card-header thm-header">
+                        <i class="ph-bold ph-warning-circle"></i> 两类错误
+                    </div>
+                    <div class="card-body">
+                        <table>
+                            <tr>
+                                <th>决策 \ 真相</th>
+                                <th>$H_0$ 为真</th>
+                                <th>$H_0$ 为假</th>
+                            </tr>
+                            <tr>
+                                <td><strong>拒绝 $H_0$</strong></td>
+                                <td style="background: #FEE2E2;">第 I 类错误 (弃真)</td>
+                                <td>正确</td>
+                            </tr>
+                            <tr>
+                                <td><strong>接受 $H_0$</strong></td>
+                                <td>正确</td>
+                                <td style="background: #FEF3C7;">第 II 类错误 (取伪)</td>
+                            </tr>
+                        </table>
+                        <p style="margin-top: 1rem;"><strong>显著性水平 ($\alpha$)：</strong> 犯第 I 类错误的最大允许概率。常用 $0.05$ 或
+                            $0.01$。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- §8.2 -->
+            <section id="s8-2" class="animate-fadeInUp" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span
+                        style="background: var(--color-text); color: white; padding: 4px 12px; border-radius: 6px; font-family: monospace; font-weight: 700;">§8.2</span>
+                    <h2>正态总体单参数检验</h2>
+                </div>
+
+                <div class="neo-knowledge-card hover-lift">
+                    <div class="card-header def-header">
+                        <i class="ph-bold ph-list-checks"></i> 常见的检验统计量
+                    </div>
+                    <div class="card-body">
+                        <ul style="margin-left: 1.5rem; line-height: 2;">
+                            <li><strong>U 检验：</strong> $\sigma^2$ 已知，检验 $\mu$。 $U = \frac{\bar{X} -
+                                \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)$</li>
+                            <li><strong>t 检验：</strong> $\sigma^2$ 未知，检验 $\mu$。 $T = \frac{\bar{X} - \mu_0}{S/\sqrt{n}}
+                                \sim t(n-1)$</li>
+                            <li><strong>χ² 检验：</strong> 检验方差 $\sigma^2$。 $\chi^2 = \frac{(n-1)S^2}{\sigma_0^2} \sim
+                                \chi^2(n-1)$</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <hr style="border: 2px solid var(--color-text); margin: 4rem 0; opacity: 1;">
+
+            <!-- § 思政案例 -->
+            <section id="s8-ideology" class="animate-fadeInUp" style="margin-bottom: 4rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <div
+                        style="background: #EF4444; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 900; transform: rotate(-2deg); box-shadow: 4px 4px 0 #000;">
+                        IDEOLOGY
+                    </div>
+                    <h2>课程思政教育案例</h2>
+                </div>
+
+                <!-- Card 1: Falsifiability -->
+                <div class="ideology-card">
+                    <img src="../概率统计思政/第八章/1 (30).png" class="ideology-img" alt="Science">
+                    <div class="ideology-content">
+                        <div class="ideology-tag">科学批判性</div>
+                        <h3 style="margin-bottom: 1rem;">证伪主义：假设检验的灵魂</h3>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: #4B5563;">
+                            假设检验并不直接证明 $H_1$ 正确，而是通过证明 $H_0$
+                            在概率上极难发生来否定它。这体现了科学哲学家波普尔的<strong>“证伪主义”</strong>：科学的理论应当是敢于接受检验、甚至被证明错误的。这教导我们在面对权威和常识时，要保持独立思考，勇于用数据和逻辑去质疑和验证。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Legal Logic -->
+                <div class="ideology-card" style="direction: rtl;">
+                    <img src="../概率统计思政/第八章/1 (31).png" class="ideology-img" alt="Justice"
+                        style="border-right: none; border-left: var(--border-width) solid var(--color-text);">
+                    <div class="ideology-content" style="direction: ltr;">
+                        <div class="ideology-tag">法治精神</div>
+                        <h3 style="margin-bottom: 1rem;">无罪推定：统计与法律的交响</h3>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: #4B5563;">
+                            原假设 $H_0$
+                            的保护地位类似于法律中的<strong>“无罪推定”</strong>。在证据不足（显著性水平不够）时，我们不轻易否定现状。这要求我们在做决策时，必须审慎对待每一份证据，尊重事实，既不轻率地全盘否定，也不盲目地照单全收，培养公平公正的法治素养。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer" style="background: white; border-top: 3px solid #1E1B4B; padding: 3rem 0;">
+        <div class="container" style="text-align: center;">
+            <p style="color: #6B7280;">© 2026 Probability Hub. Designed for BUECEA Students.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }] });
+        });
+    </script>
+</body>
+
+</html>

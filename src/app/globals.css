@@ -1,26 +1,51 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-neb-bg: #FFFBF0;
+  --color-neb-text: #1E1B4B;
+  --color-neb-primary: #22C55E;
+  --color-neb-primary-hover: #16A34A;
+  --color-neb-secondary: #FF8BA7;
+  --color-neb-accent: #FFC107;
+
+  --color-pink-soft: #FFC0CB;
+  --color-blue-soft: #BAE6FD;
+  --color-purple-soft: #E9D5FF;
+  --color-green-soft: #BBF7D0;
+
+  --font-fredoka: var(--font-fredoka), "Arial Black", sans-serif;
+  --font-outfit: var(--font-outfit), "Segoe UI", sans-serif;
+
+  --shadow-hard: 4px 4px 0px #1E1B4B;
+  --shadow-hard-hover: 8px 8px 0px #1E1B4B;
+
+  --radius-md: 16px;
+  --radius-lg: 24px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: #FFFBF0;
+    color: #1E1B4B;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .hover-lift {
+    transition: all 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0px #1E1B4B;
+  }
+
+  .border-neb {
+    border: 3px solid #1E1B4B;
+  }
+
+  .shadow-hard {
+    box-shadow: 4px 4px 0px #1E1B4B;
+  }
 }
